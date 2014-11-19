@@ -4,10 +4,12 @@ import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import infrastructure.InfrastructureApi;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.abiquo.apiclient.api.enterprise.EnterpriseApi;
 import com.abiquo.apiclient.rest.RestClient;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
@@ -30,16 +32,13 @@ import com.abiquo.server.core.config.LicenseDto;
 import com.abiquo.server.core.enterprise.DatacenterLimitsDto;
 import com.abiquo.server.core.enterprise.DatacentersLimitsDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
-import com.abiquo.server.core.enterprise.EnterprisesDto;
 import com.abiquo.server.core.enterprise.UserDto;
 import com.abiquo.server.core.enterprise.UsersDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
-import com.abiquo.server.core.infrastructure.DatacentersDto;
 import com.abiquo.server.core.infrastructure.MachineDto;
 import com.abiquo.server.core.infrastructure.MachinesDto;
 import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
 import com.abiquo.server.core.infrastructure.RackDto;
-import com.abiquo.server.core.infrastructure.RacksDto;
 import com.abiquo.server.core.infrastructure.RemoteServiceDto;
 import com.abiquo.server.core.infrastructure.RemoteServicesDto;
 import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
@@ -64,17 +63,17 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class ApiClient
 {
-    private final RestClient client;
+    protected static RestClient client;
 
-    private final String baseURL;
+    private static String baseURL;
 
     public ApiClient(final String baseURL, final String username, final String password)
     {
         client = new RestClient(username, password);
-        this.baseURL = baseURL;
+        ApiClient.baseURL = baseURL;
     }
 
-    public String absolute(final String path)
+    public static String absolute(final String path)
     {
         return baseURL + (path.startsWith("/") ? path : "/" + path);
     }
@@ -107,40 +106,33 @@ public class ApiClient
             LicenseDto.MEDIA_TYPE, license, LicenseDto.class);
     }
 
-    public EnterpriseDto findEnterprise(final String name)
+    // Enterprise
+
+    public static EnterpriseDto createEnterprise(final String name)
     {
-        EnterprisesDto enterprises =
-            client.get(absolute("/admin/enterprises"), EnterprisesDto.MEDIA_TYPE,
-                EnterprisesDto.class);
-        return enterprises.getCollection().stream()
-            .filter(enterprise -> enterprise.getName().equals(name)).findFirst().get();
+        return EnterpriseApi.createEnterprise(name);
     }
 
-    public DatacenterDto findDatacenter(final String name)
+    public static EnterpriseDto findEnterprise(final String name)
     {
-        DatacentersDto datacenters =
-            client.get(absolute("/admin/datacenters"), DatacentersDto.MEDIA_TYPE,
-                DatacentersDto.class);
-        return datacenters.getCollection().stream()
-            .filter(datacenter -> datacenter.getName().equals(name)).findFirst().get();
+        return EnterpriseApi.findEnterprise(name);
     }
 
-    public RackDto findRack(final DatacenterDto datacenter, final String name)
+    // Infrastructure
+
+    public static DatacenterDto findDatacenter(final String name)
     {
-        RacksDto racks =
-            client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
-                RacksDto.class);
-        return racks.getCollection().stream().filter(rack -> rack.getName().equals(name))
-            .findFirst().get();
+        return InfrastructureApi.findDatacenter(name);
     }
 
-    public DatacenterDto findDatacenterLocation(final String name)
+    public static RackDto findRack(final DatacenterDto datacenter, final String name)
     {
-        DatacentersDto locations =
-            client.get(absolute("/cloud/locations"), DatacentersDto.MEDIA_TYPE,
-                DatacentersDto.class);
-        return locations.getCollection().stream()
-            .filter(location -> location.getName().equals(name)).findFirst().get();
+        return InfrastructureApi.findRack(datacenter, name);
+    }
+
+    public static DatacenterDto findDatacenterLocation(final String name)
+    {
+        return InfrastructureApi.findDatacenterLocation(name);
     }
 
     public VirtualDatacenterDto findVirtualDatacenter(final String name)
@@ -367,14 +359,6 @@ public class ApiClient
         rack.setName(name);
         return client.post(datacenter.searchLink("racks").getHref(), RackDto.MEDIA_TYPE,
             RackDto.MEDIA_TYPE, rack, RackDto.class);
-    }
-
-    public EnterpriseDto createEnterprise(final String name)
-    {
-        EnterpriseDto enterprise = new EnterpriseDto();
-        enterprise.setName(name);
-        return client.post(absolute("/admin/enterprises"), EnterpriseDto.MEDIA_TYPE,
-            EnterpriseDto.MEDIA_TYPE, enterprise, EnterpriseDto.class);
     }
 
     public void addDatacenterToEnterprise(final EnterpriseDto enterprise,
