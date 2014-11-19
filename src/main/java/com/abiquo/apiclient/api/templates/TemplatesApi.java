@@ -14,7 +14,8 @@ public class TemplatesApi extends ApiClient
         super(baseURL, username, password);
     }
 
-    public static VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
+    @Override
+    public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
         final String name)
     {
         MultivaluedMapImpl queryParams = new MultivaluedMapImpl();

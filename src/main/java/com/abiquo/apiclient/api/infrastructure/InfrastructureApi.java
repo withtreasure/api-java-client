@@ -24,7 +24,8 @@ public class InfrastructureApi extends ApiClient
         super(baseURL, username, password);
     }
 
-    public static DatacenterDto findDatacenter(final String name)
+    @Override
+    public DatacenterDto findDatacenter(final String name)
     {
         DatacentersDto datacenters =
             client.get(absolute("/admin/datacenters"), DatacentersDto.MEDIA_TYPE,
@@ -33,7 +34,8 @@ public class InfrastructureApi extends ApiClient
             .filter(datacenter -> datacenter.getName().equals(name)).findFirst().get();
     }
 
-    public static RackDto findRack(final DatacenterDto datacenter, final String name)
+    @Override
+    public RackDto findRack(final DatacenterDto datacenter, final String name)
     {
         RacksDto racks =
             client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
@@ -42,7 +44,8 @@ public class InfrastructureApi extends ApiClient
             .findFirst().get();
     }
 
-    public static DatacenterDto findDatacenterLocation(final String name)
+    @Override
+    public DatacenterDto findDatacenterLocation(final String name)
     {
         DatacentersDto locations =
             client.get(absolute("/cloud/locations"), DatacentersDto.MEDIA_TYPE,
@@ -51,21 +54,23 @@ public class InfrastructureApi extends ApiClient
             .filter(location -> location.getName().equals(name)).findFirst().get();
     }
 
-    public static DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
+    @Override
+    public DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
     {
         return get(enterprise.searchLink("limits"), DatacentersLimitsDto.class);
     }
 
-    public static DatacenterLimitsDto findLimits(final EnterpriseDto enterprise,
-        final String locationName)
+    @Override
+    public DatacenterLimitsDto findLimits(final EnterpriseDto enterprise, final String locationName)
     {
         return listLimits(enterprise).getCollection().stream()
             .filter(l -> locationName.equals(l.searchLink("location").getTitle())).findFirst()
             .get();
     }
 
-    public static DatacenterLimitsDto getEnterpriseLimitsForDatacenter(
-        final EnterpriseDto enterprise, final DatacenterDto datacenter)
+    @Override
+    public DatacenterLimitsDto getEnterpriseLimitsForDatacenter(final EnterpriseDto enterprise,
+        final DatacenterDto datacenter)
     {
         DatacentersLimitsDto limits =
             client.get(enterprise.searchLink("limits").getHref(), DatacentersLimitsDto.MEDIA_TYPE,
@@ -76,20 +81,22 @@ public class InfrastructureApi extends ApiClient
             .findFirst().get();
     }
 
-    public static VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
+    @Override
+    public VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
     {
         return client.get(limits.searchLink("externalnetworks").getHref(),
             VLANNetworksDto.MEDIA_TYPE, VLANNetworksDto.class);
     }
 
-    public static VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits,
-        final String name)
+    @Override
+    public VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits, final String name)
     {
         return listExternalNetworks(limits).getCollection().stream()
             .filter(net -> net.getName().equals(name)).findFirst().get();
     }
 
-    public static DatacenterDto createDatacenter(final String name, final String location,
+    @Override
+    public DatacenterDto createDatacenter(final String name, final String location,
         final List<RemoteServiceDto> remoteServices)
     {
         RemoteServicesDto remoteServicesDto = new RemoteServicesDto();
@@ -104,12 +111,14 @@ public class InfrastructureApi extends ApiClient
             DatacenterDto.MEDIA_TYPE, datacenter, DatacenterDto.class);
     }
 
-    public static RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
+    @Override
+    public RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
     {
         return get(datacenter.searchLink("remoteservices"), RemoteServicesDto.class);
     }
 
-    public static RackDto createRack(final DatacenterDto datacenter, final String name)
+    @Override
+    public RackDto createRack(final DatacenterDto datacenter, final String name)
     {
         RackDto rack = new RackDto();
         rack.setName(name);
@@ -117,7 +126,8 @@ public class InfrastructureApi extends ApiClient
             RackDto.MEDIA_TYPE, rack, RackDto.class);
     }
 
-    public static void addDatacenterToEnterprise(final EnterpriseDto enterprise,
+    @Override
+    public void addDatacenterToEnterprise(final EnterpriseDto enterprise,
         final DatacenterDto datacenter)
     {
         DatacenterLimitsDto limits = new DatacenterLimitsDto();

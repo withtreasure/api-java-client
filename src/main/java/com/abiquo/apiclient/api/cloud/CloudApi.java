@@ -28,7 +28,8 @@ public class CloudApi extends ApiClient
         super(baseURL, username, password);
     }
 
-    public static VirtualDatacenterDto findVirtualDatacenter(final String name)
+    @Override
+    public VirtualDatacenterDto findVirtualDatacenter(final String name)
     {
         VirtualDatacentersDto vdcs =
             client.get(absolute("/cloud/virtualdatacenters"), VirtualDatacentersDto.MEDIA_TYPE,
@@ -37,18 +38,21 @@ public class CloudApi extends ApiClient
             .get();
     }
 
-    public static ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
+    @Override
+    public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
     {
         return get(vdc.searchLink("externalips"), ExternalIpsDto.class);
     }
 
-    public static VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
+    @Override
+    public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
     {
         return client.get(vdc.searchLink("virtualappliances").getHref(),
             VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
     }
 
-    public static VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
+    @Override
+    public VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
         VirtualAppliancesDto vapps = listVirtualAppliances(vdc);
@@ -56,19 +60,22 @@ public class CloudApi extends ApiClient
             .findFirst().get();
     }
 
-    public static VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
+    @Override
+    public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
     {
         return client.get(vapp.searchLink("virtualmachines").getHref(),
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
-    public static VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
+    @Override
+    public VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
     {
         return client.get(vm.searchLink("configurations").getHref(),
             VMNetworkConfigurationsDto.MEDIA_TYPE, VMNetworkConfigurationsDto.class);
     }
 
-    public static VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
+    @Override
+    public VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
         final String templateName)
     {
         VirtualMachinesDto vms = listVirtualMachines(vapp);
@@ -77,9 +84,9 @@ public class CloudApi extends ApiClient
             .findFirst().get();
     }
 
-    public static VirtualDatacenterDto createVirtualDatacenter(
-        final SingleResourceTransportDto location, final EnterpriseDto enterprise,
-        final String name, final String type)
+    @Override
+    public VirtualDatacenterDto createVirtualDatacenter(final SingleResourceTransportDto location,
+        final EnterpriseDto enterprise, final String name, final String type)
     {
         checkArgument(location instanceof DatacenterDto || location instanceof PublicCloudRegionDto);
 
@@ -102,7 +109,8 @@ public class CloudApi extends ApiClient
             VirtualDatacenterDto.MEDIA_TYPE, vdc, VirtualDatacenterDto.class);
     }
 
-    public static VirtualApplianceDto createVirtualAppliance(final VirtualDatacenterDto vdc,
+    @Override
+    public VirtualApplianceDto createVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
         VirtualApplianceDto vapp = new VirtualApplianceDto();
@@ -113,7 +121,8 @@ public class CloudApi extends ApiClient
             VirtualApplianceDto.class);
     }
 
-    public static VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
+    @Override
+    public VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
         final VirtualMachineTemplateDto template, final VirtualApplianceDto vapp)
     {
         VirtualMachineDto vm = new VirtualMachineDto();

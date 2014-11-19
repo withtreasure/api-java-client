@@ -61,23 +61,34 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class ApiClient
 {
-    protected static RestClient client;
+    protected final RestClient client;
 
-    private static String baseURL;
+    private final String baseURL;
+
+    private final EnterpriseApi enterpriseApi;
+
+    private final InfrastructureApi infrastructureApi;
+
+    private final CloudApi cloudApi;
+
+    private final TemplatesApi templatesApi;
 
     public ApiClient(final String baseURL, final String username, final String password)
     {
         client = new RestClient(username, password);
-        ApiClient.baseURL = baseURL;
+        this.baseURL = baseURL;
+        enterpriseApi = new EnterpriseApi(baseURL, username, password);
+        infrastructureApi = new InfrastructureApi(baseURL, username, password);
+        cloudApi = new CloudApi(baseURL, username, password);
+        templatesApi = new TemplatesApi(baseURL, username, password);
     }
 
-    public static String absolute(final String path)
+    public String absolute(final String path)
     {
         return baseURL + (path.startsWith("/") ? path : "/" + path);
     }
 
-    public static <T extends SingleResourceTransportDto> T get(final RESTLink link,
-        final Class<T> clazz)
+    public <T extends SingleResourceTransportDto> T get(final RESTLink link, final Class<T> clazz)
     {
         return client.get(link.getHref(), link.getType(), clazz);
     }
@@ -112,147 +123,144 @@ public class ApiClient
 
     // Enterprise
 
-    public static EnterpriseDto createEnterprise(final String name)
+    public EnterpriseDto createEnterprise(final String name)
     {
-        return EnterpriseApi.createEnterprise(name);
+        return enterpriseApi.createEnterprise(name);
     }
 
-    public static EnterpriseDto findEnterprise(final String name)
+    public EnterpriseDto findEnterprise(final String name)
     {
-        return EnterpriseApi.findEnterprise(name);
+        return enterpriseApi.findEnterprise(name);
     }
 
     // Infrastructure
 
-    public static DatacenterDto findDatacenter(final String name)
+    public DatacenterDto findDatacenter(final String name)
     {
-        return InfrastructureApi.findDatacenter(name);
+        return infrastructureApi.findDatacenter(name);
     }
 
-    public static RackDto findRack(final DatacenterDto datacenter, final String name)
+    public RackDto findRack(final DatacenterDto datacenter, final String name)
     {
-        return InfrastructureApi.findRack(datacenter, name);
+        return infrastructureApi.findRack(datacenter, name);
     }
 
-    public static DatacenterDto findDatacenterLocation(final String name)
+    public DatacenterDto findDatacenterLocation(final String name)
     {
-        return InfrastructureApi.findDatacenterLocation(name);
+        return infrastructureApi.findDatacenterLocation(name);
     }
 
-    public static DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
+    public DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
     {
-        return InfrastructureApi.listLimits(enterprise);
+        return infrastructureApi.listLimits(enterprise);
     }
 
-    public static DatacenterLimitsDto findLimits(final EnterpriseDto enterprise,
-        final String locationName)
+    public DatacenterLimitsDto findLimits(final EnterpriseDto enterprise, final String locationName)
     {
-        return InfrastructureApi.findLimits(enterprise, locationName);
+        return infrastructureApi.findLimits(enterprise, locationName);
     }
 
-    public static DatacenterLimitsDto getEnterpriseLimitsForDatacenter(
-        final EnterpriseDto enterprise, final DatacenterDto datacenter)
-    {
-        return InfrastructureApi.getEnterpriseLimitsForDatacenter(enterprise, datacenter);
-    }
-
-    public static VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
-    {
-        return InfrastructureApi.listExternalNetworks(limits);
-    }
-
-    public static VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits,
-        final String name)
-    {
-        return InfrastructureApi.findExternalNetwork(limits, name);
-    }
-
-    public static DatacenterDto createDatacenter(final String name, final String location,
-        final List<RemoteServiceDto> remoteServices)
-    {
-        return InfrastructureApi.createDatacenter(name, location, remoteServices);
-    }
-
-    public static RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
-    {
-        return get(datacenter.searchLink("remoteservices"), RemoteServicesDto.class);
-    }
-
-    public static RackDto createRack(final DatacenterDto datacenter, final String name)
-    {
-        return InfrastructureApi.createRack(datacenter, name);
-    }
-
-    public static void addDatacenterToEnterprise(final EnterpriseDto enterprise,
+    public DatacenterLimitsDto getEnterpriseLimitsForDatacenter(final EnterpriseDto enterprise,
         final DatacenterDto datacenter)
     {
-        InfrastructureApi.addDatacenterToEnterprise(enterprise, datacenter);
+        return infrastructureApi.getEnterpriseLimitsForDatacenter(enterprise, datacenter);
+    }
+
+    public VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
+    {
+        return infrastructureApi.listExternalNetworks(limits);
+    }
+
+    public VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits, final String name)
+    {
+        return infrastructureApi.findExternalNetwork(limits, name);
+    }
+
+    public DatacenterDto createDatacenter(final String name, final String location,
+        final List<RemoteServiceDto> remoteServices)
+    {
+        return infrastructureApi.createDatacenter(name, location, remoteServices);
+    }
+
+    public RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
+    {
+        return infrastructureApi.listRemoteServices(datacenter);
+    }
+
+    public RackDto createRack(final DatacenterDto datacenter, final String name)
+    {
+        return infrastructureApi.createRack(datacenter, name);
+    }
+
+    public void addDatacenterToEnterprise(final EnterpriseDto enterprise,
+        final DatacenterDto datacenter)
+    {
+        infrastructureApi.addDatacenterToEnterprise(enterprise, datacenter);
     }
 
     // Cloud
 
-    public static VirtualDatacenterDto findVirtualDatacenter(final String name)
+    public VirtualDatacenterDto findVirtualDatacenter(final String name)
     {
-        return CloudApi.findVirtualDatacenter(name);
+        return cloudApi.findVirtualDatacenter(name);
     }
 
-    public static ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
+    public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
     {
-        return CloudApi.listExternalIps(vdc);
+        return cloudApi.listExternalIps(vdc);
     }
 
-    public static VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
+    public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
     {
-        return CloudApi.listVirtualAppliances(vdc);
+        return cloudApi.listVirtualAppliances(vdc);
     }
 
-    public static VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
+    public VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
-        return CloudApi.findVirtualAppliance(vdc, name);
+        return cloudApi.findVirtualAppliance(vdc, name);
     }
 
-    public static VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
+    public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
     {
-        return CloudApi.listVirtualMachines(vapp);
+        return cloudApi.listVirtualMachines(vapp);
     }
 
-    public static VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
+    public VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
     {
-        return CloudApi.listNetworkConfigurations(vm);
+        return cloudApi.listNetworkConfigurations(vm);
     }
 
-    public static VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
+    public VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
         final String templateName)
     {
-        return CloudApi.findVirtualMachine(vapp, templateName);
+        return cloudApi.findVirtualMachine(vapp, templateName);
     }
 
-    public static VirtualDatacenterDto createVirtualDatacenter(
-        final SingleResourceTransportDto location, final EnterpriseDto enterprise,
-        final String name, final String type)
+    public VirtualDatacenterDto createVirtualDatacenter(final SingleResourceTransportDto location,
+        final EnterpriseDto enterprise, final String name, final String type)
     {
-        return CloudApi.createVirtualDatacenter(location, enterprise, name, type);
+        return cloudApi.createVirtualDatacenter(location, enterprise, name, type);
     }
 
-    public static VirtualApplianceDto createVirtualAppliance(final VirtualDatacenterDto vdc,
+    public VirtualApplianceDto createVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
-        return CloudApi.createVirtualAppliance(vdc, name);
+        return cloudApi.createVirtualAppliance(vdc, name);
     }
 
-    public static VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
+    public VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
         final VirtualMachineTemplateDto template, final VirtualApplianceDto vapp)
     {
-        return CloudApi.createVirtualMachine(vdc, template, vapp);
+        return cloudApi.createVirtualMachine(vdc, template, vapp);
     }
 
     // Templates
 
-    public static VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
+    public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
         final String name)
     {
-        return TemplatesApi.findAvailableTemplate(vdc, name);
+        return templatesApi.findAvailableTemplate(vdc, name);
     }
 
     public VirtualMachineTemplateDto instanceVirtualMachine(final VirtualMachineDto vm,

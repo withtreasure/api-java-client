@@ -12,7 +12,8 @@ public class EnterpriseApi extends ApiClient
         super(baseURL, username, password);
     }
 
-    public static EnterpriseDto createEnterprise(final String name)
+    @Override
+    public EnterpriseDto createEnterprise(final String name)
     {
         EnterpriseDto enterprise = new EnterpriseDto();
         enterprise.setName(name);
@@ -20,7 +21,8 @@ public class EnterpriseApi extends ApiClient
             EnterpriseDto.MEDIA_TYPE, enterprise, EnterpriseDto.class);
     }
 
-    public static EnterpriseDto findEnterprise(final String name)
+    @Override
+    public EnterpriseDto findEnterprise(final String name)
     {
         EnterprisesDto enterprises =
             client.get(absolute("/admin/enterprises"), EnterprisesDto.MEDIA_TYPE,
