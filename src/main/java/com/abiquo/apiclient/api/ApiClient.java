@@ -2,14 +2,15 @@ package com.abiquo.apiclient.api;
 
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import infrastructure.InfrastructureApi;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.abiquo.apiclient.api.cloud.CloudApi;
 import com.abiquo.apiclient.api.enterprise.EnterpriseApi;
+import com.abiquo.apiclient.api.infrastructure.InfrastructureApi;
+import com.abiquo.apiclient.api.templates.TemplatesApi;
 import com.abiquo.apiclient.rest.RestClient;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
@@ -17,11 +18,9 @@ import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateRequestDto;
-import com.abiquo.server.core.appslibrary.VirtualMachineTemplatesDto;
 import com.abiquo.server.core.cloud.VirtualApplianceDto;
 import com.abiquo.server.core.cloud.VirtualAppliancesDto;
 import com.abiquo.server.core.cloud.VirtualDatacenterDto;
-import com.abiquo.server.core.cloud.VirtualDatacentersDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.cloud.VirtualMachineInstanceDto;
 import com.abiquo.server.core.cloud.VirtualMachineState;
@@ -37,7 +36,6 @@ import com.abiquo.server.core.enterprise.UsersDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.MachineDto;
 import com.abiquo.server.core.infrastructure.MachinesDto;
-import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
 import com.abiquo.server.core.infrastructure.RackDto;
 import com.abiquo.server.core.infrastructure.RemoteServiceDto;
 import com.abiquo.server.core.infrastructure.RemoteServicesDto;
@@ -78,9 +76,15 @@ public class ApiClient
         return baseURL + (path.startsWith("/") ? path : "/" + path);
     }
 
-    public <T extends SingleResourceTransportDto> T get(final RESTLink link, final Class<T> clazz)
+    public static <T extends SingleResourceTransportDto> T get(final RESTLink link,
+        final Class<T> clazz)
     {
         return client.get(link.getHref(), link.getType(), clazz);
+    }
+
+    public void delete(final SingleResourceTransportDto dto)
+    {
+        client.delete(dto.getEditLink().getHref());
     }
 
     public <T extends SingleResourceTransportDto> T refresh(final T dto)
@@ -135,149 +139,120 @@ public class ApiClient
         return InfrastructureApi.findDatacenterLocation(name);
     }
 
-    public VirtualDatacenterDto findVirtualDatacenter(final String name)
+    public static DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
     {
-        VirtualDatacentersDto vdcs =
-            client.get(absolute("/cloud/virtualdatacenters"), VirtualDatacentersDto.MEDIA_TYPE,
-                VirtualDatacentersDto.class);
-        return vdcs.getCollection().stream().filter(vdc -> vdc.getName().equals(name)).findFirst()
-            .get();
+        return InfrastructureApi.listLimits(enterprise);
     }
 
-    public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
+    public static DatacenterLimitsDto findLimits(final EnterpriseDto enterprise,
+        final String locationName)
+    {
+        return InfrastructureApi.findLimits(enterprise, locationName);
+    }
+
+    public static DatacenterLimitsDto getEnterpriseLimitsForDatacenter(
+        final EnterpriseDto enterprise, final DatacenterDto datacenter)
+    {
+        return InfrastructureApi.getEnterpriseLimitsForDatacenter(enterprise, datacenter);
+    }
+
+    public static VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
+    {
+        return InfrastructureApi.listExternalNetworks(limits);
+    }
+
+    public static VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits,
         final String name)
     {
-        MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
-        queryParams.add("limit", 0);
-
-        VirtualMachineTemplatesDto templates =
-            client.get(vdc.searchLink("templates").getHref(), queryParams,
-                VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
-        return templates.getCollection().stream()
-            .filter(template -> template.getName().equals(name)).findFirst().get();
+        return InfrastructureApi.findExternalNetwork(limits, name);
     }
 
-    public DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
+    public static DatacenterDto createDatacenter(final String name, final String location,
+        final List<RemoteServiceDto> remoteServices)
     {
-        return get(enterprise.searchLink("limits"), DatacentersLimitsDto.class);
+        return InfrastructureApi.createDatacenter(name, location, remoteServices);
     }
 
-    public DatacenterLimitsDto findLimits(final EnterpriseDto enterprise, final String locationName)
+    public static RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
     {
-        return listLimits(enterprise).getCollection().stream()
-            .filter(l -> locationName.equals(l.searchLink("location").getTitle())).findFirst()
-            .get();
+        return get(datacenter.searchLink("remoteservices"), RemoteServicesDto.class);
     }
 
-    public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
+    public static RackDto createRack(final DatacenterDto datacenter, final String name)
     {
-        return get(vdc.searchLink("externalips"), ExternalIpsDto.class);
+        return InfrastructureApi.createRack(datacenter, name);
     }
 
-    public DatacenterLimitsDto getEnterpriseLimitsForDatacenter(final EnterpriseDto enterprise,
+    public static void addDatacenterToEnterprise(final EnterpriseDto enterprise,
         final DatacenterDto datacenter)
     {
-        DatacentersLimitsDto limits =
-            client.get(enterprise.searchLink("limits").getHref(), DatacentersLimitsDto.MEDIA_TYPE,
-                DatacentersLimitsDto.class);
-
-        return limits.getCollection().stream()
-            .filter(l -> l.searchLink("location").getTitle().equals(datacenter.getName()))
-            .findFirst().get();
+        InfrastructureApi.addDatacenterToEnterprise(enterprise, datacenter);
     }
 
-    public VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
+    // Cloud
+
+    public static VirtualDatacenterDto findVirtualDatacenter(final String name)
     {
-        return client.get(limits.searchLink("externalnetworks").getHref(),
-            VLANNetworksDto.MEDIA_TYPE, VLANNetworksDto.class);
+        return CloudApi.findVirtualDatacenter(name);
     }
 
-    public VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits, final String name)
+    public static ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
     {
-        return listExternalNetworks(limits).getCollection().stream()
-            .filter(net -> net.getName().equals(name)).findFirst().get();
+        return CloudApi.listExternalIps(vdc);
     }
 
-    public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
+    public static VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
     {
-        return client.get(vdc.searchLink("virtualappliances").getHref(),
-            VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
+        return CloudApi.listVirtualAppliances(vdc);
     }
 
-    public VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
+    public static VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
-        VirtualAppliancesDto vapps = listVirtualAppliances(vdc);
-        return vapps.getCollection().stream().filter(vapp -> vapp.getName().equals(name))
-            .findFirst().get();
+        return CloudApi.findVirtualAppliance(vdc, name);
     }
 
-    public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
+    public static VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
     {
-        return client.get(vapp.searchLink("virtualmachines").getHref(),
-            VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
+        return CloudApi.listVirtualMachines(vapp);
     }
 
-    public VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
+    public static VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
     {
-        return client.get(vm.searchLink("configurations").getHref(),
-            VMNetworkConfigurationsDto.MEDIA_TYPE, VMNetworkConfigurationsDto.class);
+        return CloudApi.listNetworkConfigurations(vm);
     }
 
-    public VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
+    public static VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
         final String templateName)
     {
-        VirtualMachinesDto vms = listVirtualMachines(vapp);
-        return vms.getCollection().stream()
-            .filter(vm -> vm.searchLink("virtualmachinetemplate").getTitle().equals(templateName))
-            .findFirst().get();
+        return CloudApi.findVirtualMachine(vapp, templateName);
     }
 
-    public VirtualDatacenterDto createVirtualDatacenter(final SingleResourceTransportDto location,
-        final EnterpriseDto enterprise, final String name, final String type)
+    public static VirtualDatacenterDto createVirtualDatacenter(
+        final SingleResourceTransportDto location, final EnterpriseDto enterprise,
+        final String name, final String type)
     {
-        checkArgument(location instanceof DatacenterDto || location instanceof PublicCloudRegionDto);
-
-        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
-        vdc.setName(name);
-        vdc.setHypervisorType(type);
-
-        vdc.addLink(new RESTLink("enterprise", enterprise.getEditLink().getHref()));
-        vdc.addLink(new RESTLink("location", location.searchLink("self").getHref()));
-
-        VLANNetworkDto vlan = new VLANNetworkDto();
-        vlan.setAddress("192.168.0.0");
-        vlan.setGateway("192.168.0.5");
-        vlan.setMask(24);
-        vlan.setName("default_private_network");
-        vlan.setType(NetworkType.INTERNAL);
-        vdc.setVlan(vlan);
-
-        return client.post(absolute("/cloud/virtualdatacenters"), VirtualDatacenterDto.MEDIA_TYPE,
-            VirtualDatacenterDto.MEDIA_TYPE, vdc, VirtualDatacenterDto.class);
+        return CloudApi.createVirtualDatacenter(location, enterprise, name, type);
     }
 
-    public VirtualApplianceDto createVirtualAppliance(final VirtualDatacenterDto vdc,
+    public static VirtualApplianceDto createVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
-        VirtualApplianceDto vapp = new VirtualApplianceDto();
-        vapp.setName(name);
-
-        return client.post(vdc.searchLink("virtualappliances").getHref(),
-            VirtualApplianceDto.MEDIA_TYPE, VirtualApplianceDto.MEDIA_TYPE, vapp,
-            VirtualApplianceDto.class);
+        return CloudApi.createVirtualAppliance(vdc, name);
     }
 
-    public VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
+    public static VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
         final VirtualMachineTemplateDto template, final VirtualApplianceDto vapp)
     {
-        VirtualMachineDto vm = new VirtualMachineDto();
-        vm.setVdrpEnabled(Boolean.TRUE);
-        vm.addLink(new RESTLink("virtualmachinetemplate", template.getEditLink().getHref()));
+        return CloudApi.createVirtualMachine(vdc, template, vapp);
+    }
 
-        return client
-            .post(vapp.searchLink("virtualmachines").getHref(), VirtualMachineDto.MEDIA_TYPE,
-                VirtualMachineDto.MEDIA_TYPE, vm, VirtualMachineDto.class);
+    // Templates
+
+    public static VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
+        final String name)
+    {
+        return TemplatesApi.findAvailableTemplate(vdc, name);
     }
 
     public VirtualMachineTemplateDto instanceVirtualMachine(final VirtualMachineDto vm,
@@ -326,48 +301,6 @@ public class ApiClient
 
         return client.get(task.searchLink("result").getHref(),
             VirtualMachineTemplateDto.MEDIA_TYPE, VirtualMachineTemplateDto.class);
-    }
-
-    public DatacenterDto createDatacenter(final String name, final String location,
-        final List<RemoteServiceDto> remoteServices)
-    {
-        RemoteServicesDto remoteServicesDto = new RemoteServicesDto();
-        remoteServicesDto.addAll(remoteServices);
-
-        DatacenterDto datacenter = new DatacenterDto();
-        datacenter.setName(name);
-        datacenter.setLocation(location);
-        datacenter.setRemoteServices(remoteServicesDto);
-
-        return client.post(absolute("/admin/datacenters"), DatacenterDto.MEDIA_TYPE,
-            DatacenterDto.MEDIA_TYPE, datacenter, DatacenterDto.class);
-    }
-
-    public RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
-    {
-        return get(datacenter.searchLink("remoteservices"), RemoteServicesDto.class);
-    }
-
-    public void delete(final SingleResourceTransportDto dto)
-    {
-        client.delete(dto.getEditLink().getHref());
-    }
-
-    public RackDto createRack(final DatacenterDto datacenter, final String name)
-    {
-        RackDto rack = new RackDto();
-        rack.setName(name);
-        return client.post(datacenter.searchLink("racks").getHref(), RackDto.MEDIA_TYPE,
-            RackDto.MEDIA_TYPE, rack, RackDto.class);
-    }
-
-    public void addDatacenterToEnterprise(final EnterpriseDto enterprise,
-        final DatacenterDto datacenter)
-    {
-        DatacenterLimitsDto limits = new DatacenterLimitsDto();
-        limits.addLink(new RESTLink("location", datacenter.getEditLink().getHref()));
-        client.post(enterprise.searchLink("limits").getHref(), DatacenterLimitsDto.MEDIA_TYPE,
-            DatacenterLimitsDto.MEDIA_TYPE, limits, DatacenterLimitsDto.class);
     }
 
     public UserDto findUser(final String name)
