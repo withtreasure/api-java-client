@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.api;
+package com.abiquo.apiclient;
 
-public class ApiPath
+public final class ApiPath
 {
-
-    public static String ENTERPRISES_URL = "/admin/enterprises/";
+    public static final String ENTERPRISES_URL = "/admin/enterprises/";
 
     public static final String USERS_URL = "/admin/enterprises/_/users/";
 

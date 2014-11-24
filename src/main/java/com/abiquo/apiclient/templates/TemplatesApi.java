@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.api.templates;
+package com.abiquo.apiclient.templates;
 
-import static com.abiquo.apiclient.api.ApiPredicates.templateName;
+import static com.abiquo.apiclient.ApiPredicates.templateName;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
 import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
 
-import com.abiquo.apiclient.rest.RestClient;
+import com.abiquo.apiclient.RestClient;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;

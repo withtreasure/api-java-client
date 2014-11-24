@@ -1,0 +1,206 @@
+{
+    "storageHardInMb" : 0,
+    "publicIpsSoft" : 0,
+    "cpuCountHardLimit" : 0,
+    "ramSoftLimitInMb" : 0,
+    "cpuCountSoftLimit" : 0,
+    "vlan" : {
+       "name" : "default_private_network",
+       "ipv6" : false,
+       "strict" : false,
+       "primaryDNS" : "",
+       "sufixDNS" : "",
+       "type" : "INTERNAL",
+       "dhcpOptions" : {
+          "collection" : [],
+          "links" : []
+       },
+       "gateway" : "192.168.0.1",
+       "secondaryDNS" : "",
+       "mask" : 24,
+       "id" : 1,
+       "address" : "192.168.0.0",
+       "links" : [
+          {
+        "title" : "VDC",
+        "href" : "https://localhost:443/api/cloud/virtualdatacenters/1",
+        "type" : "application/vnd.abiquo.virtualdatacenter+json",
+        "rel" : "virtualdatacenter"
+          },
+          {
+        "rel" : "edit",
+        "type" : "application/vnd.abiquo.vlan+json",
+        "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1",
+        "title" : "default_private_network"
+          },
+          {
+        "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/ips",
+        "title" : "ips",
+        "type" : "application/vnd.abiquo.privateips+json",
+        "rel" : "ips"
+          },
+          {
+        "title" : "Service Network",
+        "href" : "https://localhost:443/api/admin/datacenters/1/networkservicetypes/1",
+        "type" : "application/vnd.abiquo.networkservicetype+json",
+        "rel" : "networkservicetype"
+          },
+          {
+        "type" : "application/vnd.abiquo.loadbalancers+json",
+        "rel" : "loadbalancers",
+        "title" : "load balancers",
+        "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/loadbalancers"
+          },
+          {
+        "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/configuration",
+        "title" : "configuration",
+        "type" : "application/vnd.abiquo.networkconfiguration+json",
+        "rel" : "configuration"
+          },
+          {
+        "rel" : "network_configuration",
+        "type" : "application/vnd.abiquo.networkconfiguration+json",
+        "title" : "192.168.0.0/24",
+        "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/configuration/1"
+          }
+       ]
+    },
+    "id" : 1,
+    "hypervisorType" : "KVM",
+    "name" : "VDC",
+    "diskSoftLimitInMb" : 0,
+    "vlansSoft" : 0,
+    "vlansHard" : 0,
+    "ramHardLimitInMb" : 0,
+    "storageSoftInMb" : 0,
+    "publicIpsHard" : 0,
+    "links" : [
+       {
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1",
+          "title" : "VDC",
+          "rel" : "edit",
+          "type" : "application/vnd.abiquo.virtualdatacenter+json"
+       },
+       {
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks",
+          "title" : "private networks",
+          "type" : "application/vnd.abiquo.vlans+json",
+          "rel" : "privatenetworks"
+       },
+       {
+          "title" : "public networks",
+          "href" : "https://localhost:443/api/admin/datacenters/1/network",
+          "rel" : "network",
+          "type" : "application/vnd.abiquo.vlans+json"
+       },
+       {
+          "title" : "Abiquo",
+          "href" : "https://localhost:443/api/admin/enterprises/1",
+          "type" : "application/vnd.abiquo.enterprise+json",
+          "rel" : "enterprise"
+       },
+       {
+          "rel" : "virtualappliances",
+          "type" : "application/vnd.abiquo.virtualappliances+json",
+          "title" : "virtual appliances",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances"
+       },
+       {
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1",
+          "title" : "default_private_network",
+          "rel" : "defaultvlan",
+          "type" : "application/vnd.abiquo.vlan+json"
+       },
+       {
+          "title" : "private ips",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/action/privateips",
+          "rel" : "privateips",
+          "type" : "application/vnd.abiquo.privateips+json"
+       },
+       {
+          "type" : "application/vnd.abiquo.externalips+json",
+          "rel" : "externalips",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/action/externalips",
+          "title" : "external ips"
+       },
+       {
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/action/unmanagedips",
+          "title" : "unmanaged ips",
+          "type" : "application/vnd.abiquo.unmanagedips+json",
+          "rel" : "unmanagedips"
+       },
+       {
+          "rel" : "defaultvlan",
+          "type" : "application/vnd.abiquo.vlan+json",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/action/defaultvlan",
+          "title" : "default vlan"
+       },
+       {
+          "title" : "volumes",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/volumes",
+          "rel" : "volumes",
+          "type" : "application/vnd.abiquo.volumes+json"
+       },
+       {
+          "rel" : "disks",
+          "type" : "application/vnd.abiquo.harddisks+json",
+          "title" : "disks",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/disks"
+       },
+       {
+          "title" : "ips to purchase",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/publicips/topurchase",
+          "rel" : "topurchase",
+          "type" : "application/vnd.abiquo.publicips+json"
+       },
+       {
+          "rel" : "purchased",
+          "type" : "application/vnd.abiquo.publicips+json",
+          "title" : "ips purchased",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/publicips/purchased"
+       },
+       {
+          "title" : "stateful volumes",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/volumes/action/statefulcandidates",
+          "type" : "application/vnd.abiquo.volumes+json",
+          "rel" : "statefulcandidates"
+       },
+       {
+          "type" : "application/vnd.abiquo.tiers+json",
+          "rel" : "tiers",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/tiers",
+          "title" : "tiers"
+       },
+       {
+          "title" : "available templates",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/action/templates",
+          "type" : "application/vnd.abiquo.virtualmachinetemplates+json",
+          "rel" : "templates"
+       },
+       {
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/action/virtualmachines",
+          "title" : "all virtual machines",
+          "rel" : "virtualmachines",
+          "type" : "application/vnd.abiquo.virtualmachines+json"
+       },
+       {
+          "rel" : "firewalls",
+          "type" : "application/vnd.abiquo.firewallpolicies+json",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/firewalls",
+          "title" : "firewalls"
+       },
+       {
+          "rel" : "loadbalancers",
+          "type" : "application/vnd.abiquo.loadbalancers+json",
+          "title" : "load balancers",
+          "href" : "https://localhost:443/api/cloud/virtualdatacenters/1/loadbalancers"
+       },
+       {
+          "rel" : "location",
+          "type" : "application/vnd.abiquo.datacenter+json",
+          "title" : "Datacenter",
+          "href" : "https://localhost:443/api/cloud/locations/1"
+       }
+    ],
+    "diskHardLimitInMb" : 0
+}

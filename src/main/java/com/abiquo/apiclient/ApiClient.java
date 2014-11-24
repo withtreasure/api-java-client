@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.api;
+package com.abiquo.apiclient;
 
-import com.abiquo.apiclient.api.cloud.CloudApi;
-import com.abiquo.apiclient.api.enterprise.EnterpriseApi;
-import com.abiquo.apiclient.api.infrastructure.InfrastructureApi;
-import com.abiquo.apiclient.api.templates.TemplatesApi;
-import com.abiquo.apiclient.rest.RestClient;
+import com.abiquo.apiclient.cloud.CloudApi;
+import com.abiquo.apiclient.enterprise.EnterpriseApi;
+import com.abiquo.apiclient.infrastructure.InfrastructureApi;
+import com.abiquo.apiclient.templates.TemplatesApi;
+import com.abiquo.model.transport.SingleResourceTransportDto;
 
 public class ApiClient
 {
@@ -35,7 +35,13 @@ public class ApiClient
 
     public ApiClient(final String baseURL, final String username, final String password)
     {
-        client = new RestClient(username, password, baseURL);
+        this(baseURL, username, password, SingleResourceTransportDto.API_VERSION);
+    }
+
+    public ApiClient(final String baseURL, final String username, final String password,
+        final String version)
+    {
+        client = new RestClient(username, password, baseURL, version);
         enterpriseApi = new EnterpriseApi(client);
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);

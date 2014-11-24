@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.api.infrastructure;
+package com.abiquo.apiclient.infrastructure;
 
-import static com.abiquo.apiclient.api.ApiPath.DATECENTERS_URL;
-import static com.abiquo.apiclient.api.ApiPath.LOADLEVELRULES_URL;
-import static com.abiquo.apiclient.api.ApiPredicates.defaultNetworkServiceType;
-import static com.abiquo.apiclient.api.ApiPredicates.locationName;
-import static com.abiquo.apiclient.api.ApiPredicates.networkName;
-import static com.abiquo.apiclient.api.ApiPredicates.storagePoolName;
-import static com.abiquo.apiclient.api.ApiPredicates.tierName;
+import static com.abiquo.apiclient.ApiPath.DATECENTERS_URL;
+import static com.abiquo.apiclient.ApiPath.LOADLEVELRULES_URL;
+import static com.abiquo.apiclient.ApiPredicates.defaultNetworkServiceType;
+import static com.abiquo.apiclient.ApiPredicates.locationName;
+import static com.abiquo.apiclient.ApiPredicates.networkName;
+import static com.abiquo.apiclient.ApiPredicates.storagePoolName;
+import static com.abiquo.apiclient.ApiPredicates.tierName;
 import static com.google.common.collect.Iterables.find;
 
 import java.util.List;
 
-import com.abiquo.apiclient.rest.RestClient;
+import com.abiquo.apiclient.RestClient;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.server.core.cloud.VirtualDatacenterDto;

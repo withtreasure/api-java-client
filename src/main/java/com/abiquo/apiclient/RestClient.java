@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.rest;
+package com.abiquo.apiclient;
 
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -55,11 +55,22 @@ public class RestClient
 
     private final String baseURL;
 
+    private final String apiVersion;
+
     public RestClient(final String username, final String password, final String baseURL)
     {
+        this(username, password, baseURL, SingleResourceTransportDto.API_VERSION);
+    }
+
+    public RestClient(final String username, final String password, final String baseURL,
+        final String apiVersion)
+    {
+        this.baseURL = baseURL;
+        this.apiVersion = apiVersion;
+
         ClientConfig config = new DefaultClientConfig();
         config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 0);
-        this.baseURL = baseURL;
+
         try
         {
             // SSL configuration
@@ -71,7 +82,7 @@ public class RestClient
         }
         catch (NoSuchAlgorithmException | KeyManagementException ex)
         {
-            Throwables.propagate(ex);
+            throw Throwables.propagate(ex);
         }
 
         client = Client.create(config);
@@ -96,7 +107,9 @@ public class RestClient
 
     public void delete(final SingleResourceTransportDto dto)
     {
-        delete(dto.getEditLink().getHref());
+        RESTLink link =
+            checkNotNull(dto.getEditLink(), "The given object does not have an edit link");
+        delete(link.getHref());
     }
 
     public <T extends SingleResourceTransportDto> T refresh(final T dto)
@@ -117,20 +130,20 @@ public class RestClient
     public <T extends SingleResourceTransportDto> T get(final String uri, final String accept,
         final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(accept).get(returnClass);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).get(returnClass);
     }
 
     public <T extends SingleResourceTransportDto> T get(final String uri, final String accept,
         final GenericType<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(accept).get(returnType);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).get(returnType);
     }
 
     public <T extends SingleResourceTransportDto> T get(final String uri,
         final MultivaluedMap<String, String> queryParams, final String accept,
         final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).queryParams(queryParams).accept(accept)
+        return client.resource(absolute(uri)).queryParams(queryParams).accept(withVersion(accept))
             .get(returnClass);
     }
 
@@ -138,7 +151,7 @@ public class RestClient
         final MultivaluedMap<String, String> queryParams, final String accept,
         final GenericType<T> returnType)
     {
-        return client.resource(absolute(uri)).queryParams(queryParams).accept(accept)
+        return client.resource(absolute(uri)).queryParams(queryParams).accept(withVersion(accept))
             .get(returnType);
     }
 
@@ -150,69 +163,75 @@ public class RestClient
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final String contentType, final SingleResourceTransportDto body, final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(accept).type(contentType)
-            .post(returnClass, body);
+        return client.resource(absolute(uri)).accept(withVersion(accept))
+            .type(withVersion(contentType)).post(returnClass, body);
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final String contentType, final SingleResourceTransportDto body,
         final GenericType<T> returnType)
     {
-        return client.resource(uri).accept(accept).type(contentType).post(returnType, body);
+        return client.resource(absolute(uri)).accept(withVersion(accept))
+            .type(withVersion(contentType)).post(returnType, body);
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(accept).post(returnClass);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).post(returnClass);
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final GenericType<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(accept).post(returnType);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).post(returnType);
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
         final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(accept).put(returnClass);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).put(returnClass);
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
         final GenericType<T> returnType)
     {
-        return client.resource(uri).accept(accept).put(returnType);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).put(returnType);
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
         final String type, final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(accept).type(type).put(returnClass);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
+            .put(returnClass);
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
         final String type, final GenericType<T> returnType)
     {
-        return client.resource(uri).accept(accept).type(type).put(returnType);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
+            .put(returnType);
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
         final String type, final SingleResourceTransportDto body, final Class<T> returnClass)
     {
-        return client.resource(uri).accept(accept).type(type).put(returnClass, body);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
+            .put(returnClass, body);
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
         final String type, final SingleResourceTransportDto body, final GenericType<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(accept).type(type).put(returnType, body);
+        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
+            .put(returnType, body);
     }
 
     public void put(final String uri, final String accept, final String type,
         final SingleResourceTransportDto body)
     {
-        client.resource(absolute(uri)).accept(accept).type(type).put(body);
+        client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
+            .put(body);
     }
 
     private static class RelaxedSSLConfig implements X509TrustManager, HostnameVerifier
@@ -256,7 +275,11 @@ public class RestClient
             return baseURL + (path.startsWith("/") ? path : "/" + path);
         }
         return path;
+    }
 
+    private String withVersion(final String mediaType)
+    {
+        return mediaType.contains("version=") ? mediaType : mediaType + "; version=" + apiVersion;
     }
 
     public TaskDto waitForTask(final AcceptedRequestDto< ? > acceptedRequest,

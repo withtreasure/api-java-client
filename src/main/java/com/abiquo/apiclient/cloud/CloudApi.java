@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.api.cloud;
+package com.abiquo.apiclient.cloud;
 
-import static com.abiquo.apiclient.api.ApiPath.VIRTUALDATACENTERS_URL;
+import static com.abiquo.apiclient.ApiPath.VIRTUALDATACENTERS_URL;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.util.concurrent.TimeUnit;
 
-import com.abiquo.apiclient.rest.RestClient;
+import com.abiquo.apiclient.RestClient;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
@@ -39,7 +39,6 @@ import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
 import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
-import com.abiquo.server.core.infrastructure.network.PrivateIpDto;
 import com.abiquo.server.core.infrastructure.network.VLANNetworkDto;
 import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
@@ -272,6 +271,5 @@ public class CloudApi
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
             + "/virtualmachines/" + idVm + "/tasks/" + idTask, TaskDto.MEDIA_TYPE, TaskDto.class);
     }
-
 
 }
