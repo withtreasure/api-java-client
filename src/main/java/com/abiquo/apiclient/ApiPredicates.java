@@ -31,9 +31,9 @@ import com.abiquo.server.core.infrastructure.storage.StoragePoolDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.google.common.base.Predicate;
 
-public class ApiPredicates
+public final class ApiPredicates
 {
-    public static Predicate<DatacenterDto> datacenterName(final String name)
+    public static final Predicate<DatacenterDto> datacenterName(final String name)
     {
         return new Predicate<DatacenterDto>()
         {
@@ -45,7 +45,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<RackDto> rackName(final String name)
+    public static final Predicate<RackDto> rackName(final String name)
     {
         return new Predicate<RackDto>()
         {
@@ -57,7 +57,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<VirtualDatacenterDto> virtualDatacenterName(final String name)
+    public static final Predicate<VirtualDatacenterDto> virtualDatacenterName(final String name)
     {
         return new Predicate<VirtualDatacenterDto>()
         {
@@ -69,7 +69,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<EnterpriseDto> enterpriseName(final String name)
+    public static final Predicate<EnterpriseDto> enterpriseName(final String name)
     {
         return new Predicate<EnterpriseDto>()
         {
@@ -81,7 +81,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<VirtualMachineTemplateDto> templateName(final String name)
+    public static final Predicate<VirtualMachineTemplateDto> templateName(final String name)
     {
         return new Predicate<VirtualMachineTemplateDto>()
         {
@@ -93,7 +93,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<VirtualApplianceDto> virtualApplianceName(final String name)
+    public static final Predicate<VirtualApplianceDto> virtualApplianceName(final String name)
     {
         return new Predicate<VirtualApplianceDto>()
         {
@@ -105,7 +105,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<NetworkServiceTypeDto> defaultNetworkServiceType()
+    public static final Predicate<NetworkServiceTypeDto> defaultNetworkServiceType()
     {
         return new Predicate<NetworkServiceTypeDto>()
         {
@@ -117,7 +117,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<StorageDeviceDto> storageDeviceName(final String name)
+    public static final Predicate<StorageDeviceDto> storageDeviceName(final String name)
     {
         return new Predicate<StorageDeviceDto>()
         {
@@ -129,7 +129,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<StoragePoolDto> storagePoolName(final String name)
+    public static final Predicate<StoragePoolDto> storagePoolName(final String name)
     {
         return new Predicate<StoragePoolDto>()
         {
@@ -141,7 +141,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<TierDto> tierName(final String name)
+    public static final Predicate<TierDto> tierName(final String name)
     {
         return new Predicate<TierDto>()
         {
@@ -153,7 +153,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<VirtualMachineDto> withTemplate(final String name)
+    public static final Predicate<VirtualMachineDto> withTemplate(final String name)
     {
         return new Predicate<VirtualMachineDto>()
         {
@@ -165,7 +165,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<VLANNetworkDto> networkName(final String name)
+    public static final Predicate<VLANNetworkDto> networkName(final String name)
     {
         return new Predicate<VLANNetworkDto>()
         {
@@ -177,7 +177,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<DatacenterLimitsDto> locationName(final String name)
+    public static final Predicate<DatacenterLimitsDto> locationName(final String name)
     {
         return new Predicate<DatacenterLimitsDto>()
         {
@@ -189,7 +189,7 @@ public class ApiPredicates
         };
     }
 
-    public static Predicate<UserDto> userName(final String name)
+    public static final Predicate<UserDto> userName(final String name)
     {
         return new Predicate<UserDto>()
         {
@@ -199,5 +199,10 @@ public class ApiPredicates
                 return input.getNick().equals(name);
             }
         };
+    }
+
+    private ApiPredicates()
+    {
+        // Constant class. Clients shouldn't instantiate it directly.
     }
 }

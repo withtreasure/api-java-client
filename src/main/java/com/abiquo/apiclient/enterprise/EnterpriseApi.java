@@ -17,6 +17,7 @@ package com.abiquo.apiclient.enterprise;
 
 import static com.abiquo.apiclient.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.ApiPath.LOGIN_URL;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
@@ -29,8 +30,7 @@ public class EnterpriseApi
 
     public EnterpriseApi(final RestClient client)
     {
-        this.client = client;
-
+        this.client = checkNotNull(client, "client cannot be null");
     }
 
     public EnterpriseDto createEnterprise(final String name)

@@ -65,8 +65,10 @@ public class RestClient
     public RestClient(final String username, final String password, final String baseURL,
         final String apiVersion)
     {
-        this.baseURL = baseURL;
-        this.apiVersion = apiVersion;
+        checkNotNull(username, "username cannot be null");
+        checkNotNull(password, "password cannot be null");
+        this.baseURL = checkNotNull(baseURL, "baseURL cannot be null");
+        this.apiVersion = checkNotNull(apiVersion, "apiVersion cannot be null");
 
         ClientConfig config = new DefaultClientConfig();
         config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 0);

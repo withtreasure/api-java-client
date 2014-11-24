@@ -22,6 +22,7 @@ import static com.abiquo.apiclient.ApiPredicates.locationName;
 import static com.abiquo.apiclient.ApiPredicates.networkName;
 import static com.abiquo.apiclient.ApiPredicates.storagePoolName;
 import static com.abiquo.apiclient.ApiPredicates.tierName;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
 
 import java.util.List;
@@ -56,13 +57,11 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class InfrastructureApi
 {
-
     private final RestClient client;
 
     public InfrastructureApi(final RestClient client)
     {
-        this.client = client;
-
+        this.client = checkNotNull(client, "client cannot be null");
     }
 
     public DatacentersDto listDatacenters()

@@ -17,6 +17,7 @@ package com.abiquo.apiclient.templates;
 
 import static com.abiquo.apiclient.ApiPredicates.templateName;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,7 @@ public class TemplatesApi
 
     public TemplatesApi(final RestClient client)
     {
-        this.client = client;
+        this.client = checkNotNull(client, "client cannot be null");
     }
 
     public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,

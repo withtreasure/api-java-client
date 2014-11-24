@@ -128,12 +128,6 @@
                         <year>${project.inceptionYear}</year>
                         <owner>${project.organization.name}</owner>
                     </properties>
-                    <!-- 
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>**/header-asl.txt</exclude>
-                    </excludes>
-                    -->
                 </configuration>
                 <executions>
                     <execution>
@@ -150,7 +144,6 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5</version>
                 <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <pushChanges>false</pushChanges>

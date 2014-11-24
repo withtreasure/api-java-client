@@ -17,6 +17,7 @@ package com.abiquo.apiclient.cloud;
 
 import static com.abiquo.apiclient.ApiPath.VIRTUALDATACENTERS_URL;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -48,13 +49,11 @@ import com.sun.jersey.api.client.GenericType;
 
 public class CloudApi
 {
-
     private final RestClient client;
 
     public CloudApi(final RestClient client)
     {
-        this.client = client;
-
+        this.client = checkNotNull(client, "client cannot be null");
     }
 
     public VirtualDatacenterDto getVirtualDatacenter(final String id)

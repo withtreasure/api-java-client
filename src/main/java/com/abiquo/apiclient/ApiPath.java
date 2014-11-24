@@ -31,4 +31,8 @@ public final class ApiPath
 
     public static final String LOGIN_URL = "/api/login/";
 
+    private ApiPath()
+    {
+        // Constant class. Clients shouldn't instantiate it directly.
+    }
 }
