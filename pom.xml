@@ -20,7 +20,7 @@
     <groupId>com.abiquo</groupId>
     <artifactId>api-java-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    
+
     <name>Abiquo API Client</name>
     <description>Abiquo API Java client</description>
     <url>https://github.com/abiquo/api-java-client</url>
@@ -29,7 +29,12 @@
         <name>Abiquo Holdings S.L.</name>
         <url>http://www.abiquo.com</url>
     </organization>
-    
+
+    <properties>
+        <api.version>3.2.0</api.version>
+        <jersey.version>1.18</jersey.version>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -37,30 +42,36 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    
+
     <issueManagement>
         <system>Jira</system>
         <url>http://jira.abiquo.com/</url>
     </issueManagement>
-    
+
     <scm>
         <url>https://github.com/abiquo/api-java-client</url>
         <connection>https://github.com/abiquo/api-java-client.git</connection>
         <developerConnection>scm:git:git@github.com:abiquo/api-java-client.git</developerConnection>
     </scm>
-    
+
     <developers>
         <developer>
             <name>Abiquo Developers</name>
             <email>developers@abiquo.com</email>
         </developer>
     </developers>
-    
-    <properties>
-        <api.version>3.2.0</api.version>
-        <jersey.version>1.18</jersey.version>
-    </properties>
-    
+
+    <distributionManagement>
+        <repository>
+            <id>abiquo-repo</id>
+            <url>http://maven.bcn.abiquo.com/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>abiquo-repo</id>
+            <url>http://maven.bcn.abiquo.com/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.abiquo</groupId>
@@ -78,6 +89,7 @@
             <version>17.0</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -114,6 +126,79 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                    <goals>deploy</goals>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>sonatype-abiquo-staging</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>sonatype-abiquo-staging</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
