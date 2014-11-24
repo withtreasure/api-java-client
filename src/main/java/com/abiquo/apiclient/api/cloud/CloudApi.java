@@ -93,10 +93,10 @@ public class CloudApi
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
-    public PrivateIpDto getPrivateNetwork(final String idVdc, final String idNetwork)
+    public VLANNetworkDto getPrivateNetwork(final String idVdc, final String idNetwork)
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/privatenetworks/" + idNetwork,
-            PrivateIpDto.MEDIA_TYPE, PrivateIpDto.class);
+            VLANNetworkDto.MEDIA_TYPE, VLANNetworkDto.class);
     }
 
     public VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
@@ -272,5 +272,6 @@ public class CloudApi
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
             + "/virtualmachines/" + idVm + "/tasks/" + idTask, TaskDto.MEDIA_TYPE, TaskDto.class);
     }
+
 
 }
