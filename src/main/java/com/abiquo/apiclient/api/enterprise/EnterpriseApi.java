@@ -2,7 +2,10 @@ package com.abiquo.apiclient.api.enterprise;
 
 import static com.abiquo.apiclient.api.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.api.ApiPath.USERS_URL;
+import static com.abiquo.apiclient.api.ApiPredicates.enterpriseName;
+import static com.abiquo.apiclient.api.ApiPredicates.userName;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.find;
 
 import com.abiquo.apiclient.rest.RestClient;
 import com.abiquo.model.rest.RESTLink;
@@ -34,16 +37,14 @@ public class EnterpriseApi
     {
         EnterprisesDto enterprises =
             client.get(ENTERPRISES_URL, EnterprisesDto.MEDIA_TYPE, EnterprisesDto.class);
-        return enterprises.getCollection().stream()
-            .filter(enterprise -> enterprise.getName().equals(name)).findFirst().get();
+        return find(enterprises.getCollection(), enterpriseName(name));
     }
 
     public UserDto findUser(final String name)
     {
 
         UsersDto users = client.get(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
-        return users.getCollection().stream().filter(user -> user.getNick().equals(name))
-            .findFirst().get();
+        return find(users.getCollection(), userName(name));
     }
 
     public UserDto impersonateEnterprise(final String username, final EnterpriseDto enterprise)

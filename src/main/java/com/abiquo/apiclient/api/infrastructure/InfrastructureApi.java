@@ -2,6 +2,15 @@ package com.abiquo.apiclient.api.infrastructure;
 
 import static com.abiquo.apiclient.api.ApiPath.DATECENTERS_URL;
 import static com.abiquo.apiclient.api.ApiPath.LOADLEVELRULES_URL;
+import static com.abiquo.apiclient.api.ApiPredicates.datacenterName;
+import static com.abiquo.apiclient.api.ApiPredicates.defaultNetworkServiceType;
+import static com.abiquo.apiclient.api.ApiPredicates.locationName;
+import static com.abiquo.apiclient.api.ApiPredicates.networkName;
+import static com.abiquo.apiclient.api.ApiPredicates.rackName;
+import static com.abiquo.apiclient.api.ApiPredicates.storageDeviceName;
+import static com.abiquo.apiclient.api.ApiPredicates.storagePoolName;
+import static com.abiquo.apiclient.api.ApiPredicates.tierName;
+import static com.google.common.collect.Iterables.find;
 
 import java.util.List;
 
@@ -48,8 +57,7 @@ public class InfrastructureApi
     {
         DatacentersDto datacenters =
             client.get(DATECENTERS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
-        return datacenters.getCollection().stream()
-            .filter(datacenter -> datacenter.getName().equals(name)).findFirst().get();
+        return find(datacenters.getCollection(), datacenterName(name));
     }
 
     public RackDto findRack(final DatacenterDto datacenter, final String name)
@@ -57,8 +65,7 @@ public class InfrastructureApi
         RacksDto racks =
             client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
                 RacksDto.class);
-        return racks.getCollection().stream().filter(rack -> rack.getName().equals(name))
-            .findFirst().get();
+        return find(racks.getCollection(), rackName(name));
     }
 
     public DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
@@ -68,9 +75,7 @@ public class InfrastructureApi
 
     public DatacenterLimitsDto findLimits(final EnterpriseDto enterprise, final String locationName)
     {
-        return listLimits(enterprise).getCollection().stream()
-            .filter(l -> locationName.equals(l.searchLink("location").getTitle())).findFirst()
-            .get();
+        return find(listLimits(enterprise).getCollection(), locationName(locationName));
     }
 
     public DatacenterLimitsDto getEnterpriseLimitsForDatacenter(final EnterpriseDto enterprise,
@@ -80,9 +85,7 @@ public class InfrastructureApi
             client.get(enterprise.searchLink("limits").getHref(), DatacentersLimitsDto.MEDIA_TYPE,
                 DatacentersLimitsDto.class);
 
-        return limits.getCollection().stream()
-            .filter(l -> l.searchLink("location").getTitle().equals(datacenter.getName()))
-            .findFirst().get();
+        return find(limits.getCollection(), locationName(datacenter.getName()));
     }
 
     public VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
@@ -93,8 +96,7 @@ public class InfrastructureApi
 
     public VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits, final String name)
     {
-        return listExternalNetworks(limits).getCollection().stream()
-            .filter(net -> net.getName().equals(name)).findFirst().get();
+        return find(listExternalNetworks(limits).getCollection(), networkName(name));
     }
 
     public DatacenterDto createDatacenter(final String name, final String location,
@@ -159,8 +161,7 @@ public class InfrastructureApi
         NetworkServiceTypesDto netServiceTypes =
             client.get(datacenter.searchLink("networkservicetypes").getHref(),
                 NetworkServiceTypesDto.MEDIA_TYPE, NetworkServiceTypesDto.class);
-        return netServiceTypes.getCollection().stream()
-            .filter(netServiceType -> netServiceType.isDefaultNST()).findFirst().get();
+        return find(netServiceTypes.getCollection(), defaultNetworkServiceType());
     }
 
     public MachineLoadRuleDto datacenterLoadLevelRule(final DatacenterDto datacenter,
@@ -201,8 +202,7 @@ public class InfrastructureApi
         StorageDevicesDto devices =
             client.get(datacenter.searchLink("devices").getHref(), StorageDevicesDto.MEDIA_TYPE,
                 StorageDevicesDto.class);
-        return devices.getCollection().stream().filter(device -> device.getName().equals(name))
-            .findFirst().get();
+        return find(devices.getCollection(), storageDeviceName(name));
     }
 
     public StoragePoolDto findPool(final StorageDeviceDto device, final String name)
@@ -210,8 +210,7 @@ public class InfrastructureApi
         StoragePoolsDto pools =
             client.get(device.searchLink("pools").getHref(), StoragePoolsDto.MEDIA_TYPE,
                 StoragePoolsDto.class);
-        return pools.getCollection().stream().filter(pool -> pool.getName().equals(name))
-            .findFirst().get();
+        return find(pools.getCollection(), storagePoolName(name));
     }
 
     public StoragePoolDto findRemotePool(final StorageDeviceDto device, final String name)
@@ -222,8 +221,7 @@ public class InfrastructureApi
         StoragePoolsDto pools =
             client.get(device.searchLink("pools").getHref(), queryParams,
                 StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
-        return pools.getCollection().stream().filter(pool -> pool.getName().equals(name))
-            .findFirst().get();
+        return find(pools.getCollection(), storagePoolName(name));
     }
 
     public StorageDeviceDto createDevice(final DatacenterDto datacenter, final String name,
@@ -282,8 +280,7 @@ public class InfrastructureApi
     {
         TiersDto tiers =
             client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
-        return tiers.getCollection().stream().filter(tier -> tier.getName().equals(name))
-            .findFirst().get();
+        return find(tiers.getCollection(), tierName(name));
     }
 
     public TierDto findTier(final DatacenterDto datacenter, final String name)
@@ -291,8 +288,7 @@ public class InfrastructureApi
         TiersDto tiers =
             client.get(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
                 TiersDto.class);
-        return tiers.getCollection().stream().filter(tier -> tier.getName().equals(name))
-            .findFirst().get();
+        return find(tiers.getCollection(), tierName(name));
     }
 
 }

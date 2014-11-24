@@ -1,6 +1,8 @@
 package com.abiquo.apiclient.api.templates;
 
+import static com.abiquo.apiclient.api.ApiPredicates.templateName;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
+import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,8 +43,7 @@ public class TemplatesApi
         VirtualMachineTemplatesDto templates =
             client.get(vdc.searchLink("templates").getHref(), queryParams,
                 VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
-        return templates.getCollection().stream()
-            .filter(template -> template.getName().equals(name)).findFirst().get();
+        return find(templates.getCollection(), templateName(name));
     }
 
     public VirtualMachineTemplateDto instanceVirtualMachine(final VirtualMachineDto vm,

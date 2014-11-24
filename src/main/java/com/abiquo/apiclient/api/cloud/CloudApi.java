@@ -2,8 +2,13 @@ package com.abiquo.apiclient.api.cloud;
 
 import static com.abiquo.apiclient.api.ApiPath.LOCATIONS_URL;
 import static com.abiquo.apiclient.api.ApiPath.VIRTUALDATACENTERS_URL;
+import static com.abiquo.apiclient.api.ApiPredicates.datacenterName;
+import static com.abiquo.apiclient.api.ApiPredicates.virtualApplianceName;
+import static com.abiquo.apiclient.api.ApiPredicates.virtualDatacenterName;
+import static com.abiquo.apiclient.api.ApiPredicates.withTemplate;
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,8 +55,7 @@ public class CloudApi
     {
         DatacentersDto locations =
             client.get(LOCATIONS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
-        return locations.getCollection().stream()
-            .filter(location -> location.getName().equals(name)).findFirst().get();
+        return find(locations.getCollection(), datacenterName(name));
     }
 
     public VirtualDatacenterDto findVirtualDatacenter(final String name)
@@ -59,8 +63,7 @@ public class CloudApi
         VirtualDatacentersDto vdcs =
             client.get(VIRTUALDATACENTERS_URL, VirtualDatacentersDto.MEDIA_TYPE,
                 VirtualDatacentersDto.class);
-        return vdcs.getCollection().stream().filter(vdc -> vdc.getName().equals(name)).findFirst()
-            .get();
+        return find(vdcs.getCollection(), virtualDatacenterName(name));
     }
 
     public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
@@ -78,8 +81,7 @@ public class CloudApi
         final String name)
     {
         VirtualAppliancesDto vapps = listVirtualAppliances(vdc);
-        return vapps.getCollection().stream().filter(vapp -> vapp.getName().equals(name))
-            .findFirst().get();
+        return find(vapps.getCollection(), virtualApplianceName(name));
     }
 
     public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
@@ -98,9 +100,7 @@ public class CloudApi
         final String templateName)
     {
         VirtualMachinesDto vms = listVirtualMachines(vapp);
-        return vms.getCollection().stream()
-            .filter(vm -> vm.searchLink("virtualmachinetemplate").getTitle().equals(templateName))
-            .findFirst().get();
+        return find(vms.getCollection(), withTemplate(templateName));
     }
 
     public VirtualDatacenterDto createVirtualDatacenter(final SingleResourceTransportDto location,
