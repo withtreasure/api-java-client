@@ -48,10 +48,12 @@ import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.DatacentersDto;
 import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
 import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
+import com.abiquo.server.core.infrastructure.network.PrivateIpDto;
 import com.abiquo.server.core.infrastructure.network.VLANNetworkDto;
 import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.infrastructure.storage.VolumeManagementDto;
+import com.abiquo.server.core.task.TaskDto;
 import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.sun.jersey.api.client.GenericType;
@@ -74,6 +76,12 @@ public class CloudApi
         return find(locations.getCollection(), datacenterName(name));
     }
 
+    public VirtualDatacenterDto getVirtualDatacenter(final String id)
+    {
+        return client.get(VIRTUALDATACENTERS_URL + id, VirtualDatacenterDto.MEDIA_TYPE,
+            VirtualDatacenterDto.class);
+    }
+
     public VirtualDatacenterDto findVirtualDatacenter(final String name)
     {
         VirtualDatacentersDto vdcs =
@@ -93,6 +101,12 @@ public class CloudApi
             VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
     }
 
+    public VirtualApplianceDto getVirtualAppliance(String idVdc, String idVapp)
+    {
+        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp,
+            VirtualApplianceDto.MEDIA_TYPE, VirtualApplianceDto.class);
+    }
+
     public VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
         final String name)
     {
@@ -106,10 +120,22 @@ public class CloudApi
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
+    public PrivateIpDto getPrivateNetwork(String idVdc, String idNetwork)
+    {
+        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/privatenetworks/" + idNetwork,
+            PrivateIpDto.MEDIA_TYPE, PrivateIpDto.class);
+    }
+
     public VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
     {
         return client.get(vm.searchLink("configurations").getHref(),
             VMNetworkConfigurationsDto.MEDIA_TYPE, VMNetworkConfigurationsDto.class);
+    }
+
+    public VirtualMachineDto getVirtualMachine(String idVdc, String idVapp, String idVm)
+    {
+        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
+            + "/virtualmachines/" + idVm, VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class);
     }
 
     public VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
@@ -255,6 +281,12 @@ public class CloudApi
         return refreshed;
     }
 
+    public VolumeManagementDto getVolume(String idVdc, String idVolume)
+    {
+        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/volumes/" + idVolume,
+            VolumeManagementDto.MEDIA_TYPE, VolumeManagementDto.class);
+    }
+
     public VolumeManagementDto createVolume(final VirtualDatacenterDto vdc, final String name,
         final long sizeInMb, final TierDto tier)
     {
@@ -265,6 +297,12 @@ public class CloudApi
 
         return client.post(vdc.searchLink("volumes").getHref(), VolumeManagementDto.MEDIA_TYPE,
             VolumeManagementDto.MEDIA_TYPE, dto, VolumeManagementDto.class);
+    }
+
+    public TaskDto getTask(String idVdc, String idVapp, String idVm, String idTask)
+    {
+        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
+            + "/virtualmachines/" + idVm + "/tasks/" + idTask, TaskDto.MEDIA_TYPE, TaskDto.class);
     }
 
     private VirtualMachineDto waitUntilUnlocked(final VirtualMachineDto vm, final int pollInterval,

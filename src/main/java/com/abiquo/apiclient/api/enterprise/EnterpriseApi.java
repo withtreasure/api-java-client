@@ -49,6 +49,11 @@ public class EnterpriseApi
             enterprise, EnterpriseDto.class);
     }
 
+    public EnterpriseDto getEnterprise(final String id)
+    {
+        return client.get(ENTERPRISES_URL + id, EnterpriseDto.MEDIA_TYPE, EnterpriseDto.class);
+    }
+
     public EnterpriseDto findEnterprise(final String name)
     {
         EnterprisesDto enterprises =
