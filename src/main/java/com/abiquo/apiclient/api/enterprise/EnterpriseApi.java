@@ -16,19 +16,12 @@
 package com.abiquo.apiclient.api.enterprise;
 
 import static com.abiquo.apiclient.api.ApiPath.ENTERPRISES_URL;
-import static com.abiquo.apiclient.api.ApiPath.USERS_URL;
-import static com.abiquo.apiclient.api.ApiPredicates.enterpriseName;
-import static com.abiquo.apiclient.api.ApiPredicates.userName;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.find;
+import static com.abiquo.apiclient.api.ApiPath.LOGIN_URL;
 
 import com.abiquo.apiclient.rest.RestClient;
-import com.abiquo.model.rest.RESTLink;
-import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
 import com.abiquo.server.core.enterprise.UserDto;
-import com.abiquo.server.core.enterprise.UsersDto;
 
 public class EnterpriseApi
 {
@@ -53,35 +46,14 @@ public class EnterpriseApi
         return client.get(ENTERPRISES_URL + id, EnterpriseDto.MEDIA_TYPE, EnterpriseDto.class);
     }
 
-    public EnterpriseDto findEnterprise(final String name)
+    public EnterprisesDto listEnterprise()
     {
-        EnterprisesDto enterprises =
-            client.get(ENTERPRISES_URL, EnterprisesDto.MEDIA_TYPE, EnterprisesDto.class);
-        return find(enterprises.getCollection(), enterpriseName(name));
+        return client.get(ENTERPRISES_URL, EnterprisesDto.MEDIA_TYPE, EnterprisesDto.class);
     }
 
-    public UserDto findUser(final String name)
+    public UserDto getCurrentUser()
     {
-
-        UsersDto users = client.get(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
-        return find(users.getCollection(), userName(name));
+        return client.get(LOGIN_URL, UserDto.MEDIA_TYPE, UserDto.class);
     }
 
-    public UserDto impersonateEnterprise(final String username, final EnterpriseDto enterprise)
-    {
-        UserDto user = findUser(username);
-        user.modifyLink("enterprise", enterprise.getEditLink().getHref());
-        return edit(user);
-    }
-
-    public <T extends SingleResourceTransportDto> T edit(final T dto)
-    {
-        RESTLink link =
-            checkNotNull(dto.getEditLink(), "The given object does not have an edit link");
-
-        @SuppressWarnings("unchecked")
-        Class<T> clazz = (Class<T>) dto.getClass();
-
-        return client.put(link.getHref(), link.getType(), link.getType(), dto, clazz);
-    }
 }

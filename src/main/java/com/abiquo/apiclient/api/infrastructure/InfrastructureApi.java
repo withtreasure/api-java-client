@@ -17,12 +17,9 @@ package com.abiquo.apiclient.api.infrastructure;
 
 import static com.abiquo.apiclient.api.ApiPath.DATECENTERS_URL;
 import static com.abiquo.apiclient.api.ApiPath.LOADLEVELRULES_URL;
-import static com.abiquo.apiclient.api.ApiPredicates.datacenterName;
 import static com.abiquo.apiclient.api.ApiPredicates.defaultNetworkServiceType;
 import static com.abiquo.apiclient.api.ApiPredicates.locationName;
 import static com.abiquo.apiclient.api.ApiPredicates.networkName;
-import static com.abiquo.apiclient.api.ApiPredicates.rackName;
-import static com.abiquo.apiclient.api.ApiPredicates.storageDeviceName;
 import static com.abiquo.apiclient.api.ApiPredicates.storagePoolName;
 import static com.abiquo.apiclient.api.ApiPredicates.tierName;
 import static com.google.common.collect.Iterables.find;
@@ -68,19 +65,15 @@ public class InfrastructureApi
 
     }
 
-    public DatacenterDto findDatacenter(final String name)
+    public DatacentersDto listDatacenters()
     {
-        DatacentersDto datacenters =
-            client.get(DATECENTERS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
-        return find(datacenters.getCollection(), datacenterName(name));
+        return client.get(DATECENTERS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
     }
 
-    public RackDto findRack(final DatacenterDto datacenter, final String name)
+    public RacksDto listRacks(final DatacenterDto datacenter)
     {
-        RacksDto racks =
-            client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
-                RacksDto.class);
-        return find(racks.getCollection(), rackName(name));
+        return client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
+            RacksDto.class);
     }
 
     public DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
@@ -212,31 +205,25 @@ public class InfrastructureApi
             MachineLoadRuleDto.MEDIA_TYPE, rule, MachineLoadRuleDto.class);
     }
 
-    public StorageDeviceDto findDevice(final DatacenterDto datacenter, final String name)
+    public StorageDevicesDto listDevices(final DatacenterDto datacenter)
     {
-        StorageDevicesDto devices =
-            client.get(datacenter.searchLink("devices").getHref(), StorageDevicesDto.MEDIA_TYPE,
-                StorageDevicesDto.class);
-        return find(devices.getCollection(), storageDeviceName(name));
+        return client.get(datacenter.searchLink("devices").getHref(), StorageDevicesDto.MEDIA_TYPE,
+            StorageDevicesDto.class);
     }
 
-    public StoragePoolDto findPool(final StorageDeviceDto device, final String name)
+    public StoragePoolsDto listPools(final StorageDeviceDto device)
     {
-        StoragePoolsDto pools =
-            client.get(device.searchLink("pools").getHref(), StoragePoolsDto.MEDIA_TYPE,
-                StoragePoolsDto.class);
-        return find(pools.getCollection(), storagePoolName(name));
+        return client.get(device.searchLink("pools").getHref(), StoragePoolsDto.MEDIA_TYPE,
+            StoragePoolsDto.class);
     }
 
-    public StoragePoolDto findRemotePool(final StorageDeviceDto device, final String name)
+    public StoragePoolsDto listRemotePools(final StorageDeviceDto device)
     {
         MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
         queryParams.add("sync", true);
 
-        StoragePoolsDto pools =
-            client.get(device.searchLink("pools").getHref(), queryParams,
-                StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
-        return find(pools.getCollection(), storagePoolName(name));
+        return client.get(device.searchLink("pools").getHref(), queryParams,
+            StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
     }
 
     public StorageDeviceDto createDevice(final DatacenterDto datacenter, final String name,
@@ -256,6 +243,17 @@ public class InfrastructureApi
 
         return client.post(datacenter.searchLink("devices").getHref(), StorageDeviceDto.MEDIA_TYPE,
             StorageDeviceDto.MEDIA_TYPE, device, StorageDeviceDto.class);
+    }
+
+    public StoragePoolDto findRemotePool(final StorageDeviceDto device, final String name)
+    {
+        MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
+        queryParams.add("sync", true);
+
+        StoragePoolsDto pools =
+            client.get(device.searchLink("pools").getHref(), queryParams,
+                StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
+        return find(pools.getCollection(), storagePoolName(name));
     }
 
     public StoragePoolDto createPool(final DatacenterDto datacenter,
@@ -291,11 +289,15 @@ public class InfrastructureApi
             VLANNetworkDto.MEDIA_TYPE, vlan, VLANNetworkDto.class);
     }
 
-    public TierDto findTier(final VirtualDatacenterDto vdc, final String name)
+    public TiersDto listTiers(final VirtualDatacenterDto vdc)
     {
-        TiersDto tiers =
-            client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
-        return find(tiers.getCollection(), tierName(name));
+        return client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
+    }
+
+    public TiersDto listTiers(final DatacenterDto datacenter)
+    {
+        return client.get(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
+            TiersDto.class);
     }
 
     public TierDto findTier(final DatacenterDto datacenter, final String name)

@@ -15,15 +15,8 @@
  */
 package com.abiquo.apiclient.api.cloud;
 
-import static com.abiquo.apiclient.api.ApiPath.LOCATIONS_URL;
 import static com.abiquo.apiclient.api.ApiPath.VIRTUALDATACENTERS_URL;
-import static com.abiquo.apiclient.api.ApiPredicates.datacenterName;
-import static com.abiquo.apiclient.api.ApiPredicates.virtualApplianceName;
-import static com.abiquo.apiclient.api.ApiPredicates.virtualDatacenterName;
-import static com.abiquo.apiclient.api.ApiPredicates.withTemplate;
-import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +37,6 @@ import com.abiquo.server.core.cloud.VirtualMachineTaskDto;
 import com.abiquo.server.core.cloud.VirtualMachinesDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
-import com.abiquo.server.core.infrastructure.DatacentersDto;
 import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
 import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
 import com.abiquo.server.core.infrastructure.network.PrivateIpDto;
@@ -53,8 +45,6 @@ import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.infrastructure.storage.VolumeManagementDto;
 import com.abiquo.server.core.task.TaskDto;
-import com.google.common.base.Stopwatch;
-import com.google.common.util.concurrent.Uninterruptibles;
 import com.sun.jersey.api.client.GenericType;
 
 public class CloudApi
@@ -68,25 +58,16 @@ public class CloudApi
 
     }
 
-    public DatacenterDto findDatacenterLocation(final String name)
-    {
-        DatacentersDto locations =
-            client.get(LOCATIONS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
-        return find(locations.getCollection(), datacenterName(name));
-    }
-
     public VirtualDatacenterDto getVirtualDatacenter(final String id)
     {
         return client.get(VIRTUALDATACENTERS_URL + id, VirtualDatacenterDto.MEDIA_TYPE,
             VirtualDatacenterDto.class);
     }
 
-    public VirtualDatacenterDto findVirtualDatacenter(final String name)
+    public VirtualDatacentersDto listVirtualDatacenters()
     {
-        VirtualDatacentersDto vdcs =
-            client.get(VIRTUALDATACENTERS_URL, VirtualDatacentersDto.MEDIA_TYPE,
-                VirtualDatacentersDto.class);
-        return find(vdcs.getCollection(), virtualDatacenterName(name));
+        return client.get(VIRTUALDATACENTERS_URL, VirtualDatacentersDto.MEDIA_TYPE,
+            VirtualDatacentersDto.class);
     }
 
     public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
@@ -100,17 +81,10 @@ public class CloudApi
             VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
     }
 
-    public VirtualApplianceDto getVirtualAppliance(String idVdc, String idVapp)
+    public VirtualApplianceDto getVirtualAppliance(final String idVdc, final String idVapp)
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp,
             VirtualApplianceDto.MEDIA_TYPE, VirtualApplianceDto.class);
-    }
-
-    public VirtualApplianceDto findVirtualAppliance(final VirtualDatacenterDto vdc,
-        final String name)
-    {
-        VirtualAppliancesDto vapps = listVirtualAppliances(vdc);
-        return find(vapps.getCollection(), virtualApplianceName(name));
     }
 
     public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
@@ -119,7 +93,7 @@ public class CloudApi
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
-    public PrivateIpDto getPrivateNetwork(String idVdc, String idNetwork)
+    public PrivateIpDto getPrivateNetwork(final String idVdc, final String idNetwork)
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/privatenetworks/" + idNetwork,
             PrivateIpDto.MEDIA_TYPE, PrivateIpDto.class);
@@ -131,17 +105,11 @@ public class CloudApi
             VMNetworkConfigurationsDto.MEDIA_TYPE, VMNetworkConfigurationsDto.class);
     }
 
-    public VirtualMachineDto getVirtualMachine(String idVdc, String idVapp, String idVm)
+    public VirtualMachineDto getVirtualMachine(final String idVdc, final String idVapp,
+        final String idVm)
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
             + "/virtualmachines/" + idVm, VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class);
-    }
-
-    public VirtualMachineDto findVirtualMachine(final VirtualApplianceDto vapp,
-        final String templateName)
-    {
-        VirtualMachinesDto vms = listVirtualMachines(vapp);
-        return find(vms.getCollection(), withTemplate(templateName));
     }
 
     public VirtualDatacenterDto createVirtualDatacenter(final SingleResourceTransportDto location,
@@ -200,7 +168,7 @@ public class CloudApi
             });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualMachineDto refreshed = waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
         if (!refreshed.getState().isDeployed())
         {
             throw new RuntimeException("Deploy virtual machine operation failed");
@@ -221,7 +189,7 @@ public class CloudApi
             });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualMachineDto refreshed = waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
         if (refreshed.getState().isDeployed())
         {
             throw new RuntimeException("Undeploy virtual machine operation failed");
@@ -242,7 +210,7 @@ public class CloudApi
             });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualMachineDto refreshed = waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
         if (state != refreshed.getState())
         {
             throw new RuntimeException("Virtual machine power state '" + state.name()
@@ -264,7 +232,7 @@ public class CloudApi
                 });
 
             // Wait a maximum of 5 minutes and poll every 5 seconds
-            refreshed = waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+            refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
             if (VirtualMachineState.OFF != refreshed.getState())
             {
                 throw new RuntimeException("Virtual machine reconfigure operation failed");
@@ -280,7 +248,7 @@ public class CloudApi
         return refreshed;
     }
 
-    public VolumeManagementDto getVolume(String idVdc, String idVolume)
+    public VolumeManagementDto getVolume(final String idVdc, final String idVolume)
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/volumes/" + idVolume,
             VolumeManagementDto.MEDIA_TYPE, VolumeManagementDto.class);
@@ -298,27 +266,11 @@ public class CloudApi
             VolumeManagementDto.MEDIA_TYPE, dto, VolumeManagementDto.class);
     }
 
-    public TaskDto getTask(String idVdc, String idVapp, String idVm, String idTask)
+    public TaskDto getTask(final String idVdc, final String idVapp, final String idVm,
+        final String idTask)
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
             + "/virtualmachines/" + idVm + "/tasks/" + idTask, TaskDto.MEDIA_TYPE, TaskDto.class);
     }
 
-    private VirtualMachineDto waitUntilUnlocked(final VirtualMachineDto vm, final int pollInterval,
-        final int maxWait, final TimeUnit timeUnit)
-    {
-        Stopwatch watch = Stopwatch.createStarted();
-        while (watch.elapsed(timeUnit) < maxWait)
-        {
-            VirtualMachineDto refreshed = client.refresh(vm);
-            if (!LOCKED.equals(refreshed.getState()))
-            {
-                return refreshed;
-            }
-
-            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
-        }
-
-        throw new RuntimeException("Virtual machine did not reach the desired state in the configured timeout");
-    }
 }

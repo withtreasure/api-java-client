@@ -15,6 +15,7 @@
  */
 package com.abiquo.apiclient.rest;
 
+import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.net.MalformedURLException;
@@ -24,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -33,8 +35,13 @@ import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.abiquo.model.rest.RESTLink;
+import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
+import com.abiquo.server.core.cloud.VirtualMachineDto;
+import com.abiquo.server.core.task.TaskDto;
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
+import com.google.common.util.concurrent.Uninterruptibles;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -250,6 +257,55 @@ public class RestClient
         }
         return path;
 
+    }
+
+    public TaskDto waitForTask(final AcceptedRequestDto< ? > acceptedRequest,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
+    {
+        RESTLink status = acceptedRequest.getStatusLink();
+
+        Stopwatch watch = Stopwatch.createStarted();
+        while (watch.elapsed(timeUnit) < maxWait)
+        {
+            TaskDto task = get(status.getHref(), TaskDto.MEDIA_TYPE, TaskDto.class);
+
+            switch (task.getState())
+            {
+                case FINISHED_SUCCESSFULLY:
+                case FINISHED_UNSUCCESSFULLY:
+                case ABORTED:
+                case ACK_ERROR:
+                case CANCELLED:
+                    return task;
+                case PENDING:
+                case QUEUEING:
+                case STARTED:
+                    // Do nothing and keep waiting
+                    break;
+            }
+
+            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
+        }
+
+        throw new RuntimeException("Task did not complete in the configured timeout");
+    }
+
+    public VirtualMachineDto waitUntilUnlocked(final VirtualMachineDto vm, final int pollInterval,
+        final int maxWait, final TimeUnit timeUnit)
+    {
+        Stopwatch watch = Stopwatch.createStarted();
+        while (watch.elapsed(timeUnit) < maxWait)
+        {
+            VirtualMachineDto refreshed = refresh(vm);
+            if (!LOCKED.equals(refreshed.getState()))
+            {
+                return refreshed;
+            }
+
+            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
+        }
+
+        throw new RuntimeException("Virtual machine did not reach the desired state in the configured timeout");
     }
 
 }

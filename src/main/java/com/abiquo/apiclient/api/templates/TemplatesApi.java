@@ -33,20 +33,16 @@ import com.abiquo.server.core.cloud.VirtualMachineInstanceDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.task.TaskDto;
-import com.google.common.base.Stopwatch;
-import com.google.common.util.concurrent.Uninterruptibles;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class TemplatesApi
 {
-
     private final RestClient client;
 
     public TemplatesApi(final RestClient client)
     {
         this.client = client;
-
     }
 
     public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
@@ -74,7 +70,7 @@ public class TemplatesApi
                 });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
-        TaskDto task = waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
+        TaskDto task = client.waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
             throw new RuntimeException("Virtual machine instance operation failed");
@@ -99,7 +95,7 @@ public class TemplatesApi
                 });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
-        TaskDto task = waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
+        TaskDto task = client.waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
             throw new RuntimeException("Promote instance operation failed");
@@ -120,41 +116,11 @@ public class TemplatesApi
                 });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
-        TaskDto task = waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
+        TaskDto task = client.waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
             throw new RuntimeException("Refresh repository operation failed");
         }
     }
 
-    private TaskDto waitForTask(final AcceptedRequestDto< ? > acceptedRequest,
-        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
-    {
-        RESTLink status = acceptedRequest.getStatusLink();
-
-        Stopwatch watch = Stopwatch.createStarted();
-        while (watch.elapsed(timeUnit) < maxWait)
-        {
-            TaskDto task = client.get(status.getHref(), TaskDto.MEDIA_TYPE, TaskDto.class);
-
-            switch (task.getState())
-            {
-                case FINISHED_SUCCESSFULLY:
-                case FINISHED_UNSUCCESSFULLY:
-                case ABORTED:
-                case ACK_ERROR:
-                case CANCELLED:
-                    return task;
-                case PENDING:
-                case QUEUEING:
-                case STARTED:
-                    // Do nothing and keep waiting
-                    break;
-            }
-
-            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
-        }
-
-        throw new RuntimeException("Task did not complete in the configured timeout");
-    }
 }
