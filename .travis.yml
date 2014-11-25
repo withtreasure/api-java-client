@@ -6,3 +6,9 @@ jdk:
     - oraclejdk8
     - oraclejdk7
     - openjdk7
+notifications:
+    email:
+        recipients:
+            - developers@abiquo.com
+        on_success: change
+        on_failure: always
