@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient;
+package com.abiquo.apiclient.enterprise;
 
 import static com.abiquo.apiclient.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.ApiPath.LOGIN_URL;
@@ -21,6 +21,7 @@ import static com.abiquo.apiclient.ApiPath.USERS_URL;
 
 import org.testng.annotations.Test;
 
+import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
