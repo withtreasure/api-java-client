@@ -31,7 +31,7 @@
     </organization>
 
     <properties>
-        <api.version>3.0.0</api.version>
+        <api.version>3.2.0</api.version>
         <jersey.version>1.18</jersey.version>
     </properties>
 
