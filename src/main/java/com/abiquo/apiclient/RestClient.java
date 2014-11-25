@@ -23,15 +23,10 @@ import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.abiquo.model.rest.RESTLink;
@@ -65,6 +60,12 @@ public class RestClient
     public RestClient(final String username, final String password, final String baseURL,
         final String apiVersion)
     {
+        this(username, password, baseURL, SingleResourceTransportDto.API_VERSION, null);
+    }
+
+    public RestClient(final String username, final String password, final String baseURL,
+        final String apiVersion, final SSLConfiguration sslConfiguration)
+    {
         checkNotNull(username, "username cannot be null");
         checkNotNull(password, "password cannot be null");
         this.baseURL = checkNotNull(baseURL, "baseURL cannot be null");
@@ -73,18 +74,20 @@ public class RestClient
         ClientConfig config = new DefaultClientConfig();
         config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 0);
 
-        try
+        if (sslConfiguration != null)
         {
-            // SSL configuration
-            RelaxedSSLConfig sslConfig = new RelaxedSSLConfig();
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, new TrustManager[] {sslConfig}, new SecureRandom());
-            config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                new HTTPSProperties(sslConfig, sslContext));
-        }
-        catch (NoSuchAlgorithmException | KeyManagementException ex)
-        {
-            throw Throwables.propagate(ex);
+            try
+            {
+                // SSL configuration
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, new TrustManager[] {sslConfiguration}, new SecureRandom());
+                config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+                    new HTTPSProperties(sslConfiguration, sslContext));
+            }
+            catch (NoSuchAlgorithmException | KeyManagementException ex)
+            {
+                throw Throwables.propagate(ex);
+            }
         }
 
         client = Client.create(config);
@@ -234,36 +237,6 @@ public class RestClient
     {
         client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
             .put(body);
-    }
-
-    private static class RelaxedSSLConfig implements X509TrustManager, HostnameVerifier
-    {
-        @Override
-        public void checkClientTrusted(final X509Certificate[] chain, final String authType)
-            throws CertificateException
-        {
-
-        }
-
-        @Override
-        public void checkServerTrusted(final X509Certificate[] chain, final String authType)
-            throws CertificateException
-        {
-
-        }
-
-        @Override
-        public X509Certificate[] getAcceptedIssuers()
-        {
-            return null;
-        }
-
-        @Override
-        public boolean verify(final String hostname, final SSLSession session)
-        {
-            return true;
-        }
-
     }
 
     private String absolute(final String path)

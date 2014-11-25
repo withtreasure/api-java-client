@@ -16,9 +16,15 @@
 package com.abiquo.apiclient;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLSession;
 
 import org.testng.annotations.Test;
 
@@ -101,24 +107,33 @@ public class RestClientTest extends BaseMockTest
             + "; version=2.6");
     }
 
-    public void testClientWorksWithSSL() throws Exception
+    public void testConnectionFailsIfSSLConfigurationMissing() throws Exception
     {
-        MockResponse vdcsResponse = new MockResponse() //
-            .setHeader("Content-Type", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON) //
-            .setBody(payloadFromResource("vdcs.json"));
-
         server.useHttps(SslContextBuilder.localhost().getSocketFactory(), false);
-        server.enqueue(vdcsResponse);
+        server.enqueue(new MockResponse().setResponseCode(204));
         server.play();
 
-        newApiClient().getClient().get("/cloud/virtualdatacenters",
-            VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON, VirtualDatacentersDto.class);
+        try
+        {
+            newApiClient().getClient().delete("/");
+            fail("SSL handshake should have failed");
+        }
+        catch (Exception ex)
+        {
+            assertTrue(ex.getCause() instanceof SSLHandshakeException);
+        }
+    }
+
+    public void testConnectWithSSL() throws Exception
+    {
+        server.useHttps(SslContextBuilder.localhost().getSocketFactory(), false);
+        server.enqueue(new MockResponse().setResponseCode(204));
+        server.play();
+
+        newApiClient(new RelaxedSSLConfig()).getClient().delete("/");
 
         RecordedRequest request = server.takeRequest();
-
-        assertRequest(request, "GET", "/cloud/virtualdatacenters");
-        assertHeader(request, "Accept", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
+        assertRequest(request, "DELETE", "/");
     }
 
     @Test(expectedExceptions = NullPointerException.class, expectedExceptionsMessageRegExp = "The given object does not have an edit link")
@@ -390,5 +405,34 @@ public class RestClientTest extends BaseMockTest
         assertRequest(request, "GET", dto.getEditLink().getHref());
         assertHeader(request, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON + "; version="
             + SingleResourceTransportDto.API_VERSION);
+    }
+
+    private static class RelaxedSSLConfig implements SSLConfiguration
+    {
+        @Override
+        public void checkClientTrusted(final X509Certificate[] chain, final String authType)
+            throws CertificateException
+        {
+
+        }
+
+        @Override
+        public void checkServerTrusted(final X509Certificate[] chain, final String authType)
+            throws CertificateException
+        {
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers()
+        {
+            return null;
+        }
+
+        @Override
+        public boolean verify(final String hostname, final SSLSession session)
+        {
+            return true;
+        }
     }
 }

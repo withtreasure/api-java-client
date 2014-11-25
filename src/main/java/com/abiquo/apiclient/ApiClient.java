@@ -41,7 +41,13 @@ public class ApiClient
     public ApiClient(final String baseURL, final String username, final String password,
         final String version)
     {
-        client = new RestClient(username, password, baseURL, version);
+        this(baseURL, username, password, version, null);
+    }
+
+    public ApiClient(final String baseURL, final String username, final String password,
+        final String version, final SSLConfiguration sslConfiguration)
+    {
+        client = new RestClient(username, password, baseURL, version, sslConfiguration);
         enterpriseApi = new EnterpriseApi(client);
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);

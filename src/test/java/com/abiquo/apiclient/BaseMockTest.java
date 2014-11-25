@@ -63,14 +63,23 @@ public class BaseMockTest
 
     protected ApiClient newApiClient()
     {
-        checkState(server != null, "server has not been initialised");
-        return new ApiClient(baseUrl(), DEFAULT_USER, DEFAULT_PASS);
+        return newApiClient((SSLConfiguration) null);
     }
 
     protected ApiClient newApiClient(final String version)
     {
+        return newApiClient(version, null);
+    }
+
+    protected ApiClient newApiClient(final SSLConfiguration sslConfiguration)
+    {
+        return newApiClient(SingleResourceTransportDto.API_VERSION, sslConfiguration);
+    }
+
+    protected ApiClient newApiClient(final String version, final SSLConfiguration sslConfiguration)
+    {
         checkState(server != null, "server has not been initialised");
-        return new ApiClient(baseUrl(), DEFAULT_USER, DEFAULT_PASS, version);
+        return new ApiClient(baseUrl(), DEFAULT_USER, DEFAULT_PASS, version, sslConfiguration);
     }
 
     protected static void assertHeader(final RecordedRequest request, final String headerName,
