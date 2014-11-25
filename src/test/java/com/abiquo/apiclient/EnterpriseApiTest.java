@@ -47,10 +47,10 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "POST", ENTERPRISES_URL);
-        assertHeader(request, "Accept", EnterpriseDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
-        assertHeader(request, "Content-Type", EnterpriseDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Accept", EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Content-Type", EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
     public void testGetEnterprise() throws Exception
@@ -67,8 +67,8 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", ENTERPRISES_URL + "1");
-        assertHeader(request, "Accept", EnterpriseDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Accept", EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
     public void testListEnterprises() throws Exception
@@ -85,8 +85,8 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", ENTERPRISES_URL);
-        assertHeader(request, "Accept", EnterprisesDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Accept", EnterprisesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
     public void testGetCurrentUser() throws Exception
@@ -103,8 +103,8 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", LOGIN_URL);
-        assertHeader(request, "Accept", UserDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Accept", UserDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
     public void testListUsers() throws Exception
@@ -121,7 +121,7 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", USERS_URL);
-        assertHeader(request, "Accept", UsersDto.SHORT_MEDIA_TYPE_JSON + "; version="
-            + SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Accept", UsersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 }

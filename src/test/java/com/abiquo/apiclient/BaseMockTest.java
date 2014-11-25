@@ -103,6 +103,12 @@ public class BaseMockTest
         assertEquals(request.getPath(), path);
     }
 
+    protected static void assertMediaType(final RecordedRequest request, final String header,
+        final String expectedType, final String expectedVersion)
+    {
+        assertHeader(request, header, expectedType + "; version=" + expectedVersion);
+    }
+
     protected static String payloadFromResource(final String resource) throws IOException
     {
         return Resources.toString(Resources.getResource(resource), Charsets.UTF_8);
