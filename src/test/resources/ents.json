@@ -1,0 +1,249 @@
+{
+    "collection": [
+        {
+            "cpuCountHardLimit": 0, 
+            "cpuCountSoftLimit": 0, 
+            "diskHardLimitInMb": 0, 
+            "diskSoftLimitInMb": 0, 
+            "id": 1, 
+            "isReservationRestricted": false, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1", 
+                    "rel": "edit", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/users", 
+                    "rel": "users", 
+                    "title": "users", 
+                    "type": "application/vnd.abiquo.users+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/properties", 
+                    "rel": "properties", 
+                    "title": "properties", 
+                    "type": "application/vnd.abiquo.enterpriseproperties+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/appslib/templateDefinitionLists", 
+                    "rel": "appslib/templateDefinitionLists", 
+                    "title": "template definitions lists", 
+                    "type": "application/vnd.abiquo.templatedefinitionlists+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/appslib/templateDefinitions", 
+                    "rel": "appslib/templateDefinitions", 
+                    "title": "template defintion paths", 
+                    "type": "application/vnd.abiquo.templatedefinitions+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/datacenterrepositories", 
+                    "rel": "datacenterrepositories", 
+                    "title": "repositories", 
+                    "type": "application/vnd.abiquo.datacenterrepositories+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/virtualmachines", 
+                    "rel": "virtualmachines", 
+                    "title": "virtual machines", 
+                    "type": "application/vnd.abiquo.virtualmachines+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/virtualappliances", 
+                    "rel": "virtualappliances", 
+                    "title": "virtual appliances", 
+                    "type": "application/vnd.abiquo.virtualappliances+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/ips", 
+                    "rel": "ips", 
+                    "title": "ips", 
+                    "type": "application/vnd.abiquo.privateips+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/virtualdatacenters", 
+                    "rel": "cloud/virtualdatacenters", 
+                    "title": "virtual datacenters", 
+                    "type": "application/vnd.abiquo.virtualdatacenters+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/reservedmachines", 
+                    "rel": "reservedmachines", 
+                    "title": "reserved machines", 
+                    "type": "application/vnd.abiquo.machines+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/limits", 
+                    "rel": "limits", 
+                    "title": "limits", 
+                    "type": "application/vnd.abiquo.limits+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/volumes", 
+                    "rel": "volumes", 
+                    "title": "volumes", 
+                    "type": "application/vnd.abiquo.volumes+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/externalnetworks", 
+                    "rel": "externalnetworks", 
+                    "title": "external networks", 
+                    "type": "application/vnd.abiquo.vlans+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/action/pendingtasks", 
+                    "rel": "pendingtasks", 
+                    "title": "pending tasks", 
+                    "type": "application/vnd.abiquo.tasks+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/1/credentials", 
+                    "rel": "credentials", 
+                    "title": "credentials", 
+                    "type": "application/vnd.abiquo.publiccloudcredentialslist+json"
+                }
+            ], 
+            "name": "Abiquo", 
+            "publicIpsHard": 0, 
+            "publicIpsSoft": 0, 
+            "ramHardLimitInMb": 0, 
+            "ramSoftLimitInMb": 0, 
+            "repositoryHardInMb": 0, 
+            "repositorySoftInMb": 0, 
+            "storageHardInMb": 0, 
+            "storageSoftInMb": 0, 
+            "vlansHard": 0, 
+            "vlansSoft": 0
+        }, 
+        {
+            "cpuCountHardLimit": 0, 
+            "cpuCountSoftLimit": 0, 
+            "diskHardLimitInMb": 0, 
+            "diskSoftLimitInMb": 0, 
+            "id": 3, 
+            "isReservationRestricted": false, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3", 
+                    "rel": "edit", 
+                    "title": "EnterpriseTest", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/users", 
+                    "rel": "users", 
+                    "title": "users", 
+                    "type": "application/vnd.abiquo.users+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/properties", 
+                    "rel": "properties", 
+                    "title": "properties", 
+                    "type": "application/vnd.abiquo.enterpriseproperties+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/appslib/templateDefinitionLists", 
+                    "rel": "appslib/templateDefinitionLists", 
+                    "title": "template definitions lists", 
+                    "type": "application/vnd.abiquo.templatedefinitionlists+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/appslib/templateDefinitions", 
+                    "rel": "appslib/templateDefinitions", 
+                    "title": "template defintion paths", 
+                    "type": "application/vnd.abiquo.templatedefinitions+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/datacenterrepositories", 
+                    "rel": "datacenterrepositories", 
+                    "title": "repositories", 
+                    "type": "application/vnd.abiquo.datacenterrepositories+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/virtualmachines", 
+                    "rel": "virtualmachines", 
+                    "title": "virtual machines", 
+                    "type": "application/vnd.abiquo.virtualmachines+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/virtualappliances", 
+                    "rel": "virtualappliances", 
+                    "title": "virtual appliances", 
+                    "type": "application/vnd.abiquo.virtualappliances+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/ips", 
+                    "rel": "ips", 
+                    "title": "ips", 
+                    "type": "application/vnd.abiquo.privateips+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/virtualdatacenters", 
+                    "rel": "cloud/virtualdatacenters", 
+                    "title": "virtual datacenters", 
+                    "type": "application/vnd.abiquo.virtualdatacenters+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/reservedmachines", 
+                    "rel": "reservedmachines", 
+                    "title": "reserved machines", 
+                    "type": "application/vnd.abiquo.machines+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/limits", 
+                    "rel": "limits", 
+                    "title": "limits", 
+                    "type": "application/vnd.abiquo.limits+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/volumes", 
+                    "rel": "volumes", 
+                    "title": "volumes", 
+                    "type": "application/vnd.abiquo.volumes+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/externalnetworks", 
+                    "rel": "externalnetworks", 
+                    "title": "external networks", 
+                    "type": "application/vnd.abiquo.vlans+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/action/pendingtasks", 
+                    "rel": "pendingtasks", 
+                    "title": "pending tasks", 
+                    "type": "application/vnd.abiquo.tasks+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/enterprises/3/credentials", 
+                    "rel": "credentials", 
+                    "title": "credentials", 
+                    "type": "application/vnd.abiquo.publiccloudcredentialslist+json"
+                }
+            ], 
+            "name": "EnterpriseTest", 
+            "publicIpsHard": 0, 
+            "publicIpsSoft": 0, 
+            "ramHardLimitInMb": 0, 
+            "ramSoftLimitInMb": 0, 
+            "repositoryHardInMb": 0, 
+            "repositorySoftInMb": 0, 
+            "storageHardInMb": 0, 
+            "storageSoftInMb": 0, 
+            "vlansHard": 0, 
+            "vlansSoft": 0
+        }
+    ], 
+    "links": [
+        {
+            "href": "https://localhost:443/api/admin/enterprises?limit=25", 
+            "rel": "first"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises?startwith=0&limit=25", 
+            "rel": "last"
+        }
+    ], 
+    "totalSize": 2
+}
