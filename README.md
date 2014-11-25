@@ -1,5 +1,7 @@
 # Abiquo API Java Client
 
+[![Build Status](https://travis-ci.org/abiquo/api-java-client.svg?branch=master)](https://travis-ci.org/abiquo/api-java-client)
+
 This is an API client for the [Abiquo API](http://wiki.abiquo.com/). The Abiquo API is a RESTful API,
 so any REST client can be used to connect to it. This project uses Jersey
 and just provides some high level functions and enforces some best practices
