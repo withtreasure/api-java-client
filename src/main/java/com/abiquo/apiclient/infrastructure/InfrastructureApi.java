@@ -307,4 +307,10 @@ public class InfrastructureApi
         return find(tiers.getCollection(), tierName(name));
     }
 
+    public TierDto findTier(final VirtualDatacenterDto vdc, final String name)
+    {
+        TiersDto tiers =
+            client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
+        return find(tiers.getCollection(), tierName(name));
+    }
 }

@@ -17,12 +17,14 @@ package com.abiquo.apiclient.enterprise;
 
 import static com.abiquo.apiclient.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.ApiPath.LOGIN_URL;
+import static com.abiquo.apiclient.ApiPath.USERS_URL;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
 import com.abiquo.server.core.enterprise.UserDto;
+import com.abiquo.server.core.enterprise.UsersDto;
 
 public class EnterpriseApi
 {
@@ -54,6 +56,11 @@ public class EnterpriseApi
     public UserDto getCurrentUser()
     {
         return client.get(LOGIN_URL, UserDto.MEDIA_TYPE, UserDto.class);
+    }
+
+    public UsersDto listUsers()
+    {
+        return client.get(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
     }
 
 }
