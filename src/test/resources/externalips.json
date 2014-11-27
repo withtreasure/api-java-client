@@ -1,0 +1,43 @@
+{
+    "collection": [
+        {
+            "available": true, 
+            "id": 1, 
+            "ip": "192.168.17.1", 
+            "ipv6": false, 
+            "links": [
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/limits/1/externalnetworks/1", 
+                    "rel": "externalnetwork", 
+                    "title": "ExternalNet", 
+                    "type": "application/vnd.abiquo.vlan+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/limits/1/externalnetworks/1/ips", 
+                    "rel": "ips", 
+                    "title": "ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/limits/1/externalnetworks/1/ips/1", 
+                    "rel": "self", 
+                    "title": "192.168.17.1", 
+                    "type": "application/vnd.abiquo.externalip+json"
+                }
+            ], 
+            "networkName": "ExternalNet", 
+            "quarantine": false
+        }
+    ], 
+    "links": [
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/action/externalips?limit=25&by=ip", 
+            "rel": "first"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/action/externalips?startwith=0&limit=25&by=ip", 
+            "rel": "last"
+        }
+    ], 
+    "totalSize": 1
+}

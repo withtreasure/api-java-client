@@ -1,0 +1,209 @@
+{
+    "collection": [
+        {
+            "cpu": 1, 
+            "hdInBytes": 1073741824, 
+            "highDisponibility": 0, 
+            "id": 1, 
+            "idState": 1, 
+            "idType": 0, 
+            "links": [
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1", 
+                    "rel": "edit", 
+                    "title": "ABQ_23a503bd-4641-4fe2-aa78-fec4d8b4fc7b", 
+                    "type": "application/vnd.abiquo.virtualmachine+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1", 
+                    "rel": "enterprise", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/users/1", 
+                    "rel": "user", 
+                    "title": "Cloud Administrator", 
+                    "type": "application/vnd.abiquo.user+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1", 
+                    "rel": "virtualdatacenter", 
+                    "title": "myVdc", 
+                    "type": "application/vnd.abiquo.virtualdatacenter+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1", 
+                    "rel": "virtualappliance", 
+                    "title": "myVapp", 
+                    "type": "application/vnd.abiquo.virtualappliance+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/metadata", 
+                    "rel": "metadata", 
+                    "title": "metadata", 
+                    "type": "application/vnd.abiquo.metadata+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/configurations", 
+                    "rel": "configurations", 
+                    "title": "vlan network configurations", 
+                    "type": "application/vnd.abiquo.virtualmachinenetworkconfigurations+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/configurations/3", 
+                    "rel": "network_configuration", 
+                    "title": "192.168.0.0/24", 
+                    "type": "application/vnd.abiquo.virtualmachinenetworkconfiguration+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/nics", 
+                    "rel": "nics", 
+                    "title": "nics", 
+                    "type": "application/vnd.abiquo.nics+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/storage/disks", 
+                    "rel": "harddisks", 
+                    "title": "disks", 
+                    "type": "application/vnd.abiquo.harddisks+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/state", 
+                    "rel": "state", 
+                    "title": "NOT_ALLOCATED", 
+                    "type": "application/vnd.abiquo.virtualmachinestate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy", 
+                    "rel": "undeploy", 
+                    "title": "virtual machine undeploy", 
+                    "type": "application/vnd.abiquo.acceptedrequest+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy", 
+                    "rel": "deploy", 
+                    "title": "virtual machine deploy", 
+                    "type": "application/vnd.abiquo.acceptedrequest+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/reset", 
+                    "rel": "reset", 
+                    "title": "virtual machine reset", 
+                    "type": "application/vnd.abiquo.acceptedrequest+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/instance", 
+                    "rel": "instance", 
+                    "title": "virtual machine snapshot", 
+                    "type": "application/vnd.abiquo.acceptedrequest+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/restorebackup", 
+                    "rel": "restorebackup", 
+                    "title": "virtual machine restore backup", 
+                    "type": "application/vnd.abiquo.acceptedrequest+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/config/rdpaccess", 
+                    "rel": "rdpaccess", 
+                    "title": "remote access", 
+                    "type": "text/plain"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks", 
+                    "rel": "tasks", 
+                    "title": "tasks", 
+                    "type": "application/vnd.abiquo.tasks+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/firewalls", 
+                    "rel": "firewalls", 
+                    "title": "firewalls", 
+                    "type": "application/vnd.abiquo.links+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/loadbalancers", 
+                    "rel": "loadbalancers", 
+                    "title": "load balancers", 
+                    "type": "application/vnd.abiquo.loadbalancers+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/storage/volumes", 
+                    "rel": "volumes", 
+                    "title": "volumes", 
+                    "type": "application/vnd.abiquo.volumes+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/disks/4", 
+                    "length": "1024", 
+                    "rel": "disk0", 
+                    "title": "3219b4ba-9b60-4fae-96fc-22898f250464", 
+                    "type": "application/vnd.abiquo.harddisk+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/3/ips/9", 
+                    "rel": "nic0", 
+                    "title": "192.168.0.1", 
+                    "type": "application/vnd.abiquo.privateip+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/metrics", 
+                    "rel": "metrics", 
+                    "title": "metrics", 
+                    "type": "application/vnd.abiquo.metrics+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/metrics", 
+                    "rel": "metricsmetadata", 
+                    "title": "metricsmetadata", 
+                    "type": "application/vnd.abiquo.metricsmetadata+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/metrics", 
+                    "rel": "createcustommetric", 
+                    "title": "createcustommetric", 
+                    "type": "application/vnd.abiquo.custommetric+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/enablemonitoring", 
+                    "rel": "enablemonitoring", 
+                    "title": "enablemonitoring", 
+                    "type": ""
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/109", 
+                    "rel": "virtualmachinetemplate", 
+                    "title": "GRML-Small-Functional", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/config/categories/1", 
+                    "rel": "category", 
+                    "title": "Others", 
+                    "type": "application/vnd.abiquo.category+json"
+                }
+            ], 
+            "monitored": false, 
+            "name": "ABQ_23a503bd-4641-4fe2-aa78-fec4d8b4fc7b", 
+            "password": "PeDmd85v", 
+            "ram": 128, 
+            "state": "NOT_ALLOCATED", 
+            "type": "MANAGED", 
+            "uuid": "23a503bd-4641-4fe2-aa78-fec4d8b4fc7b", 
+            "vdrpEnabled": true, 
+            "vdrpPort": 0
+        }
+    ], 
+    "links": [
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/?limit=25&by=name", 
+            "rel": "first"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/?startwith=0&limit=25&by=name", 
+            "rel": "last"
+        }
+    ], 
+    "totalSize": 1
+}

@@ -1,0 +1,577 @@
+/**
+ * Copyright (C) 2008 Abiquo Holdings S.L.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.abiquo.apiclient.cloud;
+
+import static com.abiquo.apiclient.ApiPath.VIRTUALDATACENTERS_URL;
+import static org.testng.Assert.assertEquals;
+
+import org.testng.annotations.Test;
+
+import com.abiquo.apiclient.BaseMockTest;
+import com.abiquo.model.rest.RESTLink;
+import com.abiquo.model.transport.AcceptedRequestDto;
+import com.abiquo.model.transport.SingleResourceTransportDto;
+import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
+import com.abiquo.server.core.cloud.VirtualApplianceDto;
+import com.abiquo.server.core.cloud.VirtualAppliancesDto;
+import com.abiquo.server.core.cloud.VirtualDatacenterDto;
+import com.abiquo.server.core.cloud.VirtualDatacentersDto;
+import com.abiquo.server.core.cloud.VirtualMachineDto;
+import com.abiquo.server.core.cloud.VirtualMachineState;
+import com.abiquo.server.core.cloud.VirtualMachineStateDto;
+import com.abiquo.server.core.cloud.VirtualMachinesDto;
+import com.abiquo.server.core.enterprise.EnterpriseDto;
+import com.abiquo.server.core.infrastructure.DatacenterDto;
+import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
+import com.abiquo.server.core.infrastructure.network.VLANNetworkDto;
+import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
+import com.abiquo.server.core.infrastructure.storage.TierDto;
+import com.abiquo.server.core.infrastructure.storage.VolumeManagementDto;
+import com.abiquo.server.core.infrastructure.storage.VolumesManagementDto;
+import com.abiquo.server.core.task.TaskDto;
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import com.squareup.okhttp.mockwebserver.RecordedRequest;
+
+@Test
+public class CloudApiTest extends BaseMockTest
+{
+
+    public void testCreateVirtualAppliance() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vapp.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link = new RESTLink("virtualappliances", "/cloud/virtualdatacenters/1");
+        link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().createVirtualAppliance(dto, "VAPP");
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST", VIRTUALDATACENTERS_URL + "1");
+        assertMediaType(request, "Accept", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Content-Type", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testCreateVirtualDatacenter() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vdc.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        DatacenterDto location = new DatacenterDto();
+        RESTLink link = new RESTLink("self", "/cloud/locations/1");
+        link.setType(DatacenterDto.SHORT_MEDIA_TYPE_JSON);
+        location.addLink(link);
+
+        EnterpriseDto enterprise = new EnterpriseDto();
+        link = new RESTLink("edit", "/admin/enterprises/1");
+        link.setType(EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
+        enterprise.addLink(link);
+
+        newApiClient().getCloudApi().createVirtualDatacenter(location, enterprise, "VDC", "KVM",
+            "192.168.0.0", "192.168.0.1", "default_private_network");
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST", VIRTUALDATACENTERS_URL);
+        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Content-Type", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testCreateVirtualMachine() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vm.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualMachineTemplateDto template = new VirtualMachineTemplateDto();
+        RESTLink link =
+            new RESTLink("edit",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/109/cloud/locations/1");
+        link.setType(VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+        template.addLink(link);
+
+        VirtualApplianceDto vapp = new VirtualApplianceDto();
+        link =
+            new RESTLink("virtualmachines",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
+        link.setType(VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON);
+        vapp.addLink(link);
+
+        newApiClient().getCloudApi().createVirtualMachine(template, vapp);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
+        assertMediaType(request, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Content-Type", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testCreateVolume() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("volume.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
+        RESTLink link = new RESTLink("volumes", "/cloud/virtualdatacenters/1/volumes");
+        link.setType(VolumesManagementDto.SHORT_MEDIA_TYPE_JSON);
+        vdc.addLink(link);
+
+        TierDto tier = new TierDto();
+        link = new RESTLink("self", "/cloud/virtualdatacenters/1/tiers/1");
+        link.setType(TierDto.SHORT_MEDIA_TYPE_JSON);
+        tier.addLink(link);
+
+        newApiClient().getCloudApi().createVolume(vdc, "volumeTest", 1024, tier);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST", "/cloud/virtualdatacenters/1/volumes");
+        assertMediaType(request, "Accept", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertMediaType(request, "Content-Type", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testDeploy() throws Exception
+    {
+
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualMachineDto powerOn = new VirtualMachineDto();
+        powerOn.setState(VirtualMachineState.ON);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(powerOn)));
+
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("deploy",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link =
+            new RESTLink("edit",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualMachineDto vm = newApiClient().getCloudApi().deploy(dto);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualMachineState.ON);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy");
+        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testUndeploy() throws Exception
+    {
+
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualMachineDto notAllocated = new VirtualMachineDto();
+        notAllocated.setState(VirtualMachineState.NOT_ALLOCATED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(notAllocated)));
+
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("undeploy",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link =
+            new RESTLink("edit",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualMachineDto vm = newApiClient().getCloudApi().undeploy(dto);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy");
+        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testEditVirtualMachine() throws Exception
+    {
+
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualMachineDto notAllocated = new VirtualMachineDto();
+        notAllocated.setState(VirtualMachineState.NOT_ALLOCATED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(notAllocated)));
+
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("edit",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        dto.setState(VirtualMachineState.NOT_ALLOCATED);
+
+        VirtualMachineDto vm = newApiClient().getCloudApi().editVirtualMachine(dto);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "PUT",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testPowerState() throws Exception
+    {
+
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualMachineDto powerOff = new VirtualMachineDto();
+        powerOff.setState(VirtualMachineState.OFF);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(powerOff)));
+
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("state",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/state");
+        link.setType(VirtualMachineStateDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link =
+            new RESTLink("edit",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualMachineDto vm =
+            newApiClient().getCloudApi().powerState(dto, VirtualMachineState.OFF);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualMachineState.OFF);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "PUT",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/state");
+        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetPrivateNetwork() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VLANNetworkDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("privatenetwork.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().getPrivateNetwork("1", "1");
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/privatenetworks/1");
+        assertMediaType(request, "Accept", VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetTask() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", TaskDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("task.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().getTask("1", "1", "1", "f9df77b3-2068-4a07-8336-38d4c8235e4d");
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(
+            request,
+            "GET",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks/f9df77b3-2068-4a07-8336-38d4c8235e4d");
+        assertMediaType(request, "Accept", TaskDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetVirtualAppliance() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("vapp.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().getVirtualAppliance("1", "1");
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/virtualappliances/1");
+        assertMediaType(request, "Accept", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetVirtualDatacenter() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("vdc.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().getVirtualDatacenter("1");
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1");
+        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetVirtualMachine() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("vm.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().getVirtualMachine("1", "1", "1");
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        assertMediaType(request, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetVolume() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("volume.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().getVolume("1", "1");
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/volumes/1");
+        assertMediaType(request, "Accept", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testListExternalIps() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", ExternalIpsDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("externalips.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link =
+            new RESTLink("externalips", "/cloud/virtualdatacenters/1/action/externalips");
+        link.setType(ExternalIpsDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().listExternalIps(dto);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/action/externalips");
+        assertMediaType(request, "Accept", ExternalIpsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListNetworkConfigurations() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VMNetworkConfigurationsDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("networkconfiguration.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("configurations",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/configurations");
+        link.setType(VMNetworkConfigurationsDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().listNetworkConfigurations(dto);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/configurations");
+        assertMediaType(request, "Accept", VMNetworkConfigurationsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListVirtualAppliances() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vapps.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link =
+            new RESTLink("virtualappliances", "/cloud/virtualdatacenters/1/virtualappliances");
+        link.setType(VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().listVirtualAppliances(dto);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/virtualappliances");
+        assertMediaType(request, "Accept", VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListVirtualDatacenters() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vdcs.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi().listVirtualDatacenters();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/");
+        assertMediaType(request, "Accept", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListVirtualMachines() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vms.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualApplianceDto vapp = new VirtualApplianceDto();
+
+        RESTLink link =
+            new RESTLink("virtualmachines",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
+        link.setType(VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON);
+        vapp.addLink(link);
+
+        newApiClient().getCloudApi().listVirtualMachines(vapp);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
+        assertMediaType(request, "Accept", VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+}

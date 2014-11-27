@@ -1,0 +1,58 @@
+{
+    "address": "192.168.0.0", 
+    "dhcpOptions": {
+        "collection": [], 
+        "links": []
+    }, 
+    "gateway": "192.168.0.5", 
+    "id": 1, 
+    "ipv6": false, 
+    "links": [
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1", 
+            "rel": "virtualdatacenter", 
+            "title": "myVdc", 
+            "type": "application/vnd.abiquo.virtualdatacenter+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1", 
+            "rel": "edit", 
+            "title": "default_private_network", 
+            "type": "application/vnd.abiquo.vlan+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/ips", 
+            "rel": "ips", 
+            "title": "ips", 
+            "type": "application/vnd.abiquo.privateips+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/datacenters/1/networkservicetypes/1", 
+            "rel": "networkservicetype", 
+            "title": "Service Network", 
+            "type": "application/vnd.abiquo.networkservicetype+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/loadbalancers", 
+            "rel": "loadbalancers", 
+            "title": "load balancers", 
+            "type": "application/vnd.abiquo.loadbalancers+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/configuration", 
+            "rel": "configuration", 
+            "title": "configuration", 
+            "type": "application/vnd.abiquo.networkconfiguration+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/privatenetworks/1/configuration/3", 
+            "rel": "network_configuration", 
+            "title": "192.168.0.0/24", 
+            "type": "application/vnd.abiquo.networkconfiguration+json"
+        }
+    ], 
+    "mask": 24, 
+    "name": "default_private_network", 
+    "strict": false, 
+    "type": "INTERNAL"
+}

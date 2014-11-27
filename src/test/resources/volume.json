@@ -1,0 +1,34 @@
+{
+    "allowResize": true, 
+    "id": 8, 
+    "links": [
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/volumes/1", 
+            "rel": "edit", 
+            "title": "volumeTest", 
+            "type": "application/vnd.abiquo.volume+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/tiers/1", 
+            "rel": "tier", 
+            "title": "Default Tier 1", 
+            "type": "application/vnd.abiquo.tier+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/volumes/1/action/initiatormappings", 
+            "rel": "initiatormappings", 
+            "title": "initiator mappings", 
+            "type": "application/vnd.abiquo.initiatormappings+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1", 
+            "rel": "virtualdatacenter", 
+            "title": "myVdc", 
+            "type": "application/vnd.abiquo.virtualdatacenter+json"
+        }
+    ], 
+    "name": "volumeTest", 
+    "sequence": 0, 
+    "sizeInMB": 1024, 
+    "state": "DETACHED"
+}

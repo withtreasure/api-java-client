@@ -1,0 +1,18 @@
+{
+    "collection": [
+        {
+            "gateway": "192.168.0.5", 
+            "id": 1, 
+            "links": [
+                {
+                    "href": "http://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/configurations/1", 
+                    "rel": "edit", 
+                    "title": "network configuration with gateway 192.168.0.5", 
+                    "type": "application/vnd.abiquo.virtualmachinenetworkconfiguration+json"
+                }
+            ], 
+            "used": true
+        }
+    ], 
+    "links": []
+}

@@ -70,7 +70,8 @@ public class CloudApi
 
     public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
     {
-        return client.get(vdc.searchLink("externalips"), ExternalIpsDto.class);
+        return client.get(vdc.searchLink("externalips").getHref(), ExternalIpsDto.MEDIA_TYPE,
+            ExternalIpsDto.class);
     }
 
     public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
@@ -146,8 +147,8 @@ public class CloudApi
             VirtualApplianceDto.class);
     }
 
-    public VirtualMachineDto createVirtualMachine(final VirtualDatacenterDto vdc,
-        final VirtualMachineTemplateDto template, final VirtualApplianceDto vapp)
+    public VirtualMachineDto createVirtualMachine(final VirtualMachineTemplateDto template,
+        final VirtualApplianceDto vapp)
     {
         VirtualMachineDto vm = new VirtualMachineDto();
         vm.setVdrpEnabled(Boolean.TRUE);

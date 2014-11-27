@@ -1,0 +1,64 @@
+{
+    "error": 0, 
+    "highDisponibility": 0, 
+    "id": 1, 
+    "links": [
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1", 
+            "rel": "edit", 
+            "title": "myVapp", 
+            "type": "application/vnd.abiquo.virtualappliance+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1", 
+            "rel": "virtualdatacenter", 
+            "title": "myVdc", 
+            "type": "application/vnd.abiquo.virtualdatacenter+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/1", 
+            "rel": "enterprise", 
+            "title": "Abiquo", 
+            "type": "application/vnd.abiquo.enterprise+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines", 
+            "rel": "virtualmachines", 
+            "title": "virtual machines", 
+            "type": "application/vnd.abiquo.virtualmachines+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/state", 
+            "rel": "state", 
+            "title": "virtual appliances state", 
+            "type": "application/vnd.abiquo.virtualappliancestate+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/action/undeploy", 
+            "rel": "undeploy", 
+            "title": "undeploy", 
+            "type": "application/vnd.abiquo.acceptedrequest+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/action/deploy", 
+            "rel": "deploy", 
+            "title": "deploy", 
+            "type": "application/vnd.abiquo.acceptedrequest+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/action/price", 
+            "rel": "price", 
+            "title": "price", 
+            "type": "text/plain"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/layers", 
+            "rel": "layers", 
+            "title": "layers", 
+            "type": "application/vnd.abiquo.layers+json"
+        }
+    ], 
+    "name": "VAPP", 
+    "publicApp": 0, 
+    "state": "NOT_DEPLOYED"
+}

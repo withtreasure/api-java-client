@@ -1,0 +1,9 @@
+{
+    "entity": "You can keep track of the progress in the link", 
+    "links": [
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks/83dbe22f-b620-426c-b04f-25d08360a528", 
+            "rel": "status"
+        }
+    ]
+}
