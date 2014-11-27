@@ -20,13 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.abiquo.model.rest.RESTLink;
@@ -35,7 +30,6 @@ import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
@@ -76,18 +70,10 @@ public class RestClient
 
         if (sslConfiguration != null)
         {
-            try
-            {
-                // SSL configuration
-                SSLContext sslContext = SSLContext.getInstance("SSL");
-                sslContext.init(null, new TrustManager[] {sslConfiguration}, new SecureRandom());
-                config.getProperties().put(HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                    new HTTPSProperties(sslConfiguration, sslContext));
-            }
-            catch (NoSuchAlgorithmException | KeyManagementException ex)
-            {
-                throw Throwables.propagate(ex);
-            }
+            config.getProperties().put(
+                HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
+                new HTTPSProperties(sslConfiguration.hostnameVerifier(), sslConfiguration
+                    .sslContext()));
         }
 
         client = Client.create(config);

@@ -19,12 +19,19 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.testng.annotations.Test;
 
@@ -37,6 +44,7 @@ import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.cloud.VirtualMachineState;
 import com.abiquo.server.core.task.TaskDto;
 import com.abiquo.server.core.task.TaskState;
+import com.google.common.base.Throwables;
 import com.squareup.okhttp.internal.SslContextBuilder;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -409,29 +417,53 @@ public class RestClientTest extends BaseMockTest
     private static class RelaxedSSLConfig implements SSLConfiguration
     {
         @Override
-        public void checkClientTrusted(final X509Certificate[] chain, final String authType)
-            throws CertificateException
+        public SSLContext sslContext()
         {
+            try
+            {
+                SSLContext sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, new TrustManager[] {new X509TrustManager()
+                {
+                    @Override
+                    public X509Certificate[] getAcceptedIssuers()
+                    {
+                        return null;
+                    }
 
+                    @Override
+                    public void checkServerTrusted(final X509Certificate[] chain,
+                        final String authType) throws CertificateException
+                    {
+
+                    }
+
+                    @Override
+                    public void checkClientTrusted(final X509Certificate[] chain,
+                        final String authType) throws CertificateException
+                    {
+
+                    }
+                }}, new SecureRandom());
+
+                return sslContext;
+            }
+            catch (KeyManagementException | NoSuchAlgorithmException ex)
+            {
+                throw Throwables.propagate(ex);
+            }
         }
 
         @Override
-        public void checkServerTrusted(final X509Certificate[] chain, final String authType)
-            throws CertificateException
+        public HostnameVerifier hostnameVerifier()
         {
-
-        }
-
-        @Override
-        public X509Certificate[] getAcceptedIssuers()
-        {
-            return null;
-        }
-
-        @Override
-        public boolean verify(final String hostname, final SSLSession session)
-        {
-            return true;
+            return new HostnameVerifier()
+            {
+                @Override
+                public boolean verify(final String hostname, final SSLSession session)
+                {
+                    return true;
+                }
+            };
         }
     }
 }

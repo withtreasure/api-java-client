@@ -16,14 +16,22 @@
 package com.abiquo.apiclient;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.SSLContext;
 
 /**
  * Minimum information needed to create a trusted SSL connection.
  * 
  * @author Ignasi Barrera
  */
-public interface SSLConfiguration extends X509TrustManager, HostnameVerifier
+public interface SSLConfiguration
 {
+    /**
+     * Provides the SSLContext to be used in the SSL sessions.
+     */
+    public SSLContext sslContext();
 
+    /**
+     * Provides the hostname verifier to be used in the SSL sessions.
+     */
+    public HostnameVerifier hostnameVerifier();
 }
