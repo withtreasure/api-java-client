@@ -18,6 +18,8 @@ package com.abiquo.apiclient;
 import com.abiquo.apiclient.cloud.CloudApi;
 import com.abiquo.apiclient.enterprise.EnterpriseApi;
 import com.abiquo.apiclient.infrastructure.InfrastructureApi;
+import com.abiquo.apiclient.json.JacksonJsonImpl;
+import com.abiquo.apiclient.json.Json;
 import com.abiquo.apiclient.templates.TemplatesApi;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 
@@ -33,25 +35,71 @@ public class ApiClient
 
     private final TemplatesApi templatesApi;
 
-    public ApiClient(final String baseURL, final String username, final String password)
+    // Do not use directly. Use the builder.
+    private ApiClient(final String baseURL, final String username, final String password,
+        final String version, final SSLConfiguration sslConfiguration, final Json json)
     {
-        this(baseURL, username, password, SingleResourceTransportDto.API_VERSION);
-    }
-
-    public ApiClient(final String baseURL, final String username, final String password,
-        final String version)
-    {
-        this(baseURL, username, password, version, null);
-    }
-
-    public ApiClient(final String baseURL, final String username, final String password,
-        final String version, final SSLConfiguration sslConfiguration)
-    {
-        client = new RestClient(username, password, baseURL, version, sslConfiguration);
+        client = new RestClient(username, password, baseURL, version, sslConfiguration, json);
         enterpriseApi = new EnterpriseApi(client);
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);
         templatesApi = new TemplatesApi(client);
+    }
+
+    public static Builder builder()
+    {
+        return new Builder();
+    }
+
+    public static class Builder
+    {
+        private String baseUrl;
+
+        private String username;
+
+        private String password;
+
+        private String version = SingleResourceTransportDto.API_VERSION;
+
+        private SSLConfiguration sslConfiguration;
+
+        private Json json = new JacksonJsonImpl();
+
+        public Builder baseUrl(final String baseUrl)
+        {
+            this.baseUrl = baseUrl;
+            return this;
+        }
+
+        public Builder credentials(final String username, final String password)
+        {
+            this.username = username;
+            this.password = password;
+            return this;
+        }
+
+        public Builder version(final String version)
+        {
+            this.version = version;
+            return this;
+        }
+
+        public Builder sslConfiguration(final SSLConfiguration sslConfiguration)
+        {
+            this.sslConfiguration = sslConfiguration;
+            return this;
+        }
+
+        public Builder json(final Json json)
+        {
+            this.json = json;
+            return this;
+        }
+
+        public ApiClient build()
+        {
+            return new ApiClient(baseUrl, username, password, version, sslConfiguration, json);
+        }
     }
 
     public RestClient getClient()

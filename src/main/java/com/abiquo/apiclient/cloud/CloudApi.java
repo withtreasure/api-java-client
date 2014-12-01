@@ -45,7 +45,7 @@ import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.infrastructure.storage.VolumeManagementDto;
 import com.abiquo.server.core.task.TaskDto;
-import com.sun.jersey.api.client.GenericType;
+import com.google.common.reflect.TypeToken;
 
 public class CloudApi
 {
@@ -162,8 +162,9 @@ public class CloudApi
     public VirtualMachineDto deploy(final VirtualMachineDto vm)
     {
         client.post(vm.searchLink("deploy").getHref(), AcceptedRequestDto.MEDIA_TYPE,
-            new GenericType<AcceptedRequestDto<String>>()
+            new TypeToken<AcceptedRequestDto<String>>()
             {
+                private static final long serialVersionUID = -6348281615419377868L;
             });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
@@ -183,8 +184,9 @@ public class CloudApi
 
         client.post(vm.searchLink("undeploy").getHref(), AcceptedRequestDto.MEDIA_TYPE,
             VirtualMachineTaskDto.MEDIA_TYPE, virtualMachineTask,
-            new GenericType<AcceptedRequestDto<String>>()
+            new TypeToken<AcceptedRequestDto<String>>()
             {
+                private static final long serialVersionUID = -6348281615419377868L;
             });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
@@ -203,9 +205,9 @@ public class CloudApi
         vmState.setState(state);
 
         client.put(vm.searchLink("state").getHref(), AcceptedRequestDto.MEDIA_TYPE,
-            VirtualMachineStateDto.MEDIA_TYPE, vmState,
-            new GenericType<AcceptedRequestDto<String>>()
+            VirtualMachineStateDto.MEDIA_TYPE, vmState, new TypeToken<AcceptedRequestDto<String>>()
             {
+                private static final long serialVersionUID = -6348281615419377868L;
             });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
@@ -226,8 +228,9 @@ public class CloudApi
         if (vm.getState().isDeployed())
         {
             client.put(vm.getEditLink().getHref(), AcceptedRequestDto.MEDIA_TYPE,
-                VirtualMachineDto.MEDIA_TYPE, vm, new GenericType<AcceptedRequestDto<String>>()
+                VirtualMachineDto.MEDIA_TYPE, vm, new TypeToken<AcceptedRequestDto<String>>()
                 {
+                    private static final long serialVersionUID = -6348281615419377868L;
                 });
 
             // Wait a maximum of 5 minutes and poll every 5 seconds

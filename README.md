@@ -3,14 +3,13 @@
 [![Build Status](https://travis-ci.org/abiquo/api-java-client.svg?branch=master)](https://travis-ci.org/abiquo/api-java-client)
 
 This is an API client for the [Abiquo API](http://wiki.abiquo.com/). The Abiquo API is a RESTful API,
-so any REST client can be used to connect to it. This project uses Jersey
-and just provides some high level functions and enforces some best practices
-to make it easier to perform the common tasks.
+so any REST client can be used to connect to it. This project uses [OkHttp](http://square.github.io/okhttp/) and [Jackson](https://github.com/FasterXML/jackson) (although users can configure any json 
+library for serialization and deserialization) and just provides some high level functions and enforces some best practices to make it easier to perform the common tasks.
 
 ## Installation
 
-The Abiquo API Java Client is released to the Maven Central and Sonatype snapshot
-repositories, so you just have to declare the dependency in your pom.xml as follows:
+The Abiquo API Java Client is released to the [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.abiquo%22%20AND%20a%3A%22ap%C3%AC-java-client%22) and [Sonatype snapshot
+repositories](https://oss.sonatype.org/content/repositories/snapshots/com/abiquo/api-java-client/), so you just have to declare the dependency in your pom.xml as follows:
 
 ```xml
 <dependency>

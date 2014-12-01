@@ -29,7 +29,7 @@ public final class ApiPath
 
     public static final String VIRTUALDATACENTERS_URL = "/cloud/virtualdatacenters/";
 
-    public static final String LOGIN_URL = "/api/login/";
+    public static final String LOGIN_URL = "/login/";
 
     private ApiPath()
     {

@@ -24,15 +24,12 @@ import java.io.IOException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
+import com.abiquo.apiclient.json.JacksonJsonImpl;
+import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.transport.SingleResourceTransportDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
-import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.common.net.HttpHeaders;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
@@ -44,10 +41,13 @@ public class BaseMockTest
 
     protected MockWebServer server;
 
+    protected Json json;
+
     @BeforeMethod
     protected void setup()
     {
         server = new MockWebServer();
+        json = new JacksonJsonImpl();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -79,7 +79,13 @@ public class BaseMockTest
     protected ApiClient newApiClient(final String version, final SSLConfiguration sslConfiguration)
     {
         checkState(server != null, "server has not been initialised");
-        return new ApiClient(baseUrl(), DEFAULT_USER, DEFAULT_PASS, version, sslConfiguration);
+        return ApiClient.builder() //
+            .baseUrl(baseUrl()) //
+            .credentials(DEFAULT_USER, DEFAULT_PASS) //
+            .version(version) //
+            .sslConfiguration(sslConfiguration) //
+            .json(json) //
+            .build();
     }
 
     protected static void assertHeader(final RecordedRequest request, final String headerName,
@@ -103,24 +109,22 @@ public class BaseMockTest
         assertEquals(request.getPath(), path);
     }
 
-    protected static void assertMediaType(final RecordedRequest request, final String header,
+    protected static void assertAccept(final RecordedRequest request, final String expectedType,
+        final String expectedVersion)
+    {
+        assertHeader(request, HttpHeaders.ACCEPT, expectedType + "; version=" + expectedVersion);
+    }
+
+    protected static void assertContentType(final RecordedRequest request,
         final String expectedType, final String expectedVersion)
     {
-        assertHeader(request, header, expectedType + "; version=" + expectedVersion);
+        assertHeader(request, HttpHeaders.CONTENT_TYPE, expectedType + "; version="
+            + expectedVersion + "; charset=utf-8");
     }
 
     protected static String payloadFromResource(final String resource) throws IOException
     {
         return Resources.toString(Resources.getResource(resource), Charsets.UTF_8);
-    }
-
-    protected static String toJson(final SingleResourceTransportDto dto)
-        throws JsonProcessingException
-    {
-        return new ObjectMapper().setAnnotationIntrospector(
-            new AnnotationIntrospectorPair(new JacksonAnnotationIntrospector(),
-                new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))).writeValueAsString(
-            dto);
     }
 
 }

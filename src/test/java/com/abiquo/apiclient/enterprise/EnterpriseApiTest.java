@@ -48,9 +48,9 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "POST", ENTERPRISES_URL);
-        assertMediaType(request, "Accept", EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertMediaType(request, "Content-Type", EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -68,7 +68,7 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", ENTERPRISES_URL + "1");
-        assertMediaType(request, "Accept", EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -86,7 +86,7 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", ENTERPRISES_URL);
-        assertMediaType(request, "Accept", EnterprisesDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, EnterprisesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -104,8 +104,7 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", LOGIN_URL);
-        assertMediaType(request, "Accept", UserDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
+        assertAccept(request, UserDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
     }
 
     public void testListUsers() throws Exception
@@ -122,7 +121,7 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", USERS_URL);
-        assertMediaType(request, "Accept", UsersDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, UsersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 }

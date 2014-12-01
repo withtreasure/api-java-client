@@ -68,9 +68,9 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "POST", VIRTUALDATACENTERS_URL + "1");
-        assertMediaType(request, "Accept", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertMediaType(request, "Content-Type", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -99,9 +99,9 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "POST", VIRTUALDATACENTERS_URL);
-        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertMediaType(request, "Content-Type", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -135,9 +135,9 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "POST",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
-        assertMediaType(request, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertMediaType(request, "Content-Type", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -166,9 +166,9 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "POST", "/cloud/virtualdatacenters/1/volumes");
-        assertMediaType(request, "Accept", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertMediaType(request, "Content-Type", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -186,7 +186,7 @@ public class CloudApiTest extends BaseMockTest
         powerOn.setState(VirtualMachineState.ON);
 
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(powerOn)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(powerOn)));
 
         server.play();
 
@@ -211,7 +211,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "POST",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy");
-        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -229,7 +229,7 @@ public class CloudApiTest extends BaseMockTest
         notAllocated.setState(VirtualMachineState.NOT_ALLOCATED);
 
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(notAllocated)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(notAllocated)));
 
         server.play();
 
@@ -254,7 +254,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "POST",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy");
-        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -272,7 +272,7 @@ public class CloudApiTest extends BaseMockTest
         notAllocated.setState(VirtualMachineState.NOT_ALLOCATED);
 
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(notAllocated)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(notAllocated)));
 
         server.play();
 
@@ -293,7 +293,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "PUT",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
-        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -311,7 +311,7 @@ public class CloudApiTest extends BaseMockTest
         powerOff.setState(VirtualMachineState.OFF);
 
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(powerOff)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(powerOff)));
 
         server.play();
 
@@ -337,7 +337,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "PUT",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/state");
-        assertMediaType(request, "Accept", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -356,7 +356,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/privatenetworks/1");
-        assertMediaType(request, "Accept", VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -378,8 +378,7 @@ public class CloudApiTest extends BaseMockTest
             request,
             "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks/f9df77b3-2068-4a07-8336-38d4c8235e4d");
-        assertMediaType(request, "Accept", TaskDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
+        assertAccept(request, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
 
     }
 
@@ -396,7 +395,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/virtualappliances/1");
-        assertMediaType(request, "Accept", VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -414,7 +413,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1");
-        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -433,7 +432,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
-        assertMediaType(request, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -451,7 +450,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/volumes/1");
-        assertMediaType(request, "Accept", VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -476,7 +475,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/action/externalips");
-        assertMediaType(request, "Accept", ExternalIpsDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, ExternalIpsDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -502,7 +501,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/network/configurations");
-        assertMediaType(request, "Accept", VMNetworkConfigurationsDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VMNetworkConfigurationsDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -526,7 +525,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/virtualappliances");
-        assertMediaType(request, "Accept", VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -544,7 +543,7 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/");
-        assertMediaType(request, "Accept", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -571,7 +570,7 @@ public class CloudApiTest extends BaseMockTest
 
         assertRequest(request, "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
-        assertMediaType(request, "Accept", VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 }

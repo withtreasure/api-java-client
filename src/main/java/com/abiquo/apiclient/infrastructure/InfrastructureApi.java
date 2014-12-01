@@ -25,7 +25,9 @@ import static com.abiquo.apiclient.ApiPredicates.tierName;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.model.enumerator.NetworkType;
@@ -53,7 +55,6 @@ import com.abiquo.server.core.infrastructure.storage.StoragePoolsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.infrastructure.storage.TiersDto;
 import com.abiquo.server.core.scheduler.MachineLoadRuleDto;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class InfrastructureApi
 {
@@ -146,11 +147,11 @@ public class InfrastructureApi
     public MachinesDto discoverMachines(final DatacenterDto datacenter, final String type,
         final String ip, final String user, final String password)
     {
-        MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
-        queryParams.add("hypervisor", type);
-        queryParams.add("ip", ip);
-        queryParams.add("user", user);
-        queryParams.add("password", password);
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        queryParams.put("hypervisor", type);
+        queryParams.put("ip", ip);
+        queryParams.put("user", user);
+        queryParams.put("password", password);
 
         return client.get(datacenter.searchLink("discover").getHref(), queryParams,
             MachinesDto.MEDIA_TYPE, MachinesDto.class);
@@ -218,8 +219,8 @@ public class InfrastructureApi
 
     public StoragePoolsDto listRemotePools(final StorageDeviceDto device)
     {
-        MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
-        queryParams.add("sync", true);
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        queryParams.put("sync", true);
 
         return client.get(device.searchLink("pools").getHref(), queryParams,
             StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
@@ -246,8 +247,8 @@ public class InfrastructureApi
 
     public StoragePoolDto findRemotePool(final StorageDeviceDto device, final String name)
     {
-        MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
-        queryParams.add("sync", true);
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        queryParams.put("sync", true);
 
         StoragePoolsDto pools =
             client.get(device.searchLink("pools").getHref(), queryParams,

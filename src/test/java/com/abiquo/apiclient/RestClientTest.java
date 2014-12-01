@@ -69,7 +69,7 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters");
-        assertMediaType(request, "Accept", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -90,7 +90,7 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters");
-        assertMediaType(request, "Accept", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -111,7 +111,7 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters");
-        assertMediaType(request, "Accept", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON, "2.6");
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON, "2.6");
     }
 
     public void testConnectionFailsIfSSLConfigurationMissing() throws Exception
@@ -169,9 +169,9 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "PUT", "/cloud/virtualdatacenters/1");
-        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertMediaType(request, "Content-Type", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -201,7 +201,7 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1");
-        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -224,7 +224,7 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1");
-        assertMediaType(request, "Accept", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -262,9 +262,9 @@ public class RestClientTest extends BaseMockTest
 
         // Enqueue two tasks: one in progress, and one completed
         server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
-            .setBody(toJson(inProgress)));
+            .setBody(json.write(inProgress)));
         server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
-            .setBody(toJson(completed)));
+            .setBody(json.write(completed)));
         server.play();
 
         AcceptedRequestDto<String> dto = new AcceptedRequestDto<String>();
@@ -285,14 +285,12 @@ public class RestClientTest extends BaseMockTest
         // Verify the first request
         RecordedRequest first = server.takeRequest();
         assertRequest(first, "GET", dto.getStatusLink().getHref());
-        assertMediaType(first, "Accept", TaskDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
+        assertAccept(first, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
 
         // Verify the second request
         RecordedRequest second = server.takeRequest();
         assertRequest(second, "GET", dto.getStatusLink().getHref());
-        assertMediaType(second, "Accept", TaskDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
+        assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
     }
 
     public void testWaitForTaskReachesTimeout() throws Exception
@@ -301,7 +299,7 @@ public class RestClientTest extends BaseMockTest
         inProgress.setState(TaskState.PENDING);
 
         server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
-            .setBody(toJson(inProgress)));
+            .setBody(json.write(inProgress)));
         server.play();
 
         AcceptedRequestDto<String> dto = new AcceptedRequestDto<String>();
@@ -328,8 +326,7 @@ public class RestClientTest extends BaseMockTest
         // Verify the request
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "GET", dto.getStatusLink().getHref());
-        assertMediaType(request, "Accept", TaskDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
+        assertAccept(request, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
     }
 
     public void testWaitUntilUnlocked() throws Exception
@@ -342,9 +339,9 @@ public class RestClientTest extends BaseMockTest
 
         // Enqueue two tasks: one in progress, and one completed
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(locked)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(locked)));
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(powerOn)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(powerOn)));
         server.play();
 
         VirtualMachineDto dto = new VirtualMachineDto();
@@ -366,13 +363,13 @@ public class RestClientTest extends BaseMockTest
         // Verify the first request
         RecordedRequest first = server.takeRequest();
         assertRequest(first, "GET", dto.getEditLink().getHref());
-        assertMediaType(first, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(first, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
         // Verify the second request
         RecordedRequest second = server.takeRequest();
         assertRequest(second, "GET", dto.getEditLink().getHref());
-        assertMediaType(second, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
@@ -382,7 +379,7 @@ public class RestClientTest extends BaseMockTest
         locked.setState(VirtualMachineState.LOCKED);
 
         server.enqueue(new MockResponse().addHeader("Content-type",
-            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(toJson(locked)));
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(locked)));
         server.play();
 
         VirtualMachineDto dto = new VirtualMachineDto();
@@ -410,7 +407,7 @@ public class RestClientTest extends BaseMockTest
         // Verify the request
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "GET", dto.getEditLink().getHref());
-        assertMediaType(request, "Accept", VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+        assertAccept(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 

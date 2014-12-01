@@ -18,66 +18,80 @@ package com.abiquo.apiclient;
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.ws.rs.core.MultivaluedMap;
-
+import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.task.TaskDto;
+import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Throwables;
+import com.google.common.net.HttpHeaders;
+import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 public class RestClient
 {
-    private Client client;
+    private final OkHttpClient client;
+
+    private final Json json;
 
     private final String baseURL;
 
     private final String apiVersion;
 
-    public RestClient(final String username, final String password, final String baseURL)
-    {
-        this(username, password, baseURL, SingleResourceTransportDto.API_VERSION);
-    }
+    private final String authHeader;
 
-    public RestClient(final String username, final String password, final String baseURL,
-        final String apiVersion)
+    // Package protected. To be used only by the ApiClient
+    RestClient(final String username, final String password, final String baseURL,
+        final String apiVersion, final SSLConfiguration sslConfiguration, final Json json)
     {
-        this(username, password, baseURL, SingleResourceTransportDto.API_VERSION, null);
-    }
-
-    public RestClient(final String username, final String password, final String baseURL,
-        final String apiVersion, final SSLConfiguration sslConfiguration)
-    {
-        checkNotNull(username, "username cannot be null");
-        checkNotNull(password, "password cannot be null");
+        authHeader =
+            Credentials.basic(checkNotNull(username, "username cannot be null"),
+                checkNotNull(password, "password cannot be null"));
+        this.json = checkNotNull(json, "json cannot be null");
         this.baseURL = checkNotNull(baseURL, "baseURL cannot be null");
         this.apiVersion = checkNotNull(apiVersion, "apiVersion cannot be null");
 
-        ClientConfig config = new DefaultClientConfig();
-        config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, 0);
+        client = new OkHttpClient();
+        client.setReadTimeout(0, TimeUnit.MILLISECONDS);
 
         if (sslConfiguration != null)
         {
-            config.getProperties().put(
-                HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                new HTTPSProperties(sslConfiguration.hostnameVerifier(), sslConfiguration
-                    .sslContext()));
+            client.setHostnameVerifier(sslConfiguration.hostnameVerifier());
+            client.setSslSocketFactory(sslConfiguration.sslContext().getSocketFactory());
         }
 
-        client = Client.create(config);
-        client.addFilter(new HTTPBasicAuthFilter(username, password));
+        client.setAuthenticator(new Authenticator()
+        {
+            @Override
+            public Request authenticate(final Proxy proxy, final Response response)
+            {
+                return response.request().newBuilder()
+                    .header(HttpHeaders.AUTHORIZATION, authHeader).build();
+            }
+
+            @Override
+            public Request authenticateProxy(final Proxy proxy, final Response response)
+            {
+                return null;
+            }
+        });
     }
 
     public <T extends SingleResourceTransportDto> T get(final RESTLink link, final Class<T> clazz)
@@ -121,108 +135,246 @@ public class RestClient
     public <T extends SingleResourceTransportDto> T get(final String uri, final String accept,
         final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).get(returnClass);
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnClass);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T get(final String uri, final String accept,
-        final GenericType<T> returnType)
+        final TypeToken<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).get(returnType);
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T get(final String uri,
-        final MultivaluedMap<String, String> queryParams, final String accept,
-        final Class<T> returnClass)
+        final Map<String, Object> queryParams, final String accept, final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).queryParams(queryParams).accept(withVersion(accept))
-            .get(returnClass);
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri) + "?" + queryLine(queryParams))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnClass);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T get(final String uri,
-        final MultivaluedMap<String, String> queryParams, final String accept,
-        final GenericType<T> returnType)
+        final Map<String, Object> queryParams, final String accept, final TypeToken<T> returnType)
     {
-        return client.resource(absolute(uri)).queryParams(queryParams).accept(withVersion(accept))
-            .get(returnType);
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri) + "?" + queryLine(queryParams))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public void delete(final String uri)
     {
-        client.resource(absolute(uri)).delete();
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader).delete().build();
+            client.newCall(request).execute();
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final String contentType, final SingleResourceTransportDto body, final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept))
-            .type(withVersion(contentType)).post(returnClass, body);
+        try
+        {
+            RequestBody requestBody =
+                RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
+                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
+                    .post(requestBody).build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnClass);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final String contentType, final SingleResourceTransportDto body,
-        final GenericType<T> returnType)
+        final TypeToken<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept))
-            .type(withVersion(contentType)).post(returnType, body);
+        try
+        {
+            RequestBody requestBody =
+                RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
+                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
+                    .post(requestBody).build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
-        final Class<T> returnClass)
+        final TypeToken<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).post(returnClass);
-    }
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(null).build();
 
-    public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
-        final GenericType<T> returnType)
-    {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).post(returnType);
-    }
-
-    public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
-        final Class<T> returnClass)
-    {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).put(returnClass);
-    }
-
-    public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
-        final GenericType<T> returnType)
-    {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).put(returnType);
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
-        final String type, final Class<T> returnClass)
+        final String contentType, final SingleResourceTransportDto body, final Class<T> returnClass)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
-            .put(returnClass);
+        try
+        {
+            RequestBody requestBody =
+                RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
+                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
+                    .put(requestBody).build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnClass);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
-        final String type, final GenericType<T> returnType)
+        final TypeToken<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
-            .put(returnType);
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(null).build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
-        final String type, final SingleResourceTransportDto body, final Class<T> returnClass)
+        final String contentType, final SingleResourceTransportDto body,
+        final TypeToken<T> returnType)
     {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
-            .put(returnClass, body);
+        try
+        {
+            RequestBody requestBody =
+                RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
+                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
+                    .put(requestBody).build();
+
+            Response response = client.newCall(request).execute();
+            return json.read(response.body().charStream(), returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
-    public <T extends SingleResourceTransportDto> T put(final String uri, final String accept,
-        final String type, final SingleResourceTransportDto body, final GenericType<T> returnType)
-    {
-        return client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
-            .put(returnType, body);
-    }
-
-    public void put(final String uri, final String accept, final String type,
+    public void put(final String uri, final String accept, final String contentType,
         final SingleResourceTransportDto body)
     {
-        client.resource(absolute(uri)).accept(withVersion(accept)).type(withVersion(type))
-            .put(body);
+        try
+        {
+            RequestBody requestBody =
+                RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
+                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
+                    .put(requestBody).build();
+
+            client.newCall(request).execute();
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
     }
 
     private String absolute(final String path)
@@ -241,6 +393,11 @@ public class RestClient
     private String withVersion(final String mediaType)
     {
         return mediaType.contains("version=") ? mediaType : mediaType + "; version=" + apiVersion;
+    }
+
+    private String queryLine(final Map<String, Object> queryParams)
+    {
+        return Joiner.on('&').withKeyValueSeparator("=").join(queryParams);
     }
 
     public TaskDto waitForTask(final AcceptedRequestDto< ? > acceptedRequest,

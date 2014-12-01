@@ -20,6 +20,8 @@ import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.RestClient;
@@ -34,8 +36,7 @@ import com.abiquo.server.core.cloud.VirtualMachineInstanceDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.task.TaskDto;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.google.common.reflect.TypeToken;
 
 public class TemplatesApi
 {
@@ -49,8 +50,8 @@ public class TemplatesApi
     public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
         final String name)
     {
-        MultivaluedMapImpl queryParams = new MultivaluedMapImpl();
-        queryParams.add("limit", 0);
+        Map<String, Object> queryParams = new HashMap<String, Object>();
+        queryParams.put("limit", 0);
 
         VirtualMachineTemplatesDto templates =
             client.get(vdc.searchLink("templates").getHref(), queryParams,
@@ -66,8 +67,9 @@ public class TemplatesApi
         AcceptedRequestDto<String> acceptedRequest =
             client.post(vm.searchLink("instance").getHref(), AcceptedRequestDto.MEDIA_TYPE,
                 VirtualMachineInstanceDto.MEDIA_TYPE, instance,
-                new GenericType<AcceptedRequestDto<String>>()
+                new TypeToken<AcceptedRequestDto<String>>()
                 {
+                    private static final long serialVersionUID = -6348281615419377868L;
                 });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
@@ -91,8 +93,9 @@ public class TemplatesApi
             client.post(template.searchLink("datacenterrepository").getHref()
                 + "/virtualmachinetemplates", AcceptedRequestDto.MEDIA_TYPE,
                 VirtualMachineTemplateRequestDto.MEDIA_TYPE, promote,
-                new GenericType<AcceptedRequestDto<String>>()
+                new TypeToken<AcceptedRequestDto<String>>()
                 {
+                    private static final long serialVersionUID = -6348281615419377868L;
                 });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
@@ -112,8 +115,9 @@ public class TemplatesApi
             client.put(
                 enterprise.searchLink("datacenterrepositories").getHref() + "/"
                     + datacenter.getId() + "/actions/refresh", AcceptedRequestDto.MEDIA_TYPE,
-                new GenericType<AcceptedRequestDto<String>>()
+                new TypeToken<AcceptedRequestDto<String>>()
                 {
+                    private static final long serialVersionUID = -6348281615419377868L;
                 });
 
         // Wait a maximum of 5 minutes and poll every 5 seconds
