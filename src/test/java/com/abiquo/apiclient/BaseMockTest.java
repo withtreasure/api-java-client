@@ -137,12 +137,6 @@ public class BaseMockTest
     public static RESTLink assertLinkExist(final SingleResourceTransportDto resource,
         final String href, final String expectedRel, final String expectedType)
     {
-        return assertLinkExistWithType(resource, href, expectedRel, expectedType);
-    }
-
-    private static RESTLink assertLinkExistWithType(final SingleResourceTransportDto resource,
-        final String href, final String expectedRel, final String expectedType)
-    {
         Optional<RESTLink> link =
             tryFind(resource.searchLinksByHref(href), new Predicate<RESTLink>()
             {
