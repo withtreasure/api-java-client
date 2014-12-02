@@ -233,9 +233,7 @@ public class RestClient
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
-                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
-                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
-                    .post(requestBody).build();
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
 
             Response response = client.newCall(request).execute();
             return json.read(response.body().charStream(), returnClass);
@@ -257,9 +255,7 @@ public class RestClient
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
-                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
-                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
-                    .post(requestBody).build();
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
 
             Response response = client.newCall(request).execute();
             return json.read(response.body().charStream(), returnType);
@@ -299,9 +295,7 @@ public class RestClient
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
-                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
-                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
-                    .put(requestBody).build();
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
             Response response = client.newCall(request).execute();
             return json.read(response.body().charStream(), returnClass);
@@ -342,9 +336,7 @@ public class RestClient
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
-                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
-                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
-                    .put(requestBody).build();
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
             Response response = client.newCall(request).execute();
             return json.read(response.body().charStream(), returnType);
@@ -365,9 +357,7 @@ public class RestClient
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
-                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept))
-                    // .addHeader(HttpHeaders.CONTENT_TYPE, withVersion(contentType))
-                    .put(requestBody).build();
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
             client.newCall(request).execute();
         }
