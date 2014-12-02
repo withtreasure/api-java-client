@@ -16,16 +16,19 @@
 package com.abiquo.apiclient;
 
 import static com.google.common.base.Preconditions.checkState;
+import static java.lang.String.format;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 import com.abiquo.apiclient.json.JacksonJsonImpl;
 import com.abiquo.apiclient.json.Json;
+import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -38,6 +41,8 @@ public class BaseMockTest
     protected static final String DEFAULT_USER = "foo";
 
     protected static final String DEFAULT_PASS = "bar";
+
+    protected static final String HOST = "https://localhost:443/api";
 
     protected MockWebServer server;
 
@@ -125,6 +130,41 @@ public class BaseMockTest
     protected static String payloadFromResource(final String resource) throws IOException
     {
         return Resources.toString(Resources.getResource(resource), Charsets.UTF_8);
+    }
+
+    public static RESTLink assertLinkExist(final SingleResourceTransportDto resource,
+        final String href, final String expectedRel, final String expectedType)
+    {
+        RESTLink link = null;
+
+        link = assertLinkExistWithType(resource, href, expectedRel, expectedType);
+
+        assertNotNull(link);
+        return link;
+    }
+
+    private static RESTLink assertLinkExistWithType(final SingleResourceTransportDto resource,
+        final String href, final String expectedRel, final String expectedType)
+    {
+        assertNotNull(resource.getLinks());
+        List<RESTLink> links = resource.searchLinksByHref(href);
+
+        RESTLink found = null;
+        for (RESTLink link : links)
+        {
+            if (expectedRel.equals(link.getRel()) //
+                && expectedType.equals(link.getType()))
+            {
+                found = link;
+                break;
+            }
+        }
+
+        assertNotNull(
+            found,
+            format("link with 'href' %s 'rel' %s and type '%s' was not found", href, expectedRel,
+                expectedType));
+        return found;
     }
 
 }

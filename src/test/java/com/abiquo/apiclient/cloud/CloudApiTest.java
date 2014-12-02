@@ -17,10 +17,12 @@ package com.abiquo.apiclient.cloud;
 
 import static com.abiquo.apiclient.ApiPath.VIRTUALDATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
+import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
@@ -32,6 +34,7 @@ import com.abiquo.server.core.cloud.VirtualDatacentersDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.cloud.VirtualMachineState;
 import com.abiquo.server.core.cloud.VirtualMachineStateDto;
+import com.abiquo.server.core.cloud.VirtualMachineTaskDto;
 import com.abiquo.server.core.cloud.VirtualMachinesDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
@@ -63,10 +66,10 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        newApiClient().getCloudApi().createVirtualAppliance(dto, "VAPP");
+        VirtualApplianceDto vapp = newApiClient().getCloudApi().createVirtualAppliance(dto, "VAPP");
+        assertEquals(vapp.getName(), "VAPP");
 
         RecordedRequest request = server.takeRequest();
-
         assertRequest(request, "POST", VIRTUALDATACENTERS_URL + "1");
         assertAccept(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
@@ -93,11 +96,24 @@ public class CloudApiTest extends BaseMockTest
         link.setType(EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
         enterprise.addLink(link);
 
-        newApiClient().getCloudApi().createVirtualDatacenter(location, enterprise, "VDC", "KVM",
-            "192.168.0.0", "192.168.0.1", "default_private_network");
+        VirtualDatacenterDto vdcDto =
+            newApiClient().getCloudApi().createVirtualDatacenter(location, enterprise, "VDC",
+                "KVM", "192.168.0.0", "192.168.0.1", "default_private_network");
+        assertEquals(vdcDto.getName(), "VDC");
+        assertEquals(vdcDto.getHypervisorType(), "KVM");
+
+        VLANNetworkDto vlanDto = vdcDto.getVlan();
+        assertNotNull(vlanDto);
+        assertEquals(vlanDto.getName(), "default_private_network");
+        assertEquals(vlanDto.getAddress(), "192.168.0.0");
+        assertEquals(vlanDto.getGateway(), "192.168.0.1");
+        assertEquals(vlanDto.getMask(), new Integer(24));
+        assertEquals(vlanDto.getType(), NetworkType.INTERNAL);
+
+        assertLinkExist(vdcDto, HOST + enterprise.getEditLink().getHref(), "enterprise",
+            EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
 
         RecordedRequest request = server.takeRequest();
-
         assertRequest(request, "POST", VIRTUALDATACENTERS_URL);
         assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
@@ -118,7 +134,7 @@ public class CloudApiTest extends BaseMockTest
         VirtualMachineTemplateDto template = new VirtualMachineTemplateDto();
         RESTLink link =
             new RESTLink("edit",
-                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/109/cloud/locations/1");
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/109");
         link.setType(VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
         template.addLink(link);
 
@@ -129,7 +145,11 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON);
         vapp.addLink(link);
 
-        newApiClient().getCloudApi().createVirtualMachine(template, vapp);
+        VirtualMachineDto vmDto = newApiClient().getCloudApi().createVirtualMachine(template, vapp);
+
+        assertEquals(vmDto.getVdrpEnabled(), Boolean.TRUE);
+        assertLinkExist(vmDto, HOST + template.getEditLink().getHref(), "virtualmachinetemplate",
+            VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
 
         RecordedRequest request = server.takeRequest();
 
@@ -161,7 +181,13 @@ public class CloudApiTest extends BaseMockTest
         link.setType(TierDto.SHORT_MEDIA_TYPE_JSON);
         tier.addLink(link);
 
-        newApiClient().getCloudApi().createVolume(vdc, "volumeTest", 1024, tier);
+        VolumeManagementDto volDto =
+            newApiClient().getCloudApi().createVolume(vdc, "volumeTest", 1024, tier);
+
+        assertEquals(volDto.getName(), "volumeTest");
+        assertEquals(volDto.getSizeInMB(), 1024);
+        assertLinkExist(volDto, HOST + tier.searchLink("self").getHref(), "tier",
+            TierDto.SHORT_MEDIA_TYPE_JSON);
 
         RecordedRequest request = server.takeRequest();
 
@@ -207,11 +233,20 @@ public class CloudApiTest extends BaseMockTest
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.ON);
 
-        RecordedRequest request = server.takeRequest();
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
 
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
         assertRequest(request, "POST",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy");
         assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -250,13 +285,23 @@ public class CloudApiTest extends BaseMockTest
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
 
-        RecordedRequest request = server.takeRequest();
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
 
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
         assertRequest(request, "POST",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy");
         assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineTaskDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
 
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
     public void testEditVirtualMachine() throws Exception
@@ -294,6 +339,8 @@ public class CloudApiTest extends BaseMockTest
         assertRequest(request, "PUT",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
         assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
@@ -333,11 +380,22 @@ public class CloudApiTest extends BaseMockTest
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.OFF);
 
-        RecordedRequest request = server.takeRequest();
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
 
+        // Verify the first reques
+        RecordedRequest request = server.takeRequest();
         assertRequest(request, "PUT",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/state");
         assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineStateDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }
