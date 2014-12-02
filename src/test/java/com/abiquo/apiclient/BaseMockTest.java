@@ -16,12 +16,12 @@
 package com.abiquo.apiclient;
 
 import static com.google.common.base.Preconditions.checkState;
-import static java.lang.String.format;
+import static com.google.common.collect.Iterables.tryFind;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -31,6 +31,8 @@ import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.io.Resources;
 import com.google.common.net.HttpHeaders;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -85,7 +87,7 @@ public class BaseMockTest
     {
         checkState(server != null, "server has not been initialised");
         return ApiClient.builder() //
-            .baseUrl(baseUrl()) //
+            .endpoint(baseUrl()) //
             .credentials(DEFAULT_USER, DEFAULT_PASS) //
             .version(version) //
             .sslConfiguration(sslConfiguration) //
@@ -135,36 +137,27 @@ public class BaseMockTest
     public static RESTLink assertLinkExist(final SingleResourceTransportDto resource,
         final String href, final String expectedRel, final String expectedType)
     {
-        RESTLink link = null;
-
-        link = assertLinkExistWithType(resource, href, expectedRel, expectedType);
-
-        assertNotNull(link);
-        return link;
+        return assertLinkExistWithType(resource, href, expectedRel, expectedType);
     }
 
     private static RESTLink assertLinkExistWithType(final SingleResourceTransportDto resource,
         final String href, final String expectedRel, final String expectedType)
     {
-        assertNotNull(resource.getLinks());
-        List<RESTLink> links = resource.searchLinksByHref(href);
-
-        RESTLink found = null;
-        for (RESTLink link : links)
-        {
-            if (expectedRel.equals(link.getRel()) //
-                && expectedType.equals(link.getType()))
+        Optional<RESTLink> link =
+            tryFind(resource.searchLinksByHref(href), new Predicate<RESTLink>()
             {
-                found = link;
-                break;
-            }
-        }
+                @Override
+                public boolean apply(final RESTLink input)
+                {
+                    return expectedRel.equals(input.getRel())
+                        && expectedType.equals(input.getType());
+                }
+            });
 
-        assertNotNull(
-            found,
-            format("link with 'href' %s 'rel' %s and type '%s' was not found", href, expectedRel,
-                expectedType));
-        return found;
+        assertTrue(link.isPresent(), String.format(
+            "link with 'href' %s 'rel' %s and type '%s' was not found", href, expectedRel,
+            expectedType));
+
+        return link.get();
     }
-
 }

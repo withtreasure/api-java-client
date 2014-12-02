@@ -36,10 +36,10 @@ public class ApiClient
     private final TemplatesApi templatesApi;
 
     // Do not use directly. Use the builder.
-    private ApiClient(final String baseURL, final String username, final String password,
+    private ApiClient(final String endpoint, final String username, final String password,
         final String version, final SSLConfiguration sslConfiguration, final Json json)
     {
-        client = new RestClient(username, password, baseURL, version, sslConfiguration, json);
+        client = new RestClient(username, password, endpoint, version, sslConfiguration, json);
         enterpriseApi = new EnterpriseApi(client);
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);
@@ -53,7 +53,7 @@ public class ApiClient
 
     public static class Builder
     {
-        private String baseUrl;
+        private String endpoint;
 
         private String username;
 
@@ -65,9 +65,9 @@ public class ApiClient
 
         private Json json = new JacksonJsonImpl();
 
-        public Builder baseUrl(final String baseUrl)
+        public Builder endpoint(final String endpoint)
         {
-            this.baseUrl = baseUrl;
+            this.endpoint = endpoint;
             return this;
         }
 
@@ -98,7 +98,7 @@ public class ApiClient
 
         public ApiClient build()
         {
-            return new ApiClient(baseUrl, username, password, version, sslConfiguration, json);
+            return new ApiClient(endpoint, username, password, version, sslConfiguration, json);
         }
     }
 

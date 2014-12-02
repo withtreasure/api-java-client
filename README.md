@@ -48,20 +48,20 @@ To use the client you just have to create an instance of the `ApiClient` class p
 ```java
 // Create a basic client
 ApiClient api = ApiClient.builder()
-    .baseUrl("http://abiquo-server/api")
+    .endpoint("http://abiquo-server/api")
     .credentials("username", "password")
     .build();
 
 // Create a client for a specific version of the Abiquo API
 ApiClient api = ApiClient.builder()
-    .baseUrl("http://abiquo-server/api")
+    .endpoint("http://abiquo-server/api")
     .credentials("username", "password")
     .version("3.2")
     .build();
 
 // Create a client with custom SSL and json configurations
 ApiClient api = ApiClient.builder()
-    .baseUrl("http://abiquo-server/api")
+    .endpoint("https://abiquo-server/api")
     .credentials("username", "password")
     .sslConfiguration(customSSLConfig)
     .json(customJsonLibrary)
