@@ -16,6 +16,7 @@
 package com.abiquo.apiclient.cloud;
 
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
+import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -23,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.model.enumerator.NetworkType;
-import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
@@ -116,13 +116,17 @@ public class CloudApi
         final String vlanAddress, final String vlanGateway, final String vlanName)
     {
         checkArgument(location instanceof DatacenterDto || location instanceof PublicCloudRegionDto);
+        String mt =
+            location instanceof DatacenterDto ? DatacenterDto.SHORT_MEDIA_TYPE_JSON
+                : PublicCloudRegionDto.SHORT_MEDIA_TYPE_JSON;
 
         VirtualDatacenterDto vdc = new VirtualDatacenterDto();
         vdc.setName(name);
         vdc.setHypervisorType(type);
 
-        vdc.addLink(new RESTLink("enterprise", enterprise.getEditLink().getHref()));
-        vdc.addLink(new RESTLink("location", location.searchLink("self").getHref()));
+        vdc.addLink(create("enterprise", enterprise.getEditLink().getHref(),
+            EnterpriseDto.SHORT_MEDIA_TYPE_JSON));
+        vdc.addLink(create("location", location.searchLink("self").getHref(), mt));
 
         VLANNetworkDto vlan = new VLANNetworkDto();
         vlan.setAddress(vlanAddress);
@@ -152,7 +156,8 @@ public class CloudApi
     {
         VirtualMachineDto vm = new VirtualMachineDto();
         vm.setVdrpEnabled(Boolean.TRUE);
-        vm.addLink(new RESTLink("virtualmachinetemplate", template.getEditLink().getHref()));
+        vm.addLink(create("virtualmachinetemplate", template.getEditLink().getHref(),
+            VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON));
 
         return client
             .post(vapp.searchLink("virtualmachines").getHref(), VirtualMachineDto.MEDIA_TYPE,
@@ -262,7 +267,7 @@ public class CloudApi
         VolumeManagementDto dto = new VolumeManagementDto();
         dto.setName(name);
         dto.setSizeInMB(sizeInMb);
-        dto.addLink(new RESTLink("tier", tier.searchLink("self").getHref()));
+        dto.addLink(create("tier", tier.searchLink("self").getHref(), TierDto.SHORT_MEDIA_TYPE_JSON));
 
         return client.post(vdc.searchLink("volumes").getHref(), VolumeManagementDto.MEDIA_TYPE,
             VolumeManagementDto.MEDIA_TYPE, dto, VolumeManagementDto.class);

@@ -16,6 +16,7 @@
 package com.abiquo.apiclient.templates;
 
 import static com.abiquo.apiclient.domain.ApiPredicates.templateName;
+import static com.abiquo.apiclient.domain.Links.create;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
@@ -25,7 +26,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.RestClient;
-import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateRequestDto;
@@ -87,7 +87,8 @@ public class TemplatesApi
         final String promotedName)
     {
         VirtualMachineTemplateRequestDto promote = new VirtualMachineTemplateRequestDto();
-        promote.addLink(new RESTLink("virtualmachinetemplate", template.getEditLink().getHref()));
+        promote.addLink(create("virtualmachinetemplate", template.getEditLink().getHref(),
+            VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON));
         promote.setPromotedName(promotedName);
         AcceptedRequestDto<String> acceptedRequest =
             client.post(template.searchLink("datacenterrepository").getHref()

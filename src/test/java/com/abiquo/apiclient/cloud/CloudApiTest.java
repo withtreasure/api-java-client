@@ -65,9 +65,7 @@ public class CloudApiTest extends BaseMockTest
         RESTLink link = new RESTLink("virtualappliances", "/cloud/virtualdatacenters/1");
         link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
-
-        VirtualApplianceDto vapp = newApiClient().getCloudApi().createVirtualAppliance(dto, "VAPP");
-        assertEquals(vapp.getName(), "VAPP");
+        newApiClient().getCloudApi().createVirtualAppliance(dto, "VAPP");
 
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "POST", VIRTUALDATACENTERS_URL + "1");
@@ -75,6 +73,9 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+        VirtualApplianceDto requestBody = readBody(request, VirtualApplianceDto.class);
+        assertEquals(requestBody.getName(), "VAPP");
+
     }
 
     public void testCreateVirtualDatacenter() throws Exception
@@ -96,22 +97,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
         enterprise.addLink(link);
 
-        VirtualDatacenterDto vdcDto =
-            newApiClient().getCloudApi().createVirtualDatacenter(location, enterprise, "VDC",
-                "KVM", "192.168.0.0", "192.168.0.1", "default_private_network");
-        assertEquals(vdcDto.getName(), "VDC");
-        assertEquals(vdcDto.getHypervisorType(), "KVM");
-
-        VLANNetworkDto vlanDto = vdcDto.getVlan();
-        assertNotNull(vlanDto);
-        assertEquals(vlanDto.getName(), "default_private_network");
-        assertEquals(vlanDto.getAddress(), "192.168.0.0");
-        assertEquals(vlanDto.getGateway(), "192.168.0.1");
-        assertEquals(vlanDto.getMask(), new Integer(24));
-        assertEquals(vlanDto.getType(), NetworkType.INTERNAL);
-
-        assertLinkExist(vdcDto, HOST + enterprise.getEditLink().getHref(), "enterprise",
-            EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
+        newApiClient().getCloudApi().createVirtualDatacenter(location, enterprise, "VDC", "KVM",
+            "192.168.0.0", "192.168.0.1", "default_private_network");
 
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "POST", VIRTUALDATACENTERS_URL);
@@ -119,6 +106,23 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+
+        VirtualDatacenterDto requestBody = readBody(request, VirtualDatacenterDto.class);
+        assertEquals(requestBody.getName(), "VDC");
+        assertEquals(requestBody.getHypervisorType(), "KVM");
+
+        VLANNetworkDto vlanDto = requestBody.getVlan();
+        assertNotNull(vlanDto);
+        assertEquals(vlanDto.getName(), "default_private_network");
+        assertEquals(vlanDto.getAddress(), "192.168.0.0");
+        assertEquals(vlanDto.getGateway(), "192.168.0.1");
+        assertEquals(vlanDto.getMask(), new Integer(24));
+        assertEquals(vlanDto.getType(), NetworkType.INTERNAL);
+
+        assertLinkExist(requestBody, enterprise.getEditLink().getHref(), "enterprise",
+            EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
+        assertLinkExist(requestBody, location.searchLink("self").getHref(), "location",
+            DatacenterDto.SHORT_MEDIA_TYPE_JSON);
 
     }
 
@@ -145,11 +149,7 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON);
         vapp.addLink(link);
 
-        VirtualMachineDto vmDto = newApiClient().getCloudApi().createVirtualMachine(template, vapp);
-
-        assertEquals(vmDto.getVdrpEnabled(), Boolean.TRUE);
-        assertLinkExist(vmDto, HOST + template.getEditLink().getHref(), "virtualmachinetemplate",
-            VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+        newApiClient().getCloudApi().createVirtualMachine(template, vapp);
 
         RecordedRequest request = server.takeRequest();
 
@@ -159,6 +159,11 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+
+        VirtualMachineDto requestBody = readBody(request, VirtualMachineDto.class);
+        assertEquals(requestBody.getVdrpEnabled(), Boolean.TRUE);
+        assertLinkExist(requestBody, template.getEditLink().getHref(), "virtualmachinetemplate",
+            VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
 
     }
 
@@ -181,13 +186,7 @@ public class CloudApiTest extends BaseMockTest
         link.setType(TierDto.SHORT_MEDIA_TYPE_JSON);
         tier.addLink(link);
 
-        VolumeManagementDto volDto =
-            newApiClient().getCloudApi().createVolume(vdc, "volumeTest", 1024, tier);
-
-        assertEquals(volDto.getName(), "volumeTest");
-        assertEquals(volDto.getSizeInMB(), 1024);
-        assertLinkExist(volDto, HOST + tier.searchLink("self").getHref(), "tier",
-            TierDto.SHORT_MEDIA_TYPE_JSON);
+        newApiClient().getCloudApi().createVolume(vdc, "volumeTest", 1024, tier);
 
         RecordedRequest request = server.takeRequest();
 
@@ -196,6 +195,12 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+
+        VolumeManagementDto requestBody = readBody(request, VolumeManagementDto.class);
+        assertEquals(requestBody.getName(), "volumeTest");
+        assertEquals(requestBody.getSizeInMB(), 1024);
+        assertLinkExist(requestBody, tier.searchLink("self").getHref(), "tier",
+            TierDto.SHORT_MEDIA_TYPE_JSON);
 
     }
 
@@ -296,6 +301,8 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualMachineTaskDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+        VirtualMachineTaskDto requestBody = readBody(request, VirtualMachineTaskDto.class);
+        assertEquals(requestBody.getForceUndeploy(), false);
 
         // Verify the second request
         RecordedRequest second = server.takeRequest();
@@ -374,16 +381,12 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualMachineDto vm =
-            newApiClient().getCloudApi().powerState(dto, VirtualMachineState.OFF);
-
-        // Verify the returned status is the right one
-        assertEquals(vm.getState(), VirtualMachineState.OFF);
+        newApiClient().getCloudApi().powerState(dto, VirtualMachineState.OFF);
 
         // Make sure the polling has retried once
         assertEquals(server.getRequestCount(), 2);
 
-        // Verify the first reques
+        // Verify the first request
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "PUT",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/state");
@@ -391,6 +394,8 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualMachineStateDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+        VirtualMachineStateDto requestBody = readBody(request, VirtualMachineStateDto.class);
+        assertEquals(requestBody.getState(), VirtualMachineState.OFF);
 
         // Verify the second request
         RecordedRequest second = server.takeRequest();

@@ -18,6 +18,7 @@ package com.abiquo.apiclient.enterprise;
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
 import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
+import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
@@ -52,6 +53,8 @@ public class EnterpriseApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+        EnterpriseDto requestBody = readBody(request, EnterpriseDto.class);
+        assertEquals(requestBody.getName(), "Abiquo");
     }
 
     public void testGetEnterprise() throws Exception

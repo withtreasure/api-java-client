@@ -1,0 +1,283 @@
+{
+    "collection": [
+        {
+            "chefEnabled": false, 
+            "cpuRequired": 1, 
+            "creationDate": "2014-11-26T10:25:34.000+0000", 
+            "creationUser": "SYSTEM", 
+            "description": "m0n0wall is a project aimed at creating a complete, embedded firewall software package that, when used together with an embedded PC, provides all the important features of commercial firewall boxes (including ease of use) at a fraction of the price (free software). https://PUBLIC:IP and use Username: admin, password: abiquo. Configure MANUALLY the private IP of abicloud and it's done.", 
+            "diskController": "lsilogic", 
+            "diskControllerType": "IDE", 
+            "diskFileSize": 27262976, 
+            "diskFormatType": "VMDK_FLAT", 
+            "ethernetDriverType": "E1000", 
+            "hdRequired": 27262976, 
+            "iconUrl": "http://abispace.s3.amazonaws.com/m0n0wall/m0n0wall_logo.png", 
+            "id": 118, 
+            "links": [
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1", 
+                    "rel": "enterprise", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/config/categories/1", 
+                    "rel": "category", 
+                    "title": "Others", 
+                    "type": "application/vnd.abiquo.category+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/118", 
+                    "rel": "edit", 
+                    "title": "0134eff9-4fb6-4a67-8872-aa2cb68141d6-snapshot-m0n0wall-1.3b18-i386-flat", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/118/tasks", 
+                    "rel": "tasks", 
+                    "title": "tasks", 
+                    "type": "application/vnd.abiquo.tasks+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1", 
+                    "rel": "datacenterrepository", 
+                    "title": "repository", 
+                    "type": "application/vnd.abiquo.datacenterrepository+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/118/conversions", 
+                    "rel": "conversions", 
+                    "title": "conversions", 
+                    "type": "application/vnd.abiquo.conversions+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/118/action/virtualmachines", 
+                    "rel": "virtualmachines", 
+                    "title": "virtual machines", 
+                    "type": "application/vnd.abiquo.virtualmachines+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/24", 
+                    "rel": "master", 
+                    "title": "m0n0wall", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/am/erepos/1/templates/1/files.template-repository.abiquo.com/m0n0wall-backup/0134eff9-4fb6-4a67-8872-aa2cb68141d6-snapshot-m0n0wall-1.3b18-i386-flat.vmdk", 
+                    "rel": "template", 
+                    "title": "template"
+                }, 
+                {
+                    "href": "http://localhost:443/am/files/1/files.template-repository.abiquo.com/m0n0wall-backup/0134eff9-4fb6-4a67-8872-aa2cb68141d6-snapshot-m0n0wall-1.3b18-i386-flat.vmdk", 
+                    "rel": "diskfile", 
+                    "title": "diskfile"
+                }, 
+                {
+                    "href": "1/files.template-repository.abiquo.com/m0n0wall-backup/0134eff9-4fb6-4a67-8872-aa2cb68141d6-snapshot-m0n0wall-1.3b18-i386-flat.vmdk", 
+                    "rel": "templatedefinition", 
+                    "title": "template definition"
+                }
+            ], 
+            "name": "m0n0wall", 
+            "osType": "LINUX_2_6", 
+            "path": "1/files.template-repository.abiquo.com/m0n0wall-backup/0134eff9-4fb6-4a67-8872-aa2cb68141d6-snapshot-m0n0wall-1.3b18-i386-flat.vmdk", 
+            "ramRequired": 128, 
+            "shared": false, 
+            "state": "DONE"
+        }, 
+        {
+            "chefEnabled": false, 
+            "cpuRequired": 1, 
+            "creationDate": "2014-11-26T10:25:33.000+0000", 
+            "creationUser": "SYSTEM", 
+            "description": "root : abiquo", 
+            "diskController": "lsilogic", 
+            "diskControllerType": "SCSI", 
+            "diskFileSize": 12976128, 
+            "diskFormatType": "QCOW2_SPARSE", 
+            "ethernetDriverType": "E1000", 
+            "hdRequired": 104857600, 
+            "iconUrl": "http://rs.bcn.abiquo.com:9000/public/icons/tinycore.png", 
+            "id": 93, 
+            "links": [
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1", 
+                    "rel": "enterprise", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/config/categories/1", 
+                    "rel": "category", 
+                    "title": "Others", 
+                    "type": "application/vnd.abiquo.category+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/93", 
+                    "rel": "edit", 
+                    "title": "034f4ea2-e623-4ddb-bbe3-48025dad0980-snapshot-Core", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/93/tasks", 
+                    "rel": "tasks", 
+                    "title": "tasks", 
+                    "type": "application/vnd.abiquo.tasks+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1", 
+                    "rel": "datacenterrepository", 
+                    "title": "repository", 
+                    "type": "application/vnd.abiquo.datacenterrepository+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/93/conversions", 
+                    "rel": "conversions", 
+                    "title": "conversions", 
+                    "type": "application/vnd.abiquo.conversions+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/93/action/virtualmachines", 
+                    "rel": "virtualmachines", 
+                    "title": "virtual machines", 
+                    "type": "application/vnd.abiquo.virtualmachines+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/3", 
+                    "rel": "master", 
+                    "title": "Core", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/am/erepos/1/templates/1/rs.bcn.abiquo.com/abiport9000/ovf/305/034f4ea2-e623-4ddb-bbe3-48025dad0980-snapshot-Core.qcow2", 
+                    "rel": "template", 
+                    "title": "template"
+                }, 
+                {
+                    "href": "http://localhost:443/am/files/1/rs.bcn.abiquo.com/abiport9000/ovf/305/034f4ea2-e623-4ddb-bbe3-48025dad0980-snapshot-Core.qcow2", 
+                    "rel": "diskfile", 
+                    "title": "diskfile"
+                }, 
+                {
+                    "href": "1/rs.bcn.abiquo.com/abiport9000/ovf/305/034f4ea2-e623-4ddb-bbe3-48025dad0980-snapshot-Core.qcow2", 
+                    "rel": "templatedefinition", 
+                    "title": "template definition"
+                }
+            ], 
+            "loginPassword": "password", 
+            "loginUser": "user", 
+            "name": "034f4ea2-e623-4ddb-bbe3-48025dad0980-snapshot-Core", 
+            "osType": "UNRECOGNIZED", 
+            "osVersion": "", 
+            "path": "1/rs.bcn.abiquo.com/abiport9000/ovf/305/034f4ea2-e623-4ddb-bbe3-48025dad0980-snapshot-Core.qcow2", 
+            "ramRequired": 64, 
+            "shared": false, 
+            "state": "DONE"
+        }, 
+        {
+            "chefEnabled": false, 
+            "cpuRequired": 1, 
+            "creationDate": "2014-11-26T10:25:33.000+0000", 
+            "creationUser": "SYSTEM", 
+            "description": "Lightweight sysadmin distro", 
+            "diskController": "lsilogic", 
+            "diskControllerType": "SCSI", 
+            "diskFileSize": 224120320, 
+            "diskFormatType": "QCOW2_SPARSE", 
+            "ethernetDriverType": "E1000", 
+            "hdRequired": 1073741824, 
+            "iconUrl": "http://rs.bcn.abiquo.com:9000/public/icons/grml.png", 
+            "id": 99, 
+            "links": [
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1", 
+                    "rel": "enterprise", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/config/categories/1", 
+                    "rel": "category", 
+                    "title": "Others", 
+                    "type": "application/vnd.abiquo.category+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/99", 
+                    "rel": "edit", 
+                    "title": "04578048-d9c9-4a02-9a34-9d21a7142d23-snapshot-grmlsmall", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/99/tasks", 
+                    "rel": "tasks", 
+                    "title": "tasks", 
+                    "type": "application/vnd.abiquo.tasks+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1", 
+                    "rel": "datacenterrepository", 
+                    "title": "repository", 
+                    "type": "application/vnd.abiquo.datacenterrepository+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/99/conversions", 
+                    "rel": "conversions", 
+                    "title": "conversions", 
+                    "type": "application/vnd.abiquo.conversions+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/99/action/virtualmachines", 
+                    "rel": "virtualmachines", 
+                    "title": "virtual machines", 
+                    "type": "application/vnd.abiquo.virtualmachines+json"
+                }, 
+                {
+                    "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/10", 
+                    "rel": "master", 
+                    "title": "GRML Small", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }, 
+                {
+                    "href": "http://localhost:443/am/erepos/1/templates/1/rs.bcn.abiquo.com/abiport9000/ovf/146/04578048-d9c9-4a02-9a34-9d21a7142d23-snapshot-grmlsmall.qcow2", 
+                    "rel": "template", 
+                    "title": "template"
+                }, 
+                {
+                    "href": "http://localhost:443/am/files/1/rs.bcn.abiquo.com/abiport9000/ovf/146/04578048-d9c9-4a02-9a34-9d21a7142d23-snapshot-grmlsmall.qcow2", 
+                    "rel": "diskfile", 
+                    "title": "diskfile"
+                }, 
+                {
+                    "href": "1/rs.bcn.abiquo.com/abiport9000/ovf/146/04578048-d9c9-4a02-9a34-9d21a7142d23-snapshot-grmlsmall.qcow2", 
+                    "rel": "templatedefinition", 
+                    "title": "template definition"
+                }
+            ], 
+            "loginPassword": "password", 
+            "loginUser": "user", 
+            "name": "04578048-d9c9-4a02-9a34-9d21a7142d23-snapshot-grmlsmall", 
+            "osType": "UNRECOGNIZED", 
+            "osVersion": "", 
+            "path": "1/rs.bcn.abiquo.com/abiport9000/ovf/146/04578048-d9c9-4a02-9a34-9d21a7142d23-snapshot-grmlsmall.qcow2", 
+            "ramRequired": 128, 
+            "shared": false, 
+            "state": "DONE"
+        }
+    ], 
+    "links": [
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/action/templates?limit=25&by=id", 
+            "rel": "first"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/action/templates?startwith=25&limit=25&by=id", 
+            "rel": "next"
+        }, 
+        {
+            "href": "http://localhost:443/api/cloud/virtualdatacenters/1/action/templates?startwith=105&limit=25&by=id", 
+            "rel": "last"
+        }
+    ], 
+    "totalSize": 3
+}

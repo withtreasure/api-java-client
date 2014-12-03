@@ -15,24 +15,21 @@
  */
 package com.abiquo.apiclient.domain;
 
-public final class ApiPath
+import com.abiquo.model.rest.RESTLink;
+
+public final class Links
 {
-    public static final String ENTERPRISES_URL = "/admin/enterprises/";
 
-    public static final String USERS_URL = "/admin/enterprises/_/users/";
-
-    public static final String DATECENTERS_URL = "/admin/datacenters/";
-
-    public static final String LOADLEVELRULES_URL = "/admin/rules/machineLoadLevel/";
-
-    public static final String LOCATIONS_URL = "/cloud/locations/";
-
-    public static final String VIRTUALDATACENTERS_URL = "/cloud/virtualdatacenters/";
-
-    public static final String LOGIN_URL = "/login/";
-
-    private ApiPath()
+    private Links()
     {
         throw new AssertionError("Constant class. Clients shouldn't instantiate it directly.");
     }
+
+    public static RESTLink create(final String rel, final String href, final String type)
+    {
+        RESTLink link = new RESTLink(rel, href);
+        link.setType(type);
+        return link;
+    }
+
 }

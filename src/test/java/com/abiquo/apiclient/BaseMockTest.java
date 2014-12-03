@@ -46,8 +46,6 @@ public class BaseMockTest
 
     protected static final String DEFAULT_PASS = "bar";
 
-    protected static final String HOST = "https://localhost:443/api";
-
     protected MockWebServer server;
 
     protected Json json;
@@ -164,4 +162,11 @@ public class BaseMockTest
 
         return link.get();
     }
+
+    public <T extends SingleResourceTransportDto> T readBody(final RecordedRequest request,
+        final Class<T> clazz) throws IOException
+    {
+        return json.read(request.getUtf8Body(), clazz);
+    }
+
 }
