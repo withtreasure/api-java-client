@@ -498,8 +498,17 @@ public class RestClient
                 throw new HttpException(responseCode, response.message());
             }
 
-            ErrorsDto errors = json.read(responseBody, ErrorsDto.class);
-            throw new AbiquoException(responseCode, errors);
+            try
+            {
+                ErrorsDto errors = json.read(responseBody, ErrorsDto.class);
+                throw new AbiquoException(responseCode, errors);
+            }
+            catch (Exception ex)
+            {
+                Throwables.propagateIfInstanceOf(ex, AbiquoException.class);
+                throw new HttpException(responseCode, response.message() + ". Body: "
+                    + responseBody);
+            }
         }
     }
 }
