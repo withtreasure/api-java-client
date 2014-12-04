@@ -3,8 +3,8 @@
 [![Build Status](https://travis-ci.org/abiquo/api-java-client.svg?branch=master)](https://travis-ci.org/abiquo/api-java-client)
 
 This is an API client for the [Abiquo API](http://wiki.abiquo.com/). The Abiquo API is a RESTful API,
-so any REST client can be used to connect to it. This project uses [OkHttp](http://square.github.io/okhttp/) and [Jackson](https://github.com/FasterXML/jackson) (although users can configure any json 
-library for serialization and deserialization) and just provides some high level functions and enforces some best practices to make it easier to perform the common tasks.
+so any REST client can be used to connect to it. This project uses [OkHttp](http://square.github.io/okhttp/) and [Jackson](https://github.com/FasterXML/jackson) and just provides some high level functions 
+to enforce some best practices to make it easier to perform the common tasks.
 
 ## Installation
 
@@ -59,12 +59,11 @@ ApiClient api = ApiClient.builder()
     .version("3.2")
     .build();
 
-// Create a client with custom SSL and json configurations
+// Create a client with custom SSL configuration
 ApiClient api = ApiClient.builder()
     .endpoint("https://abiquo-server/api")
     .credentials("username", "password")
     .sslConfiguration(customSSLConfig)
-    .json(customJsonLibrary)
     .build();
 ```
 

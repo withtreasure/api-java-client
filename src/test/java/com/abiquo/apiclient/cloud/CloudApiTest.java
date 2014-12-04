@@ -15,7 +15,7 @@
  */
 package com.abiquo.apiclient.cloud;
 
-import static com.abiquo.apiclient.ApiPath.VIRTUALDATACENTERS_URL;
+import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 

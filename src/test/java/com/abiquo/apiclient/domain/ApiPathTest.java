@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient;
+package com.abiquo.apiclient.domain;
 
 import static org.testng.Assert.assertTrue;
 
@@ -21,6 +21,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
+
+import com.abiquo.apiclient.domain.ApiPath;
 
 @Test
 public class ApiPathTest

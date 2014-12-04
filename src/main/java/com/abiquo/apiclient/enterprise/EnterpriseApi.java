@@ -15,9 +15,9 @@
  */
 package com.abiquo.apiclient.enterprise;
 
-import static com.abiquo.apiclient.ApiPath.ENTERPRISES_URL;
-import static com.abiquo.apiclient.ApiPath.LOGIN_URL;
-import static com.abiquo.apiclient.ApiPath.USERS_URL;
+import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
+import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
+import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.abiquo.apiclient.RestClient;

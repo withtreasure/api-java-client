@@ -15,6 +15,8 @@
  */
 package com.abiquo.apiclient;
 
+import static com.abiquo.apiclient.LogUtils.logRequest;
+import static com.abiquo.apiclient.LogUtils.logResponse;
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -25,14 +27,19 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.abiquo.apiclient.domain.exception.AbiquoException;
+import com.abiquo.apiclient.domain.exception.AuthorizationException;
+import com.abiquo.apiclient.domain.exception.HttpException;
 import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
+import com.abiquo.model.transport.error.ErrorsDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.net.HttpHeaders;
 import com.google.common.reflect.TypeToken;
@@ -59,12 +66,12 @@ public class RestClient
 
     // Package protected. To be used only by the ApiClient
     RestClient(final String username, final String password, final String baseURL,
-        final String apiVersion, final SSLConfiguration sslConfiguration, final Json json)
+        final String apiVersion, final SSLConfiguration sslConfiguration)
     {
         authHeader =
             Credentials.basic(checkNotNull(username, "username cannot be null"),
                 checkNotNull(password, "password cannot be null"));
-        this.json = checkNotNull(json, "json cannot be null");
+        this.json = new Json();
         this.baseURL = checkNotNull(baseURL, "baseURL cannot be null");
         this.apiVersion = checkNotNull(apiVersion, "apiVersion cannot be null");
 
@@ -142,8 +149,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnClass);
+            return execute(request, returnClass);
         }
         catch (IOException ex)
         {
@@ -161,8 +167,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnType);
+            return execute(request, returnType);
         }
         catch (IOException ex)
         {
@@ -180,8 +185,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnClass);
+            return execute(request, returnClass);
         }
         catch (IOException ex)
         {
@@ -199,8 +203,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnType);
+            return execute(request, returnType);
         }
         catch (IOException ex)
         {
@@ -215,7 +218,7 @@ public class RestClient
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader).delete().build();
-            client.newCall(request).execute();
+            execute(request, (Class< ? >) null);
         }
         catch (IOException ex)
         {
@@ -235,8 +238,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnClass);
+            return execute(request, returnClass);
         }
         catch (IOException ex)
         {
@@ -257,8 +259,25 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnType);
+            return execute(request, returnType);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
+    }
+
+    public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
+        final Class<T> returnClass)
+    {
+        try
+        {
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(null).build();
+
+            return execute(request, returnClass);
         }
         catch (IOException ex)
         {
@@ -276,8 +295,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(null).build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnType);
+            return execute(request, returnType);
         }
         catch (IOException ex)
         {
@@ -297,8 +315,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnClass);
+            return execute(request, returnClass);
         }
         catch (IOException ex)
         {
@@ -316,8 +333,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(null).build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnType);
+            return execute(request, returnType);
         }
         catch (IOException ex)
         {
@@ -338,8 +354,7 @@ public class RestClient
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
-            Response response = client.newCall(request).execute();
-            return json.read(response.body().charStream(), returnType);
+            return execute(request, returnType);
         }
         catch (IOException ex)
         {
@@ -352,14 +367,15 @@ public class RestClient
     {
         try
         {
+            String rawBody = json.write(body);
             RequestBody requestBody =
-                RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
+                RequestBody.create(MediaType.parse(withVersion(contentType)), rawBody);
             Request request =
                 new Request.Builder().url(absolute(uri))
                     .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
-            client.newCall(request).execute();
+            execute(request, (Class< ? >) null);
         }
         catch (IOException ex)
         {
@@ -439,4 +455,51 @@ public class RestClient
         throw new RuntimeException("Virtual machine did not reach the desired state in the configured timeout");
     }
 
+    private <T> T execute(final Request request, final Class<T> resultClass) throws IOException
+    {
+        logRequest(request);
+
+        Response response = client.newCall(request).execute();
+        String responseBody = response.body().string();
+
+        logResponse(response, responseBody);
+        checkResponse(request, response, responseBody);
+
+        return !Strings.isNullOrEmpty(responseBody) && resultClass != null ? json.read(
+            responseBody, resultClass) : null;
+    }
+
+    private <T> T execute(final Request request, final TypeToken<T> returnType) throws IOException
+    {
+        logRequest(request);
+
+        Response response = client.newCall(request).execute();
+        String responseBody = response.body().string();
+
+        logResponse(response, responseBody);
+        checkResponse(request, response, responseBody);
+
+        return !Strings.isNullOrEmpty(responseBody) && returnType != null ? json.read(responseBody,
+            returnType) : null;
+    }
+
+    private void checkResponse(final Request request, final Response response,
+        final String responseBody) throws IOException
+    {
+        int responseCode = response.code();
+        if (responseCode == 401 || responseCode == 403)
+        {
+            throw new AuthorizationException(responseCode, response.message());
+        }
+        else if (responseCode >= 400)
+        {
+            if (responseBody == null)
+            {
+                throw new HttpException(responseCode, response.message());
+            }
+
+            ErrorsDto errors = json.read(responseBody, ErrorsDto.class);
+            throw new AbiquoException(responseCode, errors);
+        }
+    }
 }

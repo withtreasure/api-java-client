@@ -15,13 +15,13 @@
  */
 package com.abiquo.apiclient.infrastructure;
 
-import static com.abiquo.apiclient.ApiPath.DATECENTERS_URL;
-import static com.abiquo.apiclient.ApiPath.LOADLEVELRULES_URL;
-import static com.abiquo.apiclient.ApiPredicates.defaultNetworkServiceType;
-import static com.abiquo.apiclient.ApiPredicates.locationName;
-import static com.abiquo.apiclient.ApiPredicates.networkName;
-import static com.abiquo.apiclient.ApiPredicates.storagePoolName;
-import static com.abiquo.apiclient.ApiPredicates.tierName;
+import static com.abiquo.apiclient.domain.ApiPath.DATECENTERS_URL;
+import static com.abiquo.apiclient.domain.ApiPath.LOADLEVELRULES_URL;
+import static com.abiquo.apiclient.domain.ApiPredicates.defaultNetworkServiceType;
+import static com.abiquo.apiclient.domain.ApiPredicates.locationName;
+import static com.abiquo.apiclient.domain.ApiPredicates.networkName;
+import static com.abiquo.apiclient.domain.ApiPredicates.storagePoolName;
+import static com.abiquo.apiclient.domain.ApiPredicates.tierName;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
 

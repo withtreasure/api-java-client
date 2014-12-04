@@ -16,25 +16,40 @@
 package com.abiquo.apiclient.json;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.reflect.TypeToken;
 
-public interface Json
+public class Json
 {
-    /**
-     * Read a json object from an {@link InputStream}.
-     */
-    public <T> T read(Reader reader, Class<T> type) throws IOException;
+    private final ObjectMapper mapper;
 
-    /**
-     * Read a json object from an {@link InputStream}.
-     */
-    public <T> T read(Reader reader, TypeToken<T> type) throws IOException;
+    public Json()
+    {
+        mapper = new ObjectMapper();
+        mapper.setVisibilityChecker(mapper.getVisibilityChecker().withFieldVisibility(
+            Visibility.ANY));
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
-    /**
-     * Write the given object to json.
-     */
-    public String write(Object object) throws IOException;
+    public <T> T read(final String str, final Class<T> clazz) throws IOException
+    {
+        return mapper.readValue(str, mapper.constructType(clazz));
+    }
+
+    public <T> T read(final String str, final TypeToken<T> type) throws IOException
+    {
+        return mapper.readValue(str, mapper.constructType(type.getType()));
+    }
+
+    public String write(final Object object) throws IOException
+    {
+        return mapper.writeValueAsString(object);
+    }
 }

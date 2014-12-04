@@ -22,11 +22,13 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.LogManager;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
-import com.abiquo.apiclient.json.JacksonJsonImpl;
 import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.SingleResourceTransportDto;
@@ -50,11 +52,20 @@ public class BaseMockTest
 
     protected Json json;
 
+    @BeforeSuite
+    protected void configureLogger() throws IOException
+    {
+        try (InputStream in = RestClient.class.getResourceAsStream("/logging.properties"))
+        {
+            LogManager.getLogManager().readConfiguration(in);
+        }
+    }
+
     @BeforeMethod
     protected void setup()
     {
         server = new MockWebServer();
-        json = new JacksonJsonImpl();
+        json = new Json();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -91,7 +102,6 @@ public class BaseMockTest
             .credentials(DEFAULT_USER, DEFAULT_PASS) //
             .version(version) //
             .sslConfiguration(sslConfiguration) //
-            .json(json) //
             .build();
     }
 

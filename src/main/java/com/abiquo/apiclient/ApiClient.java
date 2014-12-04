@@ -18,8 +18,6 @@ package com.abiquo.apiclient;
 import com.abiquo.apiclient.cloud.CloudApi;
 import com.abiquo.apiclient.enterprise.EnterpriseApi;
 import com.abiquo.apiclient.infrastructure.InfrastructureApi;
-import com.abiquo.apiclient.json.JacksonJsonImpl;
-import com.abiquo.apiclient.json.Json;
 import com.abiquo.apiclient.templates.TemplatesApi;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 
@@ -37,9 +35,9 @@ public class ApiClient
 
     // Do not use directly. Use the builder.
     private ApiClient(final String endpoint, final String username, final String password,
-        final String version, final SSLConfiguration sslConfiguration, final Json json)
+        final String version, final SSLConfiguration sslConfiguration)
     {
-        client = new RestClient(username, password, endpoint, version, sslConfiguration, json);
+        client = new RestClient(username, password, endpoint, version, sslConfiguration);
         enterpriseApi = new EnterpriseApi(client);
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);
@@ -62,8 +60,6 @@ public class ApiClient
         private String version = SingleResourceTransportDto.API_VERSION;
 
         private SSLConfiguration sslConfiguration;
-
-        private Json json = new JacksonJsonImpl();
 
         public Builder endpoint(final String endpoint)
         {
@@ -90,15 +86,9 @@ public class ApiClient
             return this;
         }
 
-        public Builder json(final Json json)
-        {
-            this.json = json;
-            return this;
-        }
-
         public ApiClient build()
         {
-            return new ApiClient(endpoint, username, password, version, sslConfiguration, json);
+            return new ApiClient(endpoint, username, password, version, sslConfiguration);
         }
     }
 
