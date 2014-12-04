@@ -48,7 +48,8 @@ public class LogUtils
             RequestBody body = request.body();
             if (body != null)
             {
-                try (ByteArrayOutputStream out = new ByteArrayOutputStream())
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                try
                 {
                     BufferedSink buffer = Okio.buffer(Okio.sink(out));
                     body.writeTo(buffer);
@@ -59,6 +60,10 @@ public class LogUtils
                     {
                         LOG.log(Level.FINE, String.format(">> Body: %s", new String(bytes)));
                     }
+                }
+                finally
+                {
+                    out.close();
                 }
             }
         }
