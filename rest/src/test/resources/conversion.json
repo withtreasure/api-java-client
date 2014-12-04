@@ -1,0 +1,47 @@
+{
+  "targetSizeInBytes": 2147483648,
+  "targetPath": "1/centos59/formats/Centos59-VMDK_FLAT.qcow2",
+  "targetFormat": "VMDK_FLAT",
+  "state": "FINISHED",
+  "startTimestamp": "2015-02-24T17:57:12.000+0000",
+  "sourcePath": "1/centos59/Centos59.qcow2",
+  "sourceFormat": "QCOW2_SPARSE",
+  "links": [
+    {
+      "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2/virtualmachinetemplates/1/conversions/VMDK_FLAT",
+      "type": "application/vnd.abiquo.conversion+json",
+      "rel": "edit",
+      "title": "FINISHED"
+    },
+    {
+      "href": "http://10.60.1.252:80/api/admin/datacenters/2",
+      "type": "application/vnd.abiquo.datacenter+json",
+      "rel": "datacenter",
+      "title": "dc local"
+    },
+    {
+      "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+      "type": "application/vnd.abiquo.enterprise+json",
+      "rel": "enterprise",
+      "title": "Abiquo"
+    },
+    {
+      "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2",
+      "type": "application/vnd.abiquo.datacenterrepository+json",
+      "rel": "datacenterrepository",
+      "title": "repository"
+    },
+    {
+      "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2/virtualmachinetemplates/1",
+      "type": "application/vnd.abiquo.virtualmachinetemplate+json",
+      "rel": "virtualmachinetemplate",
+      "title": "centos59"
+    },
+    {
+      "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2/virtualmachinetemplates/1/conversions/VMDK_FLAT/tasks",
+      "type": "application/vnd.abiquo.tasks+json",
+      "rel": "tasks",
+      "title": "tasks"
+    }
+  ]
+}

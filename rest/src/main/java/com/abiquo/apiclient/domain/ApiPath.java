@@ -23,6 +23,8 @@ public final class ApiPath
 
     public static final String LOADLEVELRULES_URL = "/admin/rules/machineLoadLevel";
 
+    public static final String PUBLIC_CLOUD_REGIONS_URL = "/admin/publiccloudregions";
+
     public static final String LOCATIONS_URL = "/cloud/locations";
 
     public static final String VIRTUALDATACENTERS_URL = "/cloud/virtualdatacenters";
@@ -30,6 +32,8 @@ public final class ApiPath
     public static final String LOGIN_URL = "/login";
 
     public static final String ROLES_URL = "/admin/roles";
+
+    public static final String HYPERVISORTYPES_URL = "/config/hypervisortypes";
 
     private ApiPath()
     {

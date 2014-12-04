@@ -15,16 +15,24 @@
  */
 package com.abiquo.apiclient.templates;
 
+import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.ws.rs.core.MediaType;
+
 import com.abiquo.apiclient.RestClient;
+import com.abiquo.apiclient.domain.Links;
 import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.transport.AcceptedRequestDto;
+import com.abiquo.server.core.appslibrary.ConversionDto;
+import com.abiquo.server.core.appslibrary.ConversionsDto;
 import com.abiquo.server.core.appslibrary.DatacenterRepositoryDto;
+import com.abiquo.server.core.appslibrary.TemplateDefinitionDto;
+import com.abiquo.server.core.appslibrary.TemplateDefinitionListDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplatePersistentDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateRequestDto;
@@ -59,6 +67,21 @@ public class TemplatesApi
     {
         return client.list(vdc.searchLink("templates").getHref(), options.queryParams(),
             VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
+    }
+
+    public Iterable<VirtualMachineTemplateDto> listTemplates(
+        final DatacenterRepositoryDto repository)
+    {
+        return client.list(repository.searchLink("virtualmachinetemplates").getHref(),
+            VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
+    }
+
+    public Iterable<VirtualMachineTemplateDto> listTemplates(
+        final DatacenterRepositoryDto repository, final TemplateListOptions options)
+    {
+        return client.list(repository.searchLink("virtualmachinetemplates").getHref(),
+            options.queryParams(), VirtualMachineTemplatesDto.MEDIA_TYPE,
+            VirtualMachineTemplatesDto.class);
     }
 
     public VirtualMachineTemplateDto instanceVirtualMachine(final VirtualMachineDto vm,
@@ -117,9 +140,9 @@ public class TemplatesApi
     {
         AcceptedRequestDto<String> acceptedRequest =
             client.put(
-                enterprise.searchLink("datacenterrepositories").getHref() + "/"
-                    + datacenter.getId() + "/actions/refresh", AcceptedRequestDto.MEDIA_TYPE,
-                new TypeToken<AcceptedRequestDto<String>>()
+                String.format("%s/%s/actions/refresh",
+                    enterprise.searchLink("datacenterrepositories").getHref(), datacenter.getId()),
+                AcceptedRequestDto.MEDIA_TYPE, new TypeToken<AcceptedRequestDto<String>>()
                 {
                     private static final long serialVersionUID = -6348281615419377868L;
                 });
@@ -145,7 +168,6 @@ public class TemplatesApi
         final VirtualMachineTemplateDto vmt, final String persistentTemplateName,
         final TierDto tier, final int pollInterval, final int maxWait, final TimeUnit unit)
     {
-
         VirtualMachineTemplatePersistentDto persistentTemplateDto =
             new VirtualMachineTemplatePersistentDto();
         persistentTemplateDto.setPersistentTemplateName(persistentTemplateName);
@@ -166,6 +188,7 @@ public class TemplatesApi
                 {
                     private static final long serialVersionUID = -6348281615419377868L;
                 });
+
         TaskDto task = client.waitForTask(acceptedRequest, pollInterval, maxWait, unit);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
@@ -179,5 +202,86 @@ public class TemplatesApi
     public Iterable<TaskDto> getVirtualMachineTemplateTasks(final VirtualMachineTemplateDto vmt)
     {
         return client.list(vmt.searchLink("tasks").getHref(), TasksDto.MEDIA_TYPE, TasksDto.class);
+    }
+
+    public AcceptedRequestDto<String> createConversion(final VirtualMachineTemplateDto template,
+        final String targetFormat)
+    {
+        ConversionDto conversion = new ConversionDto();
+        conversion.setTargetFormat(targetFormat);
+
+        return client.put(
+            String.format("%s/conversions/%s", Links.editOrSelf(template).getHref(), targetFormat),
+            AcceptedRequestDto.MEDIA_TYPE, ConversionDto.MEDIA_TYPE, conversion,
+            new TypeToken<AcceptedRequestDto<String>>()
+            {
+                private static final long serialVersionUID = -6348281615419377868L;
+            });
+    }
+
+    public AcceptedRequestDto<String> restartConversion(final ConversionDto conversion)
+    {
+
+        return client.put(Links.editOrSelf(conversion).getHref(), AcceptedRequestDto.MEDIA_TYPE,
+            ConversionDto.MEDIA_TYPE, conversion, new TypeToken<AcceptedRequestDto<String>>()
+            {
+                private static final long serialVersionUID = -6348281615419377868L;
+            });
+    }
+
+    public TemplateDefinitionListDto createTemplateDefinitionList(final EnterpriseDto enterprise,
+        final String urlRepo)
+    {
+        return client.post(
+            String.format("%s/%s/appslib/templateDefinitionLists", ENTERPRISES_URL,
+                enterprise.getId()), TemplateDefinitionListDto.MEDIA_TYPE, MediaType.TEXT_PLAIN,
+            urlRepo, TemplateDefinitionListDto.class);
+    }
+
+    public VirtualMachineTemplateDto downloadTemplateToRepository(
+        final DatacenterRepositoryDto repository, final TemplateDefinitionDto templateDefinition,
+        final int polling, final int timeout, final TimeUnit time)
+    {
+        VirtualMachineTemplateRequestDto templateDefinitionReq =
+            new VirtualMachineTemplateRequestDto();
+        templateDefinitionReq.addLink(Links.withRel("templateDefinition",
+            templateDefinition.getEditLink()));
+
+        AcceptedRequestDto<String> acceptedDto =
+            client.post(repository.searchLink("virtualmachinetemplates").getHref(),
+                AcceptedRequestDto.MEDIA_TYPE, VirtualMachineTemplateRequestDto.MEDIA_TYPE,
+                templateDefinitionReq,
+
+                new TypeToken<AcceptedRequestDto<String>>()
+                {
+                    private static final long serialVersionUID = -6348281615419377868L;
+                });
+
+        TaskDto task = client.waitForTask(acceptedDto, polling, timeout, time);
+        if (FINISHED_SUCCESSFULLY != task.getState())
+        {
+            throw new RuntimeException("Download template operation failed");
+        }
+
+        return client.get(task.searchLink("result"), VirtualMachineTemplateDto.class);
+    }
+
+    public ConversionDto getConversion(final VirtualMachineTemplateDto vmt,
+        final String diskFormatType)
+    {
+        return client.get(
+            String.format("%s/%s", vmt.searchLink("conversions").getHref(), diskFormatType),
+            ConversionDto.MEDIA_TYPE, ConversionDto.class);
+    }
+
+    public Iterable<TaskDto> listConversionTasks(final ConversionDto conversion)
+    {
+        return client.list(conversion.searchLink("tasks"), TasksDto.class);
+    }
+
+    public Iterable<ConversionDto> listConversions(final VirtualMachineTemplateDto vmt)
+    {
+        return client.list(vmt.searchLink("conversions").getHref(), ConversionsDto.MEDIA_TYPE,
+            ConversionsDto.class);
     }
 }

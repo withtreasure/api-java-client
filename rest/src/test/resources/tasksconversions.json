@@ -1,0 +1,13 @@
+{
+  "collection": [],
+  "links": [
+    {
+      "href": "http://localhost:80/api/admin/enterprises/1/datacenterrepositories/2/virtualmachinetemplates/1/conversions/VMDK_FLAT/tasks",
+      "rel": "self"
+    },
+    {
+      "href": "http://localhost:80/api/admin/enterprises/1/datacenterrepositories/2/virtualmachinetemplates/1/conversions/VMDK_FLAT",
+      "rel": "parent"
+    }
+  ]
+}

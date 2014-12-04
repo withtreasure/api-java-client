@@ -309,6 +309,25 @@ public class RestClient
     }
 
     public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
+        final String contentType, final String body, final Class<T> returnClass)
+    {
+        try
+        {
+            RequestBody requestBody =
+                RequestBody.create(MediaType.parse(withVersion(contentType)), body);
+            Request request =
+                new Request.Builder().url(absolute(uri))
+                    .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
+
+            return execute(request, returnClass);
+        }
+        catch (IOException ex)
+        {
+            throw Throwables.propagate(ex);
+        }
+    }
+
+    public <T extends SingleResourceTransportDto> T post(final String uri, final String accept,
         final TypeToken<T> returnType)
     {
         try

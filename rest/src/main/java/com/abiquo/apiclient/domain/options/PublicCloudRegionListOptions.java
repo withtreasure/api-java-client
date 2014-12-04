@@ -19,9 +19,9 @@ import java.util.Map;
 
 import com.abiquo.apiclient.domain.options.ListOptions.BaseOptionsBuilder;
 
-public class DatacenterListOptions extends BaseOptions
+public class PublicCloudRegionListOptions extends BaseOptions
 {
-    protected DatacenterListOptions(final Map<String, Object> queryParams)
+    protected PublicCloudRegionListOptions(final Map<String, Object> queryParams)
     {
         super(queryParams);
     }
@@ -33,15 +33,7 @@ public class DatacenterListOptions extends BaseOptions
 
     public static class Builder extends BaseOptionsBuilder<Builder>
     {
-        private Integer pricing;
-
         private Integer idScope;
-
-        public Builder pricing(final int pricing)
-        {
-            this.pricing = pricing;
-            return self();
-        }
 
         public Builder scope(final int idScope)
         {
@@ -53,14 +45,13 @@ public class DatacenterListOptions extends BaseOptions
         protected Map<String, Object> buildParameters()
         {
             Map<String, Object> params = super.buildParameters();
-            putIfPresent("pricing", pricing, params);
             putIfPresent("idScope", idScope, params);
             return params;
         }
 
-        public DatacenterListOptions build()
+        public PublicCloudRegionListOptions build()
         {
-            return new DatacenterListOptions(buildParameters());
+            return new PublicCloudRegionListOptions(buildParameters());
         }
 
         @Override

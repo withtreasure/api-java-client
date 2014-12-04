@@ -1,0 +1,384 @@
+{
+  "totalSize": 1,
+  "collection": [
+    {
+      "templateDefinitions": {
+        "collection": [
+          {
+            "url": "http://files.template-repository.abiquo.com/centos5/centos5.ovf",
+            "productName": "Centos 5.6 x86_64",
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/7",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "OS"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/1",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "Centos 5.6 x86_64"
+              }
+            ],
+            "description": "Centos 5.  Log in as 'root' with password 'abiquo'.",
+            "diskFileSize": 614,
+            "diskFormatType": "QCOW2_SPARSE",
+            "iconUrl": "http://files.template-repository.abiquo.com/centos5/centos.png",
+            "id": 1,
+            "name": "Centos 5.6 x86_64",
+            "osType": "UNRECOGNIZED"
+          },
+          {
+            "url": "http://files.template-repository.abiquo.com/m0n0wall/m0n0wall-1.3b18-i386-monolithicFlat.1.5.ovf",
+            "productName": "m0n0wall 1.3b18-i386",
+            "osType": "LINUX_2_6",
+            "name": "m0n0wall 1.3b18-i386",
+            "id": 2,
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/8",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "Firewall"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/2",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "m0n0wall 1.3b18-i386"
+              }
+            ],
+            "description": "m0n0wall is a project aimed at creating a complete, embedded firewall software package that, when used together with an embedded PC, provides \n            all the important features of commercial firewall boxes (including ease of use) at a fraction of the price (free software). https://PUBLIC:IP and use Username: admin, \n            password: abiquo. Configure MANUALLY the private IP of abicloud and it's done.",
+            "diskControllerType": "IDE",
+            "diskController": "lsilogic",
+            "diskFileSize": 26,
+            "diskFormatType": "VMDK_FLAT",
+            "ethernetDriverType": "E1000",
+            "iconUrl": "http://files.template-repository.abiquo.com/m0n0wall/m0n0wall_logo.png"
+          },
+          {
+            "url": "http://files.template-repository.abiquo.com/ubuntu-11.04/ubuntu-11.04.ovf",
+            "productName": "Ubuntu 11.04 x86_64\n        ",
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/7",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "OS"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/3",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "Ubuntu 11.04 x86_64\n        "
+              }
+            ],
+            "description": "Ubuntu is a fast, secure and easy-to-use operating system used by millions of people around the world. Password for user is 'abiquo'. This user is sudoer.\n        ",
+            "diskFileSize": 321,
+            "diskFormatType": "QCOW2_SPARSE",
+            "iconUrl": "http://files.template-repository.abiquo.com/ubuntu-11.04/ubuntu.png",
+            "id": 3,
+            "name": "Ubuntu 11.04 x86_64\n        ",
+            "osType": "UNRECOGNIZED"
+          },
+          {
+            "url": "http://files.template-repository.abiquo.com/ubuntu1110-x86_64-1.0.8/desc.ovf",
+            "productName": "Ubuntu 11.10 x86_64",
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/6",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "Chef"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/4",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "Ubuntu 11.10 x86_64"
+              }
+            ],
+            "description": "Chef ready Ubuntu 11.10 image. Log in as 'ubuntu' with password 'ubuntu'.",
+            "diskFileSize": 242,
+            "diskFormatType": "VMDK_STREAM_OPTIMIZED",
+            "iconUrl": "http://files.template-repository.abiquo.com/ubuntu1110-x86_64-1.0.8/ubuntu.png",
+            "id": 4,
+            "name": "Ubuntu 11.10 x86_64",
+            "osType": "UNRECOGNIZED"
+          },
+          {
+            "url": "http://files.template-repository.abiquo.com/zentyal-2.2.2-x86_64/desc.ovf",
+            "productName": "Zentyal 2.2.2 x86_64.",
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/8",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "Firewall"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/5",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "Zentyal 2.2.2 x86_64."
+              }
+            ],
+            "description": "Zentyal 2.2.2 ready to be used on your abiquo. http://wiki.abiquo.com/display/Abiquo/Zentyal+image.",
+            "diskFileSize": 958,
+            "diskFormatType": "VMDK_STREAM_OPTIMIZED",
+            "iconUrl": "http://files.template-repository.abiquo.com/zentyal-2.2.2-x86_64/zentyal.png",
+            "id": 5,
+            "name": "Zentyal 2.2.2 x86_64.",
+            "osType": "UNRECOGNIZED"
+          },
+          {
+            "url": "http://files.template-repository.abiquo.com/ubuntu-12.04.x86_64/ubuntu1204.ovf",
+            "productName": "Ubuntu Server 12.04",
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/7",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "OS"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/6",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "Ubuntu Server 12.04"
+              }
+            ],
+            "description": "Ubuntu is a fast, secure and easy-to-use operating system used by millions of people around the world. User is 'abiquo' and the password for this user is 'abiquo'. It is sudoer.",
+            "diskFileSize": 1011,
+            "diskFormatType": "VMDK_SPARSE",
+            "iconUrl": "http://files.template-repository.abiquo.com/ubuntu-12.04.x86_64/ubuntu.png",
+            "id": 6,
+            "name": "Ubuntu Server 12.04",
+            "osType": "UNRECOGNIZED"
+          },
+          {
+            "url": "http://files.template-repository.abiquo.com/ubuntu-12.04.x86_64-1.0.9/ubuntu1204_chef.ovf",
+            "productName": "Ubuntu Server 12.04 Chef enabled",
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/7",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "OS"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/7",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "Ubuntu Server 12.04 Chef enabled"
+              }
+            ],
+            "description": "Ubuntu is a fast, secure and easy-to-use operating system used by millions of people around the world. User is 'abiquo' and the password for this user is 'abiquo'. It is sudoer.",
+            "diskFileSize": 1289,
+            "diskFormatType": "VMDK_SPARSE",
+            "iconUrl": "http://files.template-repository.abiquo.com/ubuntu-12.04.x86_64-1.0.9/ubuntu.png",
+            "id": 7,
+            "name": "Ubuntu Server 12.04 Chef enabled",
+            "osType": "UNRECOGNIZED"
+          },
+          {
+            "url": "http://template-repository.herokuapp.com/VNScubed-3.0/desc.ovf",
+            "productName": "VNScubed-3.0.3_FREE",
+            "osVersion": "",
+            "osType": "LINUX_64",
+            "name": "VNScubed-3.0.3_FREE",
+            "loginUser": "cftuser",
+            "loginPassword": "Cont41ner#",
+            "id": 8,
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/8",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "Firewall"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/8",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "VNScubed-3.0.3_FREE"
+              }
+            ],
+            "description": "ACCESS THE WEB CONSOLE:\n             Once your server is booted, the IP address will be displayed.\n             url: http://[Your Server's IP Address]:2999\n             user: admin\n             password: Cont41ner#\n            ACCESS VIA SSH:\n             user: cftuser\n             password: Cont41ner#\n        ",
+            "diskControllerType": "SCSI",
+            "diskController": "lsilogic",
+            "diskFileSize": 1452,
+            "diskFormatType": "VMDK_SPARSE",
+            "ethernetDriverType": "PCNET32",
+            "iconUrl": "http://files.template-repository.abiquo.com/vnscubed-3.0.3-x86_64_Free/VNS3-Free_Edition_Icon.png"
+          },
+          {
+            "url": "http://template-repository.herokuapp.com/jdnsakdnasd/desc.ovf",
+            "productName": "VNScubed-3.0.3_BOYL",
+            "osVersion": "",
+            "osType": "LINUX_64",
+            "name": "VNScubed-3.0.3_BOYL",
+            "loginUser": "cftuser",
+            "loginPassword": "Cont41ner#",
+            "id": 9,
+            "links": [
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+                "type": "application/vnd.abiquo.enterprise+json",
+                "rel": "enterprise",
+                "title": "Abiquo"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/config/categories/8",
+                "type": "application/vnd.abiquo.category+json",
+                "rel": "category",
+                "title": "Firewall"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+                "type": "application/vnd.abiquo.templatedefinitionlist+json",
+                "rel": "templateDefinitionList",
+                "title": "Repository 2.0"
+              },
+              {
+                "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitions/9",
+                "type": "application/vnd.abiquo.templatedefinition+json",
+                "rel": "edit",
+                "title": "VNScubed-3.0.3_BOYL"
+              }
+            ],
+            "description": "ACCESS THE WEB CONSOLE:\n             Once your server is booted, the IP address will be displayed.\n             url: http://[Your Server's IP Address]:2999\n             user: admin\n             password: Cont41ner#\n            ACCESS VIA SSH:\n             user: cftuser\n             password: Cont41ner#\n        ",
+            "diskControllerType": "SCSI",
+            "diskController": "lsilogic",
+            "diskFileSize": 1441,
+            "diskFormatType": "VMDK_SPARSE",
+            "ethernetDriverType": "PCNET32",
+            "iconUrl": "http://files.template-repository.abiquo.com/vnscubed-3.0.3-x86_64-BYOL/VNS3-BYOL_Icon.png"
+          }
+        ],
+        "links": []
+      },
+      "url": "http://abiquo-repository.abiquo.com/ovfindex.xml",
+      "name": "Repository 2.0",
+      "id": 1,
+      "links": [
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+          "type": "application/vnd.abiquo.enterprise+json",
+          "rel": "enterprise",
+          "title": "Abiquo"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1",
+          "type": "application/vnd.abiquo.templatedefinitionlist+json",
+          "rel": "edit",
+          "title": "Repository 2.0"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/appslib/templateDefinitionLists/1/actions/repositoryStatus",
+          "type": "application/vnd.abiquo.templatestates+json",
+          "rel": "repositoryStatus",
+          "title": "repository status"
+        }
+      ]
+    }
+  ],
+  "links": []
+}

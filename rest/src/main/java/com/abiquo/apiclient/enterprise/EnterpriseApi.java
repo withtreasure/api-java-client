@@ -33,6 +33,7 @@ import com.abiquo.server.core.enterprise.RoleDto;
 import com.abiquo.server.core.enterprise.RolesDto;
 import com.abiquo.server.core.enterprise.UserDto;
 import com.abiquo.server.core.enterprise.UsersDto;
+import com.abiquo.server.core.infrastructure.PublicCloudCredentialsDto;
 import com.google.common.base.Joiner;
 
 public class EnterpriseApi
@@ -50,6 +51,16 @@ public class EnterpriseApi
         enterprise.setName(name);
         return client.post(ENTERPRISES_URL, EnterpriseDto.MEDIA_TYPE, EnterpriseDto.MEDIA_TYPE,
             enterprise, EnterpriseDto.class);
+    }
+
+    public PublicCloudCredentialsDto addPublicCloudCredentials(final EnterpriseDto enterprise,
+        final PublicCloudCredentialsDto credentials)
+    {
+
+        return client.post(
+            String.format("%s/%s/credentials/", ENTERPRISES_URL, enterprise.getId()),
+            PublicCloudCredentialsDto.MEDIA_TYPE, PublicCloudCredentialsDto.MEDIA_TYPE,
+            credentials, PublicCloudCredentialsDto.class);
     }
 
     public EnterpriseDto getEnterprise(final String id)

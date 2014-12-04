@@ -16,7 +16,9 @@
 package com.abiquo.apiclient.infrastructure;
 
 import static com.abiquo.apiclient.domain.ApiPath.DATACENTERS_URL;
+import static com.abiquo.apiclient.domain.ApiPath.HYPERVISORTYPES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOADLEVELRULES_URL;
+import static com.abiquo.apiclient.domain.ApiPath.PUBLIC_CLOUD_REGIONS_URL;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
@@ -27,6 +29,7 @@ import java.util.Map;
 
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.options.DatacenterListOptions;
+import com.abiquo.apiclient.domain.options.PublicCloudRegionListOptions;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.server.core.enterprise.DatacenterLimitsDto;
@@ -36,6 +39,8 @@ import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.DatacentersDto;
 import com.abiquo.server.core.infrastructure.MachineDto;
 import com.abiquo.server.core.infrastructure.MachinesDto;
+import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
+import com.abiquo.server.core.infrastructure.PublicCloudRegionsDto;
 import com.abiquo.server.core.infrastructure.RackDto;
 import com.abiquo.server.core.infrastructure.RacksDto;
 import com.abiquo.server.core.infrastructure.RemoteServiceDto;
@@ -113,6 +118,22 @@ public class InfrastructureApi
 
         return client.post(DATACENTERS_URL, DatacenterDto.MEDIA_TYPE, DatacenterDto.MEDIA_TYPE,
             datacenter, DatacenterDto.class);
+    }
+
+    public PublicCloudRegionDto createPublicCloudRegion(final String name, final String region,
+        final String type, final List<RemoteServiceDto> remoteServices)
+    {
+        RemoteServicesDto remoteServicesDto = new RemoteServicesDto();
+        remoteServicesDto.addAll(remoteServices);
+
+        PublicCloudRegionDto publicCloudRegion = new PublicCloudRegionDto();
+        publicCloudRegion.setName(name);
+        publicCloudRegion.setRemoteServices(remoteServicesDto);
+        publicCloudRegion.addLink(new RESTLink("region", String.format("%s/%s/regions/%s",
+            HYPERVISORTYPES_URL, type, region)));
+
+        return client.post(PUBLIC_CLOUD_REGIONS_URL, PublicCloudRegionDto.MEDIA_TYPE,
+            PublicCloudRegionDto.MEDIA_TYPE, publicCloudRegion, PublicCloudRegionDto.class);
     }
 
     public Iterable<RemoteServiceDto> listRemoteServices(final DatacenterDto datacenter)
@@ -294,6 +315,19 @@ public class InfrastructureApi
     {
         return client.list(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
             TiersDto.class);
+    }
+
+    public Iterable<PublicCloudRegionDto> listPublicCloudRegions(
+        final PublicCloudRegionListOptions options)
+    {
+        return client.list(PUBLIC_CLOUD_REGIONS_URL, options.queryParams(),
+            PublicCloudRegionsDto.MEDIA_TYPE, PublicCloudRegionsDto.class);
+    }
+
+    public Iterable<PublicCloudRegionDto> listPublicCloudRegions()
+    {
+        return client.list(PUBLIC_CLOUD_REGIONS_URL, PublicCloudRegionsDto.MEDIA_TYPE,
+            PublicCloudRegionsDto.class);
     }
 
 }

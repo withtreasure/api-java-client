@@ -1,0 +1,127 @@
+{
+  "collection": [
+    {
+      "repositoryLocation": "10.60.1.252:/opt/vm_repository",
+      "name": "virtual image repo",
+      "links": [
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+          "type": "application/vnd.abiquo.enterprise+json",
+          "rel": "enterprise",
+          "title": "Abiquo"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2",
+          "type": "application/vnd.abiquo.datacenterrepository+json",
+          "rel": "edit",
+          "title": "10.60.1.252:/opt/vm_repository"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2/virtualmachinetemplates",
+          "type": "application/vnd.abiquo.virtualmachinetemplates+json",
+          "rel": "virtualmachinetemplates",
+          "title": "virtual machine templates"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2/actions/refresh",
+          "type": "application/vnd.abiquo.acceptedrequest+json",
+          "rel": "refresh",
+          "title": "refresh"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/2/tasks",
+          "type": "application/vnd.abiquo.tasks+json",
+          "rel": "tasks",
+          "title": "tasks"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/datacenters/2",
+          "type": "application/vnd.abiquo.datacenter+json",
+          "rel": "datacenter",
+          "title": "dc local"
+        },
+        {
+          "href": "http://10.60.1.252:80/am/erepos/1",
+          "rel": "applianceManagerRepositoryUri"
+        }
+      ]
+    },
+    {
+      "repositoryLocation": "10.60.1.104:/volume1/nfs-devel",
+      "name": "virtual image repo",
+      "links": [
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+          "type": "application/vnd.abiquo.enterprise+json",
+          "rel": "enterprise",
+          "title": "Abiquo"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/3",
+          "type": "application/vnd.abiquo.datacenterrepository+json",
+          "rel": "edit",
+          "title": "10.60.1.104:/volume1/nfs-devel"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/3/virtualmachinetemplates",
+          "type": "application/vnd.abiquo.virtualmachinetemplates+json",
+          "rel": "virtualmachinetemplates",
+          "title": "virtual machine templates"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/3/actions/refresh",
+          "type": "application/vnd.abiquo.acceptedrequest+json",
+          "rel": "refresh",
+          "title": "refresh"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/3/tasks",
+          "type": "application/vnd.abiquo.tasks+json",
+          "rel": "tasks",
+          "title": "tasks"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/datacenters/3",
+          "type": "application/vnd.abiquo.datacenter+json",
+          "rel": "datacenter",
+          "title": "dc mothership"
+        },
+        {
+          "href": "http://10.60.12.84:8009/am/erepos/1",
+          "rel": "applianceManagerRepositoryUri"
+        }
+      ]
+    },
+    {
+      "repositoryLocation": "ec2.eu-west-1.amazonaws.com",
+      "name": "virtual image repo",
+      "links": [
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1",
+          "type": "application/vnd.abiquo.enterprise+json",
+          "rel": "enterprise",
+          "title": "Abiquo"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/4",
+          "type": "application/vnd.abiquo.datacenterrepository+json",
+          "rel": "edit",
+          "title": "ec2.eu-west-1.amazonaws.com"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/enterprises/1/datacenterrepositories/4/virtualmachinetemplates",
+          "type": "application/vnd.abiquo.virtualmachinetemplates+json",
+          "rel": "virtualmachinetemplates",
+          "title": "virtual machine templates"
+        },
+        {
+          "href": "http://10.60.1.252:80/api/admin/publiccloudregions/4",
+          "type": "application/vnd.abiquo.publiccloudregion+json",
+          "rel": "publiccloudregion",
+          "title": "amazon ireland"
+        }
+      ]
+    }
+  ],
+  "links": []
+}

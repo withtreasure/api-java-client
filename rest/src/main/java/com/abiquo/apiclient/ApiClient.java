@@ -37,6 +37,8 @@ public class ApiClient
 
     private final TemplatesApi templatesApi;
 
+    private final ConfigApi configApi;
+
     // Do not use directly. Use the builder.
     private ApiClient(final String endpoint, final Authentication authentication,
         final String version, final SSLConfiguration sslConfiguration)
@@ -46,6 +48,7 @@ public class ApiClient
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);
         templatesApi = new TemplatesApi(client);
+        configApi = new ConfigApi(client);
     }
 
     public static Builder builder()
@@ -129,6 +132,11 @@ public class ApiClient
     public TemplatesApi getTemplatesApi()
     {
         return templatesApi;
+    }
+
+    public ConfigApi getConfigApi()
+    {
+        return configApi;
     }
 
 }

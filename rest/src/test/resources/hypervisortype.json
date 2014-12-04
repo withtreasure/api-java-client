@@ -1,0 +1,78 @@
+{
+  "operations": {
+    "retrievevirtualmachine": {},
+    "virtualmachinemetrics": {},
+    "loadbalancers": {},
+    "hardwareprofiles": {},
+    "firewall": {},
+    "icloudprovider": {},
+    "mac": {},
+    "availabilityzones": {},
+    "templates": {},
+    "vpc": {},
+    "publicip": {},
+    "networking": {},
+    "poll": {},
+    "icompute": {
+      "pause": []
+    },
+    "istaticregions": {}
+  },
+  "constraints": {
+    "manager_port": "NO_APPLICABLE",
+    "loadbalancer_addressess_reuse": "false",
+    "extra_hard_disk": "false",
+    "agent_port": "NO_APPLICABLE",
+    "dvd_supported": "false",
+    "loadbalancer_healthcheck_protocols_csv": "HTTP,HTTPS,TCP,SSL",
+    "datastore_directory_editable": "false",
+    "agent_credentials": "NO_APPLICABLE",
+    "cores_per_socket": "false",
+    "vnc_supported": "false",
+    "host_port": "NO_APPLICABLE",
+    "loadbalancer_algorithms_csv": "ROUND_ROBIN",
+    "host_ip": "NO_APPLICABLE",
+    "manager_ip": "NO_APPLICABLE",
+    "repository_not_supported": "true",
+    "external_storage_not_supported": "true",
+    "provider_credentials": "MANDATORY",
+    "host_credentials": "NO_APPLICABLE",
+    "virtual_machine_move_allowed": "false",
+    "agent_ip": "NO_APPLICABLE",
+    "manager_credentials": "NO_APPLICABLE",
+    "loadbalancer_routingrules_protocols_csv": "HTTP,HTTPS,TCP,SSL",
+    "endpoint": "NO_APPLICABLE"
+  },
+  "realName": "Amazon",
+  "name": "AMAZON",
+  "compatibilityTable": [
+    "AMI"
+  ],
+  "baseFormat": "AMI",
+  "links": [
+    {
+      "href": "http://localhost:80/api/config/hypervisortypes/AMAZON",
+      "type": "application/vnd.abiquo.hypervisortype+json",
+      "rel": "self",
+      "title": "Amazon"
+    },
+    {
+      "href": "http://localhost:80/api/config/hypervisortypes/AMAZON/action/checkcredentials",
+      "type": "application/vnd.abiquo.publiccloudcredentials+json",
+      "rel": "checkcredentials",
+      "title": "checkcredentials"
+    },
+    {
+      "href": "http://localhost:80/api/config/hypervisortypes/AMAZON/regions",
+      "type": "application/vnd.abiquo.regions+json",
+      "rel": "regions",
+      "title": "regions"
+    },
+    {
+      "href": "http://localhost:80/api/config/hypervisortypes/AMAZON/monitoring/levels",
+      "type": "application/vnd.abiquo.monitoringlevels+json",
+      "rel": "monitoringlevels",
+      "title": "monitoringlevels"
+    }
+  ]
+}

@@ -16,12 +16,15 @@
 package com.abiquo.apiclient.infrastructure;
 
 import static com.abiquo.apiclient.domain.ApiPath.DATACENTERS_URL;
+import static com.abiquo.apiclient.domain.ApiPath.HYPERVISORTYPES_URL;
+import static com.abiquo.apiclient.domain.ApiPath.PUBLIC_CLOUD_REGIONS_URL;
 import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.apiclient.domain.options.DatacenterListOptions;
+import com.abiquo.apiclient.domain.options.PublicCloudRegionListOptions;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.enumerator.RemoteServiceType;
 import com.abiquo.model.rest.RESTLink;
@@ -33,6 +36,8 @@ import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.DatacentersDto;
 import com.abiquo.server.core.infrastructure.MachineDto;
 import com.abiquo.server.core.infrastructure.MachinesDto;
+import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
+import com.abiquo.server.core.infrastructure.PublicCloudRegionsDto;
 import com.abiquo.server.core.infrastructure.RackDto;
 import com.abiquo.server.core.infrastructure.RacksDto;
 import com.abiquo.server.core.infrastructure.RemoteServiceDto;
@@ -696,6 +701,81 @@ public class InfrastructureApiTest extends BaseMockTest
         assertEquals(requestBody.getRamLoadPercentage(), new Integer(75));
         assertLinkExist(requestBody, requestBody.searchLink("machine").getHref(), "machine",
             MachineDto.SHORT_MEDIA_TYPE_JSON);
+    }
+
+    public void testCreatePublicCloudRegion() throws Exception
+    {
+        String region = new String("eu-west-1");
+        String hypervisorType = new String("Amazon");
+
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type", DatacenterDto.SHORT_MEDIA_TYPE_JSON)
+                .setBody(payloadFromResource("publiccloudregion.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        RemoteServicesDto listRs = new RemoteServicesDto();
+        RemoteServiceDto rs = new RemoteServiceDto();
+        rs.setType(RemoteServiceType.VIRTUAL_SYSTEM_MONITOR);
+        listRs.add(rs);
+
+        newApiClient().getInfrastructureApi().createPublicCloudRegion("amazon test", region,
+            hypervisorType, listRs.getCollection());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST", PUBLIC_CLOUD_REGIONS_URL);
+        assertAccept(request, PublicCloudRegionDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, PublicCloudRegionDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        PublicCloudRegionDto requestBody = readBody(request, PublicCloudRegionDto.class);
+        assertEquals(requestBody.getName(), "amazon test");
+        assertEquals(requestBody.searchLink("region").getHref(),
+            String.format("%s/%s/regions/%s", HYPERVISORTYPES_URL, hypervisorType, region));
+
+        assertEquals(requestBody.getRemoteServices().getCollection().get(0).getType(),
+            RemoteServiceType.VIRTUAL_SYSTEM_MONITOR);
+    }
+
+    public void testListPublicCloudRegions() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type",
+                PublicCloudRegionsDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("pcrs.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getInfrastructureApi().listPublicCloudRegions();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", PUBLIC_CLOUD_REGIONS_URL);
+        assertAccept(request, PublicCloudRegionsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListPublicCloudRegionsWithOptions() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type",
+                PublicCloudRegionsDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("pcrs.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getInfrastructureApi().listPublicCloudRegions(
+            PublicCloudRegionListOptions.builder().limit(1).scope(0).build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", PUBLIC_CLOUD_REGIONS_URL + "?idScope=0&limit=1");
+        assertAccept(request, PublicCloudRegionsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
 }

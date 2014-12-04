@@ -1,0 +1,75 @@
+{
+  "totalSize": 1,
+  "collection": [
+    {
+      "name": "amazon ireland",
+      "id": 4,
+      "links": [
+        {
+          "href": "http://localhost:80/api/admin/publiccloudregions/4",
+          "type": "application/vnd.abiquo.publiccloudregion+json",
+          "rel": "edit",
+          "title": "amazon ireland"
+        },
+        {
+          "href": "http://localhost:80/api/admin/publiccloudregions/4/enterprises",
+          "type": "application/vnd.abiquo.enterprises+json",
+          "rel": "enterprises",
+          "title": "enterprises"
+        },
+        {
+          "href": "http://localhost:80/api/admin/publiccloudregions/4/remoteservices",
+          "type": "application/vnd.abiquo.remoteservices+json",
+          "rel": "remoteservices",
+          "title": "remote services"
+        },
+        {
+          "href": "http://localhost:80/api/config/hypervisortypes/AMAZON",
+          "type": "application/vnd.abiquo.hypervisortype+json",
+          "rel": "hypervisortype",
+          "title": "Amazon"
+        },
+        {
+          "href": "http://localhost:80/api/config/hypervisortypes/AMAZON/regions/eu-west-1",
+          "type": "application/vnd.abiquo.region+json",
+          "rel": "region",
+          "title": "eu-west-1"
+        },
+        {
+          "href": "http://localhost:80/api/admin/remoteservices/4",
+          "type": "application/vnd.abiquo.remoteservice+json",
+          "rel": "remoteservice",
+          "title": "NODECOLLECTOR"
+        },
+        {
+          "href": "http://localhost:80/api/admin/remoteservices/1",
+          "type": "application/vnd.abiquo.remoteservice+json",
+          "rel": "remoteservice",
+          "title": "VIRTUALFACTORY"
+        },
+        {
+          "href": "http://localhost:80/api/admin/remoteservices/2",
+          "type": "application/vnd.abiquo.remoteservice+json",
+          "rel": "remoteservice",
+          "title": "VIRTUALSYSTEMMONITOR"
+        },
+        {
+          "href": "http://localhost:80/api/admin/remoteservices/17",
+          "type": "application/vnd.abiquo.remoteservice+json",
+          "rel": "remoteservice",
+          "title": "CLOUDPROVIDERPROXY"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "href": "http://localhost:80/api/admin/publiccloudregions/?limit=25",
+      "rel": "first"
+    },
+    {
+      "href": "http://localhost:80/api/admin/publiccloudregions/?startwith=0&limit=25",
+      "rel": "last"
+    }
+  ]
+}

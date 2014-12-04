@@ -37,6 +37,7 @@ import com.abiquo.server.core.enterprise.RoleDto;
 import com.abiquo.server.core.enterprise.RolesDto;
 import com.abiquo.server.core.enterprise.UserDto;
 import com.abiquo.server.core.enterprise.UsersDto;
+import com.abiquo.server.core.infrastructure.PublicCloudCredentialsDto;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
@@ -250,5 +251,38 @@ public class EnterpriseApiTest extends BaseMockTest
         assertRequest(request, "GET", ROLES_URL);
         assertAccept(request, RolesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testAddPublicCloudCredentials() throws Exception
+    {
+
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", PublicCloudCredentialsDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("publiccredentials.json"));// Add the respective json
+
+        server.enqueue(response);
+        server.play();
+
+        EnterpriseDto enterprise = new EnterpriseDto();
+        enterprise.setId(1);
+
+        PublicCloudCredentialsDto credentials = new PublicCloudCredentialsDto();
+        // is this useful ?
+        credentials.setAccess("providerAccess");
+        credentials.setKey("providerKey");
+
+        newApiClient().getEnterpriseApi().addPublicCloudCredentials(enterprise, credentials);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "POST",
+            String.format("%s/%s/credentials/", ENTERPRISES_URL, enterprise.getId()));
+        assertAccept(request, PublicCloudCredentialsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, PublicCloudCredentialsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        PublicCloudCredentialsDto requestBody = readBody(request, PublicCloudCredentialsDto.class);
+        assertEquals(requestBody.getAccess(), "providerAccess");
+        assertEquals(requestBody.getKey(), "providerKey");
     }
 }
