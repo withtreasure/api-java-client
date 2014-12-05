@@ -58,6 +58,8 @@ public class LogUtils
                     byte[] bytes = out.toByteArray();
                     if (bytes.length > 0)
                     {
+                        LOG.log(Level.FINE,
+                            String.format(">> Content-Type: %s", body.contentType()));
                         LOG.log(Level.FINE, String.format(">> Body: %s", new String(bytes)));
                     }
                 }
