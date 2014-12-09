@@ -1,0 +1,262 @@
+{
+    "collection": [
+        {
+            "cpuCountHardLimit": 0, 
+            "cpuCountSoftLimit": 0, 
+            "diskHardLimitInMb": 0, 
+            "diskSoftLimitInMb": 0, 
+            "id": 1, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/enterprises/1", 
+                    "rel": "enterprise", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1/hypervisors", 
+                    "rel": "hypervisors", 
+                    "title": "hypervisors", 
+                    "type": "application/vnd.abiquo.hypervisortypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1", 
+                    "rel": "edit", 
+                    "title": "edit datacenter limits 1", 
+                    "type": "application/vnd.abiquo.limit+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1/externalnetworks", 
+                    "rel": "externalnetworks", 
+                    "title": "external networks", 
+                    "type": "application/vnd.abiquo.vlans+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1/action/virtualappliances", 
+                    "rel": "action", 
+                    "title": "virtualappliances", 
+                    "type": "application/vnd.abiquo.virtualappliances+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "location", 
+                    "title": "Private Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/1", 
+                    "rel": "tier", 
+                    "title": "Mixed NFS & ISCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/2", 
+                    "rel": "tier", 
+                    "title": "Nexenta", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/3", 
+                    "rel": "tier", 
+                    "title": "Linux NFS", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/4", 
+                    "rel": "tier", 
+                    "title": "vFiler Tiers renamed", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/13", 
+                    "rel": "tier", 
+                    "title": "Nexenta iSCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }
+            ], 
+            "publicIpsHard": 0, 
+            "publicIpsSoft": 0, 
+            "ramHardLimitInMb": 0, 
+            "ramSoftLimitInMb": 0, 
+            "repositoryHardInMb": 0, 
+            "repositorySoftInMb": 0, 
+            "storageHardInMb": 0, 
+            "storageSoftInMb": 0, 
+            "vlansHard": 0, 
+            "vlansSoft": 0
+        }, 
+        {
+            "cpuCountHardLimit": 10, 
+            "cpuCountSoftLimit": 10, 
+            "diskHardLimitInMb": 10240, 
+            "diskSoftLimitInMb": 10240, 
+            "id": 5, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/enterprises/2", 
+                    "rel": "enterprise", 
+                    "title": "Austral Enterprise", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/2/limits/5/hypervisors", 
+                    "rel": "hypervisors", 
+                    "title": "hypervisors", 
+                    "type": "application/vnd.abiquo.hypervisortypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/2/limits/5", 
+                    "rel": "edit", 
+                    "title": "edit datacenter limits 5", 
+                    "type": "application/vnd.abiquo.limit+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/2/limits/5/externalnetworks", 
+                    "rel": "externalnetworks", 
+                    "title": "external networks", 
+                    "type": "application/vnd.abiquo.vlans+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/2/limits/5/action/virtualappliances", 
+                    "rel": "action", 
+                    "title": "virtualappliances", 
+                    "type": "application/vnd.abiquo.virtualappliances+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "location", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/1", 
+                    "rel": "tier", 
+                    "title": "Mixed NFS & ISCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/2", 
+                    "rel": "tier", 
+                    "title": "Nexenta", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/3", 
+                    "rel": "tier", 
+                    "title": "Linux NFS", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/4", 
+                    "rel": "tier", 
+                    "title": "vFiler Tiers renamed", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/13", 
+                    "rel": "tier", 
+                    "title": "Nexenta iSCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }
+            ], 
+            "publicIpsHard": 10, 
+            "publicIpsSoft": 10, 
+            "ramHardLimitInMb": 10240, 
+            "ramSoftLimitInMb": 10240, 
+            "repositoryHardInMb": 10240, 
+            "repositorySoftInMb": 10240, 
+            "storageHardInMb": 10240, 
+            "storageSoftInMb": 10240, 
+            "vlansHard": 10, 
+            "vlansSoft": 10
+        }, 
+        {
+            "cpuCountHardLimit": 0, 
+            "cpuCountSoftLimit": 0, 
+            "diskHardLimitInMb": 0, 
+            "diskSoftLimitInMb": 0, 
+            "id": 10, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/enterprises/3", 
+                    "rel": "enterprise", 
+                    "title": "Iberic Enterprise", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/3/limits/10/hypervisors", 
+                    "rel": "hypervisors", 
+                    "title": "hypervisors", 
+                    "type": "application/vnd.abiquo.hypervisortypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/3/limits/10", 
+                    "rel": "edit", 
+                    "title": "edit datacenter limits 10", 
+                    "type": "application/vnd.abiquo.limit+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/3/limits/10/externalnetworks", 
+                    "rel": "externalnetworks", 
+                    "title": "external networks", 
+                    "type": "application/vnd.abiquo.vlans+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/3/limits/10/action/virtualappliances", 
+                    "rel": "action", 
+                    "title": "virtualappliances", 
+                    "type": "application/vnd.abiquo.virtualappliances+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "location", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/1", 
+                    "rel": "tier", 
+                    "title": "Mixed NFS & ISCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/2", 
+                    "rel": "tier", 
+                    "title": "Nexenta", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/3", 
+                    "rel": "tier", 
+                    "title": "Linux NFS", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/4", 
+                    "rel": "tier", 
+                    "title": "vFiler Tiers renamed", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/13", 
+                    "rel": "tier", 
+                    "title": "Nexenta iSCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }
+            ], 
+            "publicIpsHard": 0, 
+            "publicIpsSoft": 0, 
+            "ramHardLimitInMb": 0, 
+            "ramSoftLimitInMb": 0, 
+            "repositoryHardInMb": 0, 
+            "repositorySoftInMb": 0, 
+            "storageHardInMb": 0, 
+            "storageSoftInMb": 0, 
+            "vlansHard": 0, 
+            "vlansSoft": 0
+        }
+
+
+    ], 
+    "links": []
+}

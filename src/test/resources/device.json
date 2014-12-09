@@ -1,0 +1,35 @@
+{
+  "device": {
+    "link": [
+      {
+        "-rel": "edit",
+        "-type": "application/vnd.abiquo.storagedevice+json",
+        "-href": "http://localhost/api/admin/datacenters/1/storage/devices/1"
+      },
+      {
+        "-rel": "datacenter",
+        "-type": "application/vnd.abiquo.datacenter+json",
+        "-href": "http://localhost/api/admin/datacenters/1"
+      },
+      {
+        "-rel": "pools",
+        "-type": "application/vnd.abiquo.storagepools+json",
+        "-href": "http://localhost/api/admin/datacenters/1/storage/devices/1/pools"
+      },
+      {
+        "-rel": "tiers",
+        "-type": "application/vnd.abiquo.tiers+json",
+        "-href": "http://localhost/api/admin/datacenters/1/storage/tiers"
+      }
+    ],
+    "id": "1",
+    "name": "JC-Storage Device",
+    "storageTechnology": "LVM",
+    "managementIp": "10.10.10.10",
+    "managementPort": "8180",
+    "iscsiIp": "10.10.10.10",
+    "iscsiPort": "3260",
+    "username": "foo",
+    "password": "bar"
+  }
+}

@@ -1,0 +1,75 @@
+{
+    "collection": [
+        {
+            "id": 4, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/devices/4", 
+                    "rel": "edit", 
+                    "title": "Linux NFS", 
+                    "type": "application/vnd.abiquo.storagedevice+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/devices/4/pools", 
+                    "rel": "pools", 
+                    "title": "storage pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers", 
+                    "rel": "tiers", 
+                    "title": "tiers", 
+                    "type": "application/vnd.abiquo.tiers+json"
+                }
+            ], 
+            "managementIp": "10.60.1.72", 
+            "managementPort": 2049, 
+            "name": "Linux NFS", 
+            "serviceIp": "10.60.1.72", 
+            "servicePort": 2049, 
+            "storageTechnology": "NFS"
+        }, 
+        {
+            "id": 5, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/devices/5", 
+                    "rel": "edit", 
+                    "title": "Nexenta NFS", 
+                    "type": "application/vnd.abiquo.storagedevice+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/devices/5/pools", 
+                    "rel": "pools", 
+                    "title": "storage pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers", 
+                    "rel": "tiers", 
+                    "title": "tiers", 
+                    "type": "application/vnd.abiquo.tiers+json"
+                }
+            ], 
+            "managementIp": "10.60.20.23", 
+            "managementPort": 2049, 
+            "name": "Nexenta NFS", 
+            "serviceIp": "10.60.20.23", 
+            "servicePort": 2049, 
+            "storageTechnology": "NFS"
+        }
+    ], 
+    "links": []
+}

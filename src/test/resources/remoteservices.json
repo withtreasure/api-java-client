@@ -1,0 +1,209 @@
+{
+    "collection": [
+        {
+            "id": 2, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/2", 
+                    "rel": "edit", 
+                    "title": "VIRTUALSYSTEMMONITOR", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/2/action/check", 
+                    "rel": "check", 
+                    "title": "check", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "VIRTUAL_SYSTEM_MONITOR", 
+            "uri": "http://10.60.11.215:8009/vsm", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 21, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/21", 
+                    "rel": "edit", 
+                    "title": "APPLIANCEMANAGER", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/21/action/check", 
+                    "rel": "check", 
+                    "title": "check", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "APPLIANCE_MANAGER", 
+            "uri": "https://preproduction.bcn.abiquo.com:443/am", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 6, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/6", 
+                    "rel": "edit", 
+                    "title": "BPMSERVICE", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/6/action/check", 
+                    "rel": "check", 
+                    "title": "check", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "BPM_SERVICE", 
+            "uri": "http://10.60.11.206:8009/bpm-async", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 8, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/8", 
+                    "rel": "edit", 
+                    "title": "DHCPv6", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "DHCPv6", 
+            "uri": "omapi://10.60.1.81:7911/", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 4, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/4", 
+                    "rel": "edit", 
+                    "title": "NODECOLLECTOR", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/4/action/check", 
+                    "rel": "check", 
+                    "title": "check", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "NODE_COLLECTOR", 
+            "uri": "http://10.60.11.215:8009/nodecollector", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 7, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/7", 
+                    "rel": "edit", 
+                    "title": "DHCPSERVICE", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "DHCP_SERVICE", 
+            "uri": "omapi://10.60.1.72:7911/", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 1, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/1", 
+                    "rel": "edit", 
+                    "title": "VIRTUALFACTORY", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/1/action/check", 
+                    "rel": "check", 
+                    "title": "check", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "VIRTUAL_FACTORY", 
+            "uri": "http://10.60.11.215:8009/virtualfactory", 
+            "uuid": "pre31"
+        }, 
+        {
+            "id": 5, 
+            "links": [
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/5", 
+                    "rel": "edit", 
+                    "title": "STORAGESYSTEMMONITOR", 
+                    "type": "application/vnd.abiquo.remoteservice+json"
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/remoteservices/5/action/check", 
+                    "rel": "check", 
+                    "title": "check", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://10.60.11.215:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }
+            ], 
+            "status": 1, 
+            "type": "STORAGE_SYSTEM_MONITOR", 
+            "uri": "http://10.60.11.215:8009/ssm", 
+            "uuid": "pre31"
+        }
+    ], 
+    "links": []
+}

@@ -1,0 +1,158 @@
+{
+    "datastores": {
+        "collection": [
+            {
+                "datastoreUUID": "b50", 
+                "directory": "", 
+                "enabled": true, 
+                "id": 10, 
+                "links": [
+                    {
+                        "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/datastores/10", 
+                        "rel": "edit", 
+                        "title": "/dev/mapper/VolGroup-lv_root", 
+                        "type": "application/vnd.abiquo.datastore+json"
+                    }
+                ], 
+                "name": "/dev/mapper/VolGroup-lv_root", 
+                "rootPath": "/", 
+                "size": 3286188032, 
+                "usedSize": 3286188032
+            }, 
+            {
+                "datastoreUUID": "12b", 
+                "directory": "", 
+                "enabled": false, 
+                "id": 11, 
+                "links": [
+                    {
+                        "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/datastores/11", 
+                        "rel": "edit", 
+                        "title": "10.60.1.72:/opt/preproduction/vm_repository_dc1", 
+                        "type": "application/vnd.abiquo.datastore+json"
+                    }
+                ], 
+                "name": "10.60.1.72:/opt/preproduction/vm_repository_dc1", 
+                "rootPath": "/opt/vm_repository", 
+                "size": 966687981568, 
+                "usedSize": 957563273216
+            }, 
+            {
+                "datastoreUUID": "627", 
+                "directory": "", 
+                "enabled": true, 
+                "id": 12, 
+                "links": [
+                    {
+                        "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/datastores/12", 
+                        "rel": "edit", 
+                        "title": "10.60.1.72:/opt/preproduction/sharedds", 
+                        "type": "application/vnd.abiquo.datastore+json"
+                    }
+                ], 
+                "name": "10.60.1.72:/opt/preproduction/sharedds", 
+                "rootPath": "/shared", 
+                "size": 966687981568, 
+                "usedSize": 942245675008
+            }
+        ], 
+        "links": []
+    }, 
+    "description": "kvm210.bcn.abiquo.com", 
+    "id": 4, 
+    "initiatorIQN": "iqn.1994-05.com.redhat:54", 
+    "ip": "10.60.11.210", 
+    "ipService": "10.60.11.210", 
+    "links": [
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1", 
+            "rel": "rack", 
+            "title": "KVM", 
+            "type": "application/vnd.abiquo.rack+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4", 
+            "rel": "edit", 
+            "title": "kvm210.bcn.abiquo.com", 
+            "type": "application/vnd.abiquo.machine+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/datastores", 
+            "rel": "datastores", 
+            "title": "datastores", 
+            "type": "application/vnd.abiquo.datastores+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/datastores/action/refresh", 
+            "rel": "refresh", 
+            "title": "refresh", 
+            "type": ""
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/virtualmachines", 
+            "rel": "virtualmachines", 
+            "title": "virtual machines", 
+            "type": "application/vnd.abiquo.virtualmachines+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/action/checkstate", 
+            "rel": "checkstate", 
+            "title": "check state kvm", 
+            "type": "application/vnd.abiquo.machinestate+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/action/reenableafterha", 
+            "rel": "reenableafterha", 
+            "title": "reenable physical machine kvm", 
+            "type": "application/vnd.abiquo.machine+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/action/checkipmistate", 
+            "rel": "checkipmistate", 
+            "title": "check ipmi state", 
+            "type": "application/vnd.abiquo.machineipmistate+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4", 
+            "rel": "/action/checkipmistate", 
+            "title": "checkipmistate", 
+            "type": "application/vnd.abiquo.machineipmistate+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/action/nics/refresh", 
+            "rel": "refreshnics", 
+            "title": "refresh nics", 
+            "type": "application/vnd.abiquo.machine+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/racks/1/machines/4/action/sendmail", 
+            "rel": "sendmail", 
+            "title": "send mail", 
+            "type": "application/vnd.abiquo.mail+json"
+        }
+    ], 
+    "name": "kvm", 
+    "networkInterfaces": {
+        "collection": [
+            {
+                "links": [
+                    {
+                        "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                        "rel": "networkservicetype", 
+                        "title": "eth0", 
+                        "type": "application/vnd.abiquo.networkservicetype+json"
+                    }
+                ], 
+                "mac": "52:54:00:4a:00:3d", 
+                "name": "eth0"
+            }
+        ], 
+        "links": []
+    }, 
+    "state": "MANAGED", 
+    "type": "KVM", 
+    "virtualCpuCores": 1, 
+    "virtualCpusUsed": 8, 
+    "virtualRamInMb": 1877, 
+    "virtualRamUsedInMb": 512
+}

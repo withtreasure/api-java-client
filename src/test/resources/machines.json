@@ -1,0 +1,76 @@
+{  
+   "links":[  
+
+   ],
+   "collection":[  
+      {  
+         "links":[  
+
+         ],
+         "name":"thunder.bcn.abiquo.com",
+         "description":"thunder.bcn.abiquo.com",
+         "virtualRamInMb":3819,
+         "virtualRamUsedInMb":0,
+         "virtualCpuCores":4,
+         "virtualCpusUsed":0,
+         "state":"MANAGED",
+         "ip":"10.60.12.4",
+         "ipService":"10.60.12.4",
+         "type":"KVM",
+         "datastores":{  
+            "links":[  
+
+            ],
+            "collection":[  
+               {  
+                  "links":[  
+
+                  ],
+                  "name":"/dev/mapper/VolGroup00-LogVol00",
+                  "directory":"",
+                  "rootPath":"/",
+                  "size":241896792064,
+                  "usedSize":13492936704,
+                  "enabled":false,
+                  "datastoreUUID":"d24db072-5d74-40"
+               },
+               {  
+                  "links":[  
+
+                  ],
+                  "name":"10.60.1.10:/volume1/nfs-devel",
+                  "directory":"",
+                  "rootPath":"/opt/vm_repository",
+                  "size":7856958996480,
+                  "usedSize":5121391984640,
+                  "enabled":false,
+                  "datastoreUUID":"d3be4b84-03bc-c"
+               }
+            ]
+         },
+         "networkInterfaces":{  
+            "links":[  
+
+            ],
+            "collection":[  
+               {  
+                  "links":[  
+
+                  ],
+                  "name":"em1",
+                  "mac":"b8:ac:6f:"
+               },
+               {  
+                  "links":[  
+
+                  ],
+                  "name":"em2",
+                  "mac":"b8:ac:6f:80:"
+               }
+            ]
+         },
+         "initiatorIQN":"iqn.1994-05"
+      }
+   ]
+}
+

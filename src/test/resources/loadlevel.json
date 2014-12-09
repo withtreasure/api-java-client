@@ -1,0 +1,31 @@
+{  
+   "links":[  
+      {  
+         "title":"Private Datacenter",
+         "rel":"datacenter",
+         "type":"application/vnd.abiquo.datacenter+json",
+         "href":"https://localhost:443/api/admin/datacenters/2"
+      },
+      {  
+         "title":"ESX DVS",
+         "rel":"rack",
+         "type":"application/vnd.abiquo.rack+json",
+         "href":"https://localhost:443/api/admin/datacenters/2/racks/5"
+      },
+      {  
+         "title":"ESXI.12.240",
+         "rel":"machine",
+         "type":"application/vnd.abiquo.machine+json",
+         "href":"https://localhost:443/api/admin/datacenters/2/racks/5/machines/12"
+      },
+      {  
+         "title":"7",
+         "rel":"edit",
+         "type":"application/vnd.abiquo.machineloadrule+json",
+         "href":"https://localhost:443/api/admin/rules/machineLoadLevel/7"
+      }
+   ],
+   "id":7,
+   "cpuLoadPercentage":25,
+   "ramLoadPercentage":75
+}

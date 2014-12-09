@@ -1,0 +1,57 @@
+{
+    "collection": [
+        {
+            "defaultNST": true, 
+            "id": 1, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                    "rel": "edit", 
+                    "title": "Service Network", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }
+            ], 
+            "name": "Service Network"
+        }, 
+        {
+            "defaultNST": false, 
+            "id": 3, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/3", 
+                    "rel": "edit", 
+                    "title": "Network Co.", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }
+            ], 
+            "name": "Network Co."
+        }, 
+        {
+            "defaultNST": false, 
+            "id": 4, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/4", 
+                    "rel": "edit", 
+                    "title": "Administration", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }
+            ], 
+            "name": "Administration"
+        }, 
+        {
+            "defaultNST": false, 
+            "id": 5, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/5", 
+                    "rel": "edit", 
+                    "title": "Storage", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }
+            ], 
+            "name": "Storage"
+        }
+    ], 
+    "links": []
+}

@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.domain.exception.AbiquoException;
@@ -403,7 +404,8 @@ public class RestClient
 
     private String queryLine(final Map<String, Object> queryParams)
     {
-        return Joiner.on('&').withKeyValueSeparator("=").join(queryParams);
+        Map<String, Object> queryParamsSorted = new TreeMap<String, Object>(queryParams);
+        return Joiner.on('&').withKeyValueSeparator("=").join(queryParamsSorted);
     }
 
     public TaskDto waitForTask(final AcceptedRequestDto< ? > acceptedRequest,

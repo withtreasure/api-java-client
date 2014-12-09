@@ -1,0 +1,376 @@
+{
+    "collection": [
+        {
+            "address": "192.168.4.0", 
+            "dhcpOptions": {
+                "collection": [], 
+                "links": []
+            }, 
+            "gateway": "192.168.4.1", 
+            "id": 13, 
+            "ipv6": false, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/13", 
+                    "rel": "edit", 
+                    "title": "external-4", 
+                    "type": "application/vnd.abiquo.vlan+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes", 
+                    "rel": "networkservicetypes", 
+                    "title": "network services types", 
+                    "type": "application/vnd.abiquo.networkservicetypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                    "rel": "networkservicetype", 
+                    "title": "Service Network", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/7/limits/29/externalnetworks/13/ips", 
+                    "rel": "ips", 
+                    "title": "external ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/7/limits/29/externalnetworks/13/configuration", 
+                    "rel": "configuration", 
+                    "title": "configuration", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/7/limits/29/externalnetworks/13/configuration/13", 
+                    "rel": "network_configuration", 
+                    "title": "192.168.4.0/24", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/13/ips", 
+                    "rel": "infrastructureips", 
+                    "title": "public ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/7", 
+                    "rel": "enterprise", 
+                    "title": "Serafin Co.", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }
+            ], 
+            "mask": 24, 
+            "name": "external-4", 
+            "primaryDNS": "8.8.4.4", 
+            "secondaryDNS": "8.8.8.8", 
+            "strict": false, 
+            "sufixDNS": "abiquo.com", 
+            "tag": 4, 
+            "type": "EXTERNAL", 
+            "unmanaged": false
+        }, 
+        {
+            "address": "170.100.110.0", 
+            "dhcpOptions": {
+                "collection": [], 
+                "links": []
+            }, 
+            "gateway": "170.100.110.1", 
+            "id": 21, 
+            "ipv6": false, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/21", 
+                    "rel": "edit", 
+                    "title": "public-4", 
+                    "type": "application/vnd.abiquo.vlan+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes", 
+                    "rel": "networkservicetypes", 
+                    "title": "network services types", 
+                    "type": "application/vnd.abiquo.networkservicetypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                    "rel": "networkservicetype", 
+                    "title": "Service Network", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/21/ips", 
+                    "rel": "ips", 
+                    "title": "public ips", 
+                    "type": "application/vnd.abiquo.publicips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/21/configuration", 
+                    "rel": "configuration", 
+                    "title": "configuration", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/21/21", 
+                    "rel": "network_configuration", 
+                    "title": "170.100.110.0/24", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }
+            ], 
+            "mask": 24, 
+            "name": "public-4", 
+            "primaryDNS": "8.8.4.4", 
+            "secondaryDNS": "8.8.8.8", 
+            "strict": false, 
+            "sufixDNS": "", 
+            "tag": 110, 
+            "type": "PUBLIC", 
+            "unmanaged": false
+        }, 
+        {
+            "address": "7000:ffff::", 
+            "dhcpOptions": {
+                "collection": [], 
+                "links": []
+            }, 
+            "gateway": "?", 
+            "id": 22, 
+            "ipv6": true, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/22", 
+                    "rel": "edit", 
+                    "title": "public-6", 
+                    "type": "application/vnd.abiquo.vlan+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes", 
+                    "rel": "networkservicetypes", 
+                    "title": "network services types", 
+                    "type": "application/vnd.abiquo.networkservicetypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                    "rel": "networkservicetype", 
+                    "title": "Service Network", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/22/ips", 
+                    "rel": "ips", 
+                    "title": "public ips", 
+                    "type": "application/vnd.abiquo.publicips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/22/configuration", 
+                    "rel": "configuration", 
+                    "title": "configuration", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/22/22", 
+                    "rel": "network_configuration", 
+                    "title": "7000:ffff::/64", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }
+            ], 
+            "mask": 64, 
+            "name": "public-6", 
+            "strict": false, 
+            "tag": 700, 
+            "type": "PUBLIC", 
+            "unmanaged": false
+        }, 
+        {
+            "address": "192.168.15.0", 
+            "dhcpOptions": {
+                "collection": [], 
+                "links": []
+            }, 
+            "gateway": "192.168.15.1", 
+            "id": 148, 
+            "ipv6": false, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/148", 
+                    "rel": "edit", 
+                    "title": "External Ignasi", 
+                    "type": "application/vnd.abiquo.vlan+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes", 
+                    "rel": "networkservicetypes", 
+                    "title": "network services types", 
+                    "type": "application/vnd.abiquo.networkservicetypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                    "rel": "networkservicetype", 
+                    "title": "Service Network", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/18/limits/58/externalnetworks/148/ips", 
+                    "rel": "ips", 
+                    "title": "external ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/18/limits/58/externalnetworks/148/configuration", 
+                    "rel": "configuration", 
+                    "title": "configuration", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/18/limits/58/externalnetworks/148/configuration/149", 
+                    "rel": "network_configuration", 
+                    "title": "192.168.15.0/24", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/148/ips", 
+                    "rel": "infrastructureips", 
+                    "title": "public ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/18", 
+                    "rel": "enterprise", 
+                    "title": "XaviFEnt", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }
+            ], 
+            "mask": 24, 
+            "name": "External Ignasi", 
+            "primaryDNS": "10.60.1.4", 
+            "secondaryDNS": "8.8.8.8", 
+            "strict": false, 
+            "sufixDNS": "bcn.abiquo.com", 
+            "tag": 15, 
+            "type": "EXTERNAL", 
+            "unmanaged": false
+        }, 
+        {
+            "address": "10.10.95.0", 
+            "dhcpOptions": {
+                "collection": [], 
+                "links": []
+            }, 
+            "gateway": "10.10.95.1", 
+            "id": 190, 
+            "ipv6": false, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Tudela", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/190", 
+                    "rel": "edit", 
+                    "title": "External_test", 
+                    "type": "application/vnd.abiquo.vlan+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes", 
+                    "rel": "networkservicetypes", 
+                    "title": "network services types", 
+                    "type": "application/vnd.abiquo.networkservicetypes+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/networkservicetypes/1", 
+                    "rel": "networkservicetype", 
+                    "title": "Service Network", 
+                    "type": "application/vnd.abiquo.networkservicetype+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1/externalnetworks/190/ips", 
+                    "rel": "ips", 
+                    "title": "external ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1/externalnetworks/190/configuration", 
+                    "rel": "configuration", 
+                    "title": "configuration", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/limits/1/externalnetworks/190/configuration/191", 
+                    "rel": "network_configuration", 
+                    "title": "10.10.95.0/24", 
+                    "type": "application/vnd.abiquo.networkconfiguration+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/network/190/ips", 
+                    "rel": "infrastructureips", 
+                    "title": "public ips", 
+                    "type": "application/vnd.abiquo.externalips+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1", 
+                    "rel": "enterprise", 
+                    "title": "Abiquo", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }
+            ], 
+            "mask": 24, 
+            "name": "External_test", 
+            "strict": false, 
+            "tag": 95, 
+            "type": "EXTERNAL", 
+            "unmanaged": false
+        }
+    ], 
+    "links": [
+        {
+            "href": "https://localhost/api/admin/datacenters/1/network/action/checkavailability", 
+            "rel": "checkavailability", 
+            "title": "check vlan availability", 
+            "type": "application/vnd.abiquo.vlantagavailability+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/network/action/publicips", 
+            "rel": "publicips", 
+            "title": "public ips", 
+            "type": "application/vnd.abiquo.publicips+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/network/action/externalips", 
+            "rel": "externalips", 
+            "title": "external ips", 
+            "type": "application/vnd.abiquo.externalips+json"
+        }, 
+        {
+            "href": "https://localhost/api/admin/datacenters/1/network/action/unmanagedips", 
+            "rel": "unmanagedips", 
+            "title": "unmanaged ips", 
+            "type": "application/vnd.abiquo.unmanagedips+json"
+        }
+    ], 
+    "totalSize": 5
+}

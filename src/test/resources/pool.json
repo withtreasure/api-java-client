@@ -1,0 +1,116 @@
+{
+  "links": [],
+  "collection": [
+    {
+      "usedSizeInMb": 338,
+      "name": "zpool",
+      "links": [
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/1/pools/1",
+          "type": "application/vnd.abiquo.storagepool+json",
+          "rel": "edit",
+          "title": "335"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/tiers/2",
+          "type": "application/vnd.abiquo.tier+json",
+          "rel": "tier",
+          "title": "333"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/1",
+          "type": "application/vnd.abiquo.storagedevice+json",
+          "rel": "device",
+          "title": "332"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/1/pools/1/action/volumes",
+          "type": "application/vnd.abiquo.volumes+json",
+          "rel": "volumes",
+          "title": "volumes"
+        }
+      ],
+      "maxVolumes": 0,
+      "availableSizeInMb": 336,
+      "enabled": false,
+      "idStorage": "1",
+      "totalSizeInMb": 337,
+      "usablePercent": 100,
+      "type": "ISCSI"
+    },
+    {
+      "usedSizeInMb": 344,
+      "name": "341",
+      "links": [
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/888/pools/eff58618-05f4-4d8c-8b9f-11ee6a8a066f",
+          "type": "application/vnd.abiquo.storagepool+json",
+          "rel": "edit",
+          "title": "341"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/tiers/997",
+          "type": "application/vnd.abiquo.tier+json",
+          "rel": "tier",
+          "title": "339"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/888",
+          "type": "application/vnd.abiquo.storagedevice+json",
+          "rel": "device",
+          "title": "332"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/888/pools/eff58618-05f4-4d8c-8b9f-11ee6a8a066f/action/volumes",
+          "type": "application/vnd.abiquo.volumes+json",
+          "rel": "volumes",
+          "title": "volumes"
+        }
+      ],
+      "maxVolumes": 0,
+      "availableSizeInMb": 342,
+      "enabled": false,
+      "idStorage": "eff58618-05f4-4d8c-8b9f-11ee6a8a066f",
+      "totalSizeInMb": 343,
+      "usablePercent": 100,
+      "type": "ISCSI"
+    },
+    {
+      "usedSizeInMb": 350,
+      "name": "347",
+      "links": [
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/888/pools/884bf3fb-0dec-457d-932e-a5b46e88a2be",
+          "type": "application/vnd.abiquo.storagepool+json",
+          "rel": "edit",
+          "title": "347"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/tiers/998",
+          "type": "application/vnd.abiquo.tier+json",
+          "rel": "tier",
+          "title": "345"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/888",
+          "type": "application/vnd.abiquo.storagedevice+json",
+          "rel": "device",
+          "title": "332"
+        },
+        {
+          "href": "http://localhost:9009/api/admin/datacenters/4147/storage/devices/888/pools/884bf3fb-0dec-457d-932e-a5b46e88a2be/action/volumes",
+          "type": "application/vnd.abiquo.volumes+json",
+          "rel": "volumes",
+          "title": "volumes"
+        }
+      ],
+      "maxVolumes": 0,
+      "availableSizeInMb": 348,
+      "enabled": false,
+      "idStorage": "884bf3fb-0dec-457d-932e-a5b46e88a2be",
+      "totalSizeInMb": 349,
+      "usablePercent": 100,
+      "type": "ISCSI"
+    }
+  ]
+}

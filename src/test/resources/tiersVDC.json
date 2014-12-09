@@ -1,0 +1,37 @@
+{
+    "collection": [
+        {
+            "defaultAllowed": true, 
+            "description": "Description of the default tier 1", 
+            "enabled": true, 
+            "id": 1, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/cloud/virtualdatacenters/1/tiers/1", 
+                    "rel": "self", 
+                    "title": "Mixed NFS & ISCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }
+            ], 
+            "name": "Mixed NFS & ISCSI", 
+            "storageAllocationPolicy": "PROGRESSIVE"
+        }, 
+        {
+            "defaultAllowed": true, 
+            "description": "Description of the default tier 2", 
+            "enabled": true, 
+            "id": 2, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/cloud/virtualdatacenters/1/tiers/2", 
+                    "rel": "self", 
+                    "title": "Nexenta", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }
+            ], 
+            "name": "Nexenta", 
+            "storageAllocationPolicy": "PROGRESSIVE"
+        }
+    ], 
+    "links": []
+}

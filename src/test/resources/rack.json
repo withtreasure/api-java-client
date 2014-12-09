@@ -1,0 +1,29 @@
+{
+    "haEnabled": false, 
+    "id": 1, 
+    "links": [
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1", 
+            "rel": "datacenter", 
+            "title": "Private Datacenter Berlin", 
+            "type": "application/vnd.abiquo.datacenter+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/racks/1/machines", 
+            "rel": "machines", 
+            "title": "machines", 
+            "type": "application/vnd.abiquo.machines+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/racks/1", 
+            "rel": "edit", 
+            "title": "KVM", 
+            "type": "application/vnd.abiquo.rack+json"
+        }
+    ], 
+    "name": "KVM", 
+    "nrsq": 10, 
+    "vlanIdMax": 4094, 
+    "vlanIdMin": 2, 
+    "vlanPerVdcReserved": 1
+}

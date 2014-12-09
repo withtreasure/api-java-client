@@ -1,0 +1,13 @@
+{
+  "defaultNST": true,
+  "id": 1276,
+  "links": [
+    {
+      "href": "http://localhost:9009/api/admin/datacenters/3886/networkservicetypes/1276",
+      "type": "application/vnd.abiquo.networkservicetype+json",
+      "rel": "edit",
+      "title": "Network Service"
+    }
+  ],
+  "name": "Network Service"
+}

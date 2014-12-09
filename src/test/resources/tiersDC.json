@@ -1,0 +1,235 @@
+{
+    "collection": [
+        {
+            "defaultAllowed": true, 
+            "description": "Description of the default tier 1", 
+            "enabled": true, 
+            "id": 1, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/1", 
+                    "rel": "edit", 
+                    "title": "Mixed NFS & ISCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/1/pools", 
+                    "rel": "pools", 
+                    "title": "pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/1/enterprises", 
+                    "rel": "enterprises", 
+                    "title": "enterprises", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/1/action/allowallenterprises", 
+                    "rel": "allowallenterprises", 
+                    "title": "allow all enterprises", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/1/action/restrictallenterprises", 
+                    "rel": "restrictallenterprises", 
+                    "title": "restrict all enterprises", 
+                    "type": ""
+                }
+            ], 
+            "name": "Mixed NFS & ISCSI", 
+            "storageAllocationPolicy": "PROGRESSIVE"
+        }, 
+        {
+            "defaultAllowed": true, 
+            "description": "Description of the default tier 2", 
+            "enabled": true, 
+            "id": 2, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/2", 
+                    "rel": "edit", 
+                    "title": "Nexenta", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/2/pools", 
+                    "rel": "pools", 
+                    "title": "pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/2/enterprises", 
+                    "rel": "enterprises", 
+                    "title": "enterprises", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/2/action/allowallenterprises", 
+                    "rel": "allowallenterprises", 
+                    "title": "allow all enterprises", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/2/action/restrictallenterprises", 
+                    "rel": "restrictallenterprises", 
+                    "title": "restrict all enterprises", 
+                    "type": ""
+                }
+            ], 
+            "name": "Nexenta", 
+            "storageAllocationPolicy": "PROGRESSIVE"
+        }, 
+        {
+            "defaultAllowed": true, 
+            "description": "Description of the default tier 3", 
+            "enabled": true, 
+            "id": 3, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/3", 
+                    "rel": "edit", 
+                    "title": "Linux NFS", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/3/pools", 
+                    "rel": "pools", 
+                    "title": "pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/3/enterprises", 
+                    "rel": "enterprises", 
+                    "title": "enterprises", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/3/action/allowallenterprises", 
+                    "rel": "allowallenterprises", 
+                    "title": "allow all enterprises", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/3/action/restrictallenterprises", 
+                    "rel": "restrictallenterprises", 
+                    "title": "restrict all enterprises", 
+                    "type": ""
+                }
+            ], 
+            "name": "Linux NFS", 
+            "storageAllocationPolicy": "PROGRESSIVE"
+        }, 
+        {
+            "defaultAllowed": true, 
+            "description": "Description of the default tier 4", 
+            "enabled": true, 
+            "id": 4, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/4", 
+                    "rel": "edit", 
+                    "title": "vFiler Tiers renamed", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/4/pools", 
+                    "rel": "pools", 
+                    "title": "pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/4/enterprises", 
+                    "rel": "enterprises", 
+                    "title": "enterprises", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/4/action/allowallenterprises", 
+                    "rel": "allowallenterprises", 
+                    "title": "allow all enterprises", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/4/action/restrictallenterprises", 
+                    "rel": "restrictallenterprises", 
+                    "title": "restrict all enterprises", 
+                    "type": ""
+                }
+            ], 
+            "name": "vFiler Tiers renamed", 
+            "storageAllocationPolicy": "PERFORMANCE"
+        }, 
+        {
+            "defaultAllowed": false, 
+            "description": "Description", 
+            "enabled": true, 
+            "id": 13, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/13", 
+                    "rel": "edit", 
+                    "title": "Nexenta iSCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1", 
+                    "rel": "datacenter", 
+                    "title": "Private Datacenter Berlin", 
+                    "type": "application/vnd.abiquo.datacenter+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/13/pools", 
+                    "rel": "pools", 
+                    "title": "pools", 
+                    "type": "application/vnd.abiquo.storagepools+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/13/enterprises", 
+                    "rel": "enterprises", 
+                    "title": "enterprises", 
+                    "type": "application/vnd.abiquo.enterprise+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/13/action/allowallenterprises", 
+                    "rel": "allowallenterprises", 
+                    "title": "allow all enterprises", 
+                    "type": ""
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers/13/action/restrictallenterprises", 
+                    "rel": "restrictallenterprises", 
+                    "title": "restrict all enterprises", 
+                    "type": ""
+                }
+            ], 
+            "name": "Nexenta iSCSI", 
+            "storageAllocationPolicy": "PROGRESSIVE"
+        }
+    ], 
+    "links": []
+}

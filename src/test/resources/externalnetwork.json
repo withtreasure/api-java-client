@@ -1,0 +1,76 @@
+{
+   "links":[
+      {
+         "title":"Private Berlin",
+         "rel":"datacenter",
+         "type":"application/vnd.abiquo.datacenter+json",
+         "href":"https://localhost/api/admin/datacenters/2"
+      },
+      {
+         "title":"ext1",
+         "rel":"edit",
+         "type":"application/vnd.abiquo.vlan+json",
+         "href":"https://localhost/api/admin/datacenters/2/network/197"
+      },
+      {
+         "title":"network services types",
+         "rel":"networkservicetypes",
+         "type":"application/vnd.abiquo.networkservicetypes+json",
+         "href":"https://localhost/api/admin/datacenters/2/networkservicetypes"
+      },
+      {
+         "title":"Service Network",
+         "rel":"networkservicetype",
+         "type":"application/vnd.abiquo.networkservicetype+json",
+         "href":"https://localhost/api/admin/datacenters/2/networkservicetypes/2"
+      },
+      {
+         "title":"external ips",
+         "rel":"ips",
+         "type":"application/vnd.abiquo.externalips+json",
+         "href":"https://localhost/api/admin/enterprises/1/limits/2/externalnetworks/197/ips"
+      },
+      {
+         "title":"configuration",
+         "rel":"configuration",
+         "type":"application/vnd.abiquo.networkconfiguration+json",
+         "href":"https://localhost/api/admin/enterprises/1/limits/2/externalnetworks/197/configuration"
+      },
+      {
+         "title":"10.10.10.0/24",
+         "rel":"network_configuration",
+         "type":"application/vnd.abiquo.networkconfiguration+json",
+         "href":"https://localhost/api/admin/enterprises/1/limits/2/externalnetworks/197/configuration/198"
+      },
+      {
+         "title":"public ips",
+         "rel":"infrastructureips",
+         "type":"application/vnd.abiquo.externalips+json",
+         "href":"https://localhost/api/admin/datacenters/2/network/197/ips"
+      },
+      {
+         "title":"Abiquo",
+         "rel":"enterprise",
+         "type":"application/vnd.abiquo.enterprise+json",
+         "href":"https://localhost/api/admin/enterprises/1"
+      }
+   ],
+   "id":197,
+   "name":"ext1",
+   "tag":3,
+   "gateway":"10.10.10.1",
+   "address":"10.10.10.0",
+   "mask":24,
+   "unmanaged":false,
+   "type":"EXTERNAL",
+   "dhcpOptions":{
+      "links":[
+
+      ],
+      "collection":[
+
+      ]
+   },
+   "ipv6":false,
+   "strict":false
+}

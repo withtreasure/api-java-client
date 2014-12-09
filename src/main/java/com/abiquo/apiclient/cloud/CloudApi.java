@@ -16,9 +16,11 @@
 package com.abiquo.apiclient.cloud;
 
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
+import static com.abiquo.apiclient.domain.ApiPredicates.tierName;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +45,7 @@ import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
 import com.abiquo.server.core.infrastructure.network.VLANNetworkDto;
 import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
+import com.abiquo.server.core.infrastructure.storage.TiersDto;
 import com.abiquo.server.core.infrastructure.storage.VolumeManagementDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.google.common.reflect.TypeToken;
@@ -278,6 +281,18 @@ public class CloudApi
     {
         return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
             + "/virtualmachines/" + idVm + "/tasks/" + idTask, TaskDto.MEDIA_TYPE, TaskDto.class);
+    }
+
+    public TiersDto listTiers(final VirtualDatacenterDto vdc)
+    {
+        return client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
+    }
+
+    public TierDto findTier(final VirtualDatacenterDto vdc, final String name)
+    {
+        TiersDto tiers =
+            client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
+        return find(tiers.getCollection(), tierName(name));
     }
 
 }

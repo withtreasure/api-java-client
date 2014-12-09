@@ -18,6 +18,9 @@ package com.abiquo.apiclient.cloud;
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
+
+import java.util.NoSuchElementException;
 
 import org.testng.annotations.Test;
 
@@ -42,6 +45,7 @@ import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
 import com.abiquo.server.core.infrastructure.network.VLANNetworkDto;
 import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
+import com.abiquo.server.core.infrastructure.storage.TiersDto;
 import com.abiquo.server.core.infrastructure.storage.VolumeManagementDto;
 import com.abiquo.server.core.infrastructure.storage.VolumesManagementDto;
 import com.abiquo.server.core.task.TaskDto;
@@ -635,5 +639,84 @@ public class CloudApiTest extends BaseMockTest
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
         assertAccept(request, VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListTiersfromVDC() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("tiersVDC.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link = new RESTLink("tiers", "/cloud/virtualdatacenters/1/tiers");
+        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().listTiers(dto);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/tiers");
+        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testListFindTierfromVDC() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("tiersVDC.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link = new RESTLink("tiers", "/cloud/virtualdatacenters/1/tiers");
+        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().findTier(dto, "Mixed NFS & ISCSI");
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/tiers");
+        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testListFindTierfromVDCNotFound() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("tiersVDC.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link = new RESTLink("tiers", "/cloud/virtualdatacenters/1/tiers");
+        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        try
+        {
+            newApiClient().getCloudApi().findTier(dto, "unexistent_tier");
+            fail("Test should have failed because tier does not exist");
+        }
+        catch (NoSuchElementException ex)
+        {
+
+        }
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/tiers");
+        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
     }
 }

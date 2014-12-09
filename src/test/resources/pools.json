@@ -1,0 +1,42 @@
+{
+    "collection": [
+        {
+            "availableSizeInMb": 1863, 
+            "enabled": false, 
+            "idStorage": "8e30", 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/devices/1/pools/1", 
+                    "rel": "edit", 
+                    "title": "zpool", 
+                    "type": "application/vnd.abiquo.storagepool+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/tiers/2", 
+                    "rel": "tier", 
+                    "title": "Nexenta iSCSI", 
+                    "type": "application/vnd.abiquo.tier+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/devices/1", 
+                    "rel": "device", 
+                    "title": "nexenta-support", 
+                    "type": "application/vnd.abiquo.storagedevice+json"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/datacenters/1/storage/devices/1/pools/1/action/volumes", 
+                    "rel": "volumes", 
+                    "title": "volumes", 
+                    "type": "application/vnd.abiquo.volumes+json"
+                }
+            ], 
+            "maxVolumes": 0, 
+            "name": "zpool", 
+            "totalSizeInMb": 16281, 
+            "type": "ISCSI", 
+            "usablePercent": 100, 
+            "usedSizeInMb": 14418
+        }
+    ], 
+    "links": []
+}

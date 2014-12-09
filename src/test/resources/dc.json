@@ -1,0 +1,103 @@
+{
+    "id": 1, 
+    "links": [
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1", 
+            "rel": "edit", 
+            "title": "Private Datacenter Berlin", 
+            "type": "application/vnd.abiquo.datacenter+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/racks", 
+            "rel": "racks", 
+            "title": "racks", 
+            "type": "application/vnd.abiquo.racks+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/remoteservices", 
+            "rel": "remoteservices", 
+            "title": "remote services", 
+            "type": "application/vnd.abiquo.remoteservices+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/backups", 
+            "rel": "backups", 
+            "title": "backups", 
+            "type": "application/vnd.abiquo.backups+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/action/updateusedresources", 
+            "rel": "updateusedresources", 
+            "title": "update resources", 
+            "type": ""
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/hypervisors", 
+            "rel": "hypervisors", 
+            "title": "hypervisors", 
+            "type": "application/vnd.abiquo.hypervisortypes+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/action/enterprises", 
+            "rel": "enterprises", 
+            "title": "enterprises", 
+            "type": "application/vnd.abiquo.enterprises+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/action/discover", 
+            "rel": "discover", 
+            "title": "discover", 
+            "type": "application/vnd.abiquo.machines+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/action/checkmachinestate", 
+            "rel": "checkmachinestate", 
+            "title": "machines state", 
+            "type": "application/vnd.abiquo.machinestate+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/action/checkmachineipmistate", 
+            "rel": "checkmachineipmistate", 
+            "title": "machines ipmi", 
+            "type": "application/vnd.abiquo.machineipmistate+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/storage/tiers", 
+            "rel": "tiers", 
+            "title": "tiers", 
+            "type": "application/vnd.abiquo.tiers+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/storage/devices", 
+            "rel": "devices", 
+            "title": "storage devices", 
+            "type": "application/vnd.abiquo.storagedevices+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/networkservicetypes", 
+            "rel": "networkservicetypes", 
+            "title": "network service types", 
+            "type": "application/vnd.abiquo.networkservicetypes+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/network", 
+            "rel": "network", 
+            "title": "public networks", 
+            "type": "application/vnd.abiquo.vlans+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1/action/getlimits", 
+            "rel": "getLimits", 
+            "title": "limits", 
+            "type": "application/vnd.abiquo.limits+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/remoteservices/5", 
+            "rel": "remoteservice", 
+            "title": "STORAGESYSTEMMONITOR", 
+            "type": "application/vnd.abiquo.remoteservice+json"
+        }
+    ], 
+    "location": "Berlin", 
+    "name": "Private Datacenter Berlin"
+}
