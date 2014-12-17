@@ -21,6 +21,8 @@ import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.abiquo.apiclient.RestClient;
+import com.abiquo.apiclient.domain.options.EnterpriseListOptions;
+import com.abiquo.apiclient.domain.options.UserListOptions;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
 import com.abiquo.server.core.enterprise.UserDto;
@@ -45,12 +47,19 @@ public class EnterpriseApi
 
     public EnterpriseDto getEnterprise(final String id)
     {
-        return client.get(ENTERPRISES_URL + id, EnterpriseDto.MEDIA_TYPE, EnterpriseDto.class);
+        return client
+            .get(ENTERPRISES_URL + "/" + id, EnterpriseDto.MEDIA_TYPE, EnterpriseDto.class);
     }
 
-    public EnterprisesDto listEnterprise()
+    public EnterprisesDto listEnterprises()
     {
         return client.get(ENTERPRISES_URL, EnterprisesDto.MEDIA_TYPE, EnterprisesDto.class);
+    }
+
+    public EnterprisesDto listEnterprises(final EnterpriseListOptions options)
+    {
+        return client.get(ENTERPRISES_URL, options.queryParams(), EnterprisesDto.MEDIA_TYPE,
+            EnterprisesDto.class);
     }
 
     public UserDto getCurrentUser()
@@ -61,6 +70,11 @@ public class EnterpriseApi
     public UsersDto listUsers()
     {
         return client.get(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
+    }
+
+    public UsersDto listUsers(final UserListOptions options)
+    {
+        return client.get(USERS_URL, options.queryParams(), UsersDto.MEDIA_TYPE, UsersDto.class);
     }
 
 }

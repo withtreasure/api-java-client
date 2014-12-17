@@ -15,14 +15,12 @@
  */
 package com.abiquo.apiclient.domain;
 
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import org.testng.annotations.Test;
-
-import com.abiquo.apiclient.domain.ApiPath;
 
 @Test
 public class ApiPathTest
@@ -36,7 +34,7 @@ public class ApiPathTest
                 && field.getName().endsWith("_URL"))
             {
                 String value = (String) field.get(null);
-                assertTrue(value.endsWith("/"));
+                assertFalse(value.endsWith("/"));
             }
         }
     }

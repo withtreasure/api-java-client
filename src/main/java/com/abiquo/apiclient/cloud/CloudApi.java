@@ -16,15 +16,17 @@
 package com.abiquo.apiclient.cloud;
 
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
-import static com.abiquo.apiclient.domain.ApiPredicates.tierName;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.find;
 
 import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.RestClient;
+import com.abiquo.apiclient.domain.options.ExternalIpListOptions;
+import com.abiquo.apiclient.domain.options.VirtualApplianceListOptions;
+import com.abiquo.apiclient.domain.options.VirtualDatacenterListOptions;
+import com.abiquo.apiclient.domain.options.VirtualMachineListOptions;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
@@ -61,7 +63,7 @@ public class CloudApi
 
     public VirtualDatacenterDto getVirtualDatacenter(final String id)
     {
-        return client.get(VIRTUALDATACENTERS_URL + id, VirtualDatacenterDto.MEDIA_TYPE,
+        return client.get(VIRTUALDATACENTERS_URL + "/" + id, VirtualDatacenterDto.MEDIA_TYPE,
             VirtualDatacenterDto.class);
     }
 
@@ -71,10 +73,23 @@ public class CloudApi
             VirtualDatacentersDto.class);
     }
 
+    public VirtualDatacentersDto listVirtualDatacenters(final VirtualDatacenterListOptions options)
+    {
+        return client.get(VIRTUALDATACENTERS_URL, options.queryParams(),
+            VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacentersDto.class);
+    }
+
     public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
     {
         return client.get(vdc.searchLink("externalips").getHref(), ExternalIpsDto.MEDIA_TYPE,
             ExternalIpsDto.class);
+    }
+
+    public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc,
+        final ExternalIpListOptions options)
+    {
+        return client.get(vdc.searchLink("externalips").getHref(), options.queryParams(),
+            ExternalIpsDto.MEDIA_TYPE, ExternalIpsDto.class);
     }
 
     public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
@@ -83,9 +98,17 @@ public class CloudApi
             VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
     }
 
+    public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc,
+        final VirtualApplianceListOptions options)
+    {
+        return client.get(vdc.searchLink("virtualappliances").getHref(), options.queryParams(),
+            VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
+    }
+
     public VirtualApplianceDto getVirtualAppliance(final String idVdc, final String idVapp)
     {
-        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp,
+        return client.get(
+            String.format("%s/%s/virtualappliances/%s", VIRTUALDATACENTERS_URL, idVdc, idVapp),
             VirtualApplianceDto.MEDIA_TYPE, VirtualApplianceDto.class);
     }
 
@@ -95,9 +118,16 @@ public class CloudApi
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
-    public VLANNetworkDto getPrivateNetwork(final String idVdc, final String idNetwork)
+    public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp,
+        final VirtualMachineListOptions options)
     {
-        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/privatenetworks/" + idNetwork,
+        return client.get(vapp.searchLink("virtualmachines").getHref(), options.queryParams(),
+            VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
+    }
+
+    public VLANNetworkDto getPrivateNetwork(final VirtualDatacenterDto vdc, final String idNetwork)
+    {
+        return client.get(vdc.searchLink("privatenetworks").getHref() + "/" + idNetwork,
             VLANNetworkDto.MEDIA_TYPE, VLANNetworkDto.class);
     }
 
@@ -107,11 +137,10 @@ public class CloudApi
             VMNetworkConfigurationsDto.MEDIA_TYPE, VMNetworkConfigurationsDto.class);
     }
 
-    public VirtualMachineDto getVirtualMachine(final String idVdc, final String idVapp,
-        final String idVm)
+    public VirtualMachineDto getVirtualMachine(final VirtualApplianceDto vapp, final String idVm)
     {
-        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
-            + "/virtualmachines/" + idVm, VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class);
+        return client.get(vapp.searchLink("virtualmachines").getHref() + "/" + idVm,
+            VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class);
     }
 
     public VirtualDatacenterDto createVirtualDatacenter(final SingleResourceTransportDto location,
@@ -258,9 +287,9 @@ public class CloudApi
         return refreshed;
     }
 
-    public VolumeManagementDto getVolume(final String idVdc, final String idVolume)
+    public VolumeManagementDto getVolume(final VirtualDatacenterDto vdc, final String idVolume)
     {
-        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/volumes/" + idVolume,
+        return client.get(vdc.searchLink("volumes").getHref() + "/" + idVolume,
             VolumeManagementDto.MEDIA_TYPE, VolumeManagementDto.class);
     }
 
@@ -276,23 +305,15 @@ public class CloudApi
             VolumeManagementDto.MEDIA_TYPE, dto, VolumeManagementDto.class);
     }
 
-    public TaskDto getTask(final String idVdc, final String idVapp, final String idVm,
-        final String idTask)
+    public TaskDto getTask(final VirtualMachineDto vm, final String idTask)
     {
-        return client.get(VIRTUALDATACENTERS_URL + idVdc + "/virtualappliances/" + idVapp
-            + "/virtualmachines/" + idVm + "/tasks/" + idTask, TaskDto.MEDIA_TYPE, TaskDto.class);
+        return client.get(vm.searchLink("tasks").getHref() + "/" + idTask, TaskDto.MEDIA_TYPE,
+            TaskDto.class);
     }
 
     public TiersDto listTiers(final VirtualDatacenterDto vdc)
     {
         return client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
-    }
-
-    public TierDto findTier(final VirtualDatacenterDto vdc, final String name)
-    {
-        TiersDto tiers =
-            client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
-        return find(tiers.getCollection(), tierName(name));
     }
 
 }

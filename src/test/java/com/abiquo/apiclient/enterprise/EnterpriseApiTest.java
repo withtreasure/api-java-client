@@ -23,6 +23,8 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
+import com.abiquo.apiclient.domain.options.EnterpriseListOptions;
+import com.abiquo.apiclient.domain.options.UserListOptions;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
@@ -34,7 +36,6 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
 @Test
 public class EnterpriseApiTest extends BaseMockTest
 {
-
     public void testCreateEnterprise() throws Exception
     {
         MockResponse response = new MockResponse() //
@@ -70,7 +71,7 @@ public class EnterpriseApiTest extends BaseMockTest
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", ENTERPRISES_URL + "1");
+        assertRequest(request, "GET", ENTERPRISES_URL + "/1");
         assertAccept(request, EnterpriseDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
@@ -84,11 +85,30 @@ public class EnterpriseApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getEnterpriseApi().listEnterprise();
+        newApiClient().getEnterpriseApi().listEnterprises();
 
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", ENTERPRISES_URL);
+        assertAccept(request, EnterprisesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListEnterprisesWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", EnterprisesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("ents.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getEnterpriseApi().listEnterprises(
+            EnterpriseListOptions.builder().limit(0).idScope(4).build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", ENTERPRISES_URL + "?idScope=4&limit=0");
         assertAccept(request, EnterprisesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
@@ -124,6 +144,25 @@ public class EnterpriseApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", USERS_URL);
+        assertAccept(request, UsersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListUsersWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", UsersDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("users.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getEnterpriseApi().listUsers(
+            UserListOptions.builder().limit(0).connected(true).build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", USERS_URL + "?connected=true&limit=0");
         assertAccept(request, UsersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }

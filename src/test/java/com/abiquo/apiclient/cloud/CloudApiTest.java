@@ -18,13 +18,14 @@ package com.abiquo.apiclient.cloud;
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
-
-import java.util.NoSuchElementException;
 
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
+import com.abiquo.apiclient.domain.options.ExternalIpListOptions;
+import com.abiquo.apiclient.domain.options.VirtualApplianceListOptions;
+import com.abiquo.apiclient.domain.options.VirtualDatacenterListOptions;
+import com.abiquo.apiclient.domain.options.VirtualMachineListOptions;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
@@ -55,7 +56,6 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
 @Test
 public class CloudApiTest extends BaseMockTest
 {
-
     public void testCreateVirtualAppliance() throws Exception
     {
         MockResponse response = new MockResponse() //
@@ -72,14 +72,13 @@ public class CloudApiTest extends BaseMockTest
         newApiClient().getCloudApi().createVirtualAppliance(dto, "VAPP");
 
         RecordedRequest request = server.takeRequest();
-        assertRequest(request, "POST", VIRTUALDATACENTERS_URL + "1");
+        assertRequest(request, "POST", VIRTUALDATACENTERS_URL + "/1");
         assertAccept(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
         VirtualApplianceDto requestBody = readBody(request, VirtualApplianceDto.class);
         assertEquals(requestBody.getName(), "VAPP");
-
     }
 
     public void testCreateVirtualDatacenter() throws Exception
@@ -127,7 +126,6 @@ public class CloudApiTest extends BaseMockTest
             EnterpriseDto.SHORT_MEDIA_TYPE_JSON);
         assertLinkExist(requestBody, location.searchLink("self").getHref(), "location",
             DatacenterDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
     public void testCreateVirtualMachine() throws Exception
@@ -168,7 +166,6 @@ public class CloudApiTest extends BaseMockTest
         assertEquals(requestBody.getVdrpEnabled(), Boolean.TRUE);
         assertLinkExist(requestBody, template.getEditLink().getHref(), "virtualmachinetemplate",
             VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
     public void testCreateVolume() throws Exception
@@ -205,12 +202,10 @@ public class CloudApiTest extends BaseMockTest
         assertEquals(requestBody.getSizeInMB(), 1024);
         assertLinkExist(requestBody, tier.searchLink("self").getHref(), "tier",
             TierDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
     public void testDeploy() throws Exception
     {
-
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
             .setBody(payloadFromResource("acceptedRequest.json"));
@@ -257,12 +252,10 @@ public class CloudApiTest extends BaseMockTest
         assertRequest(second, "GET", dto.getEditLink().getHref());
         assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testUndeploy() throws Exception
     {
-
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
             .setBody(payloadFromResource("acceptedRequest.json"));
@@ -317,7 +310,6 @@ public class CloudApiTest extends BaseMockTest
 
     public void testEditVirtualMachine() throws Exception
     {
-
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
             .setBody(payloadFromResource("acceptedRequest.json"));
@@ -353,12 +345,10 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testPowerState() throws Exception
     {
-
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
             .setBody(payloadFromResource("acceptedRequest.json"));
@@ -406,7 +396,6 @@ public class CloudApiTest extends BaseMockTest
         assertRequest(second, "GET", dto.getEditLink().getHref());
         assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetPrivateNetwork() throws Exception
@@ -418,14 +407,16 @@ public class CloudApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getCloudApi().getPrivateNetwork("1", "1");
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
+        vdc.addLink(new RESTLink("privatenetworks", "/cloud/virtualdatacenters/1/privatenetworks"));
+
+        newApiClient().getCloudApi().getPrivateNetwork(vdc, "1");
 
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/privatenetworks/1");
         assertAccept(request, VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetTask() throws Exception
@@ -437,7 +428,11 @@ public class CloudApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getCloudApi().getTask("1", "1", "1", "f9df77b3-2068-4a07-8336-38d4c8235e4d");
+        VirtualMachineDto vm = new VirtualMachineDto();
+        vm.addLink(new RESTLink("tasks",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks"));
+
+        newApiClient().getCloudApi().getTask(vm, "f9df77b3-2068-4a07-8336-38d4c8235e4d");
 
         RecordedRequest request = server.takeRequest();
 
@@ -446,7 +441,6 @@ public class CloudApiTest extends BaseMockTest
             "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks/f9df77b3-2068-4a07-8336-38d4c8235e4d");
         assertAccept(request, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetVirtualAppliance() throws Exception
@@ -464,7 +458,6 @@ public class CloudApiTest extends BaseMockTest
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/virtualappliances/1");
         assertAccept(request, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetVirtualDatacenter() throws Exception
@@ -482,7 +475,6 @@ public class CloudApiTest extends BaseMockTest
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1");
         assertAccept(request, VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetVirtualMachine() throws Exception
@@ -494,14 +486,17 @@ public class CloudApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getCloudApi().getVirtualMachine("1", "1", "1");
+        VirtualApplianceDto vapp = new VirtualApplianceDto();
+        vapp.addLink(new RESTLink("virtualmachines",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines"));
+
+        newApiClient().getCloudApi().getVirtualMachine(vapp, "1");
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
         assertAccept(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetVolume() throws Exception
@@ -513,13 +508,15 @@ public class CloudApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getCloudApi().getVolume("1", "1");
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
+        vdc.addLink(new RESTLink("volumes", "/cloud/virtualdatacenters/1/volumes"));
+
+        newApiClient().getCloudApi().getVolume(vdc, "1");
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/volumes/1");
         assertAccept(request, VolumeManagementDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testListExternalIps() throws Exception
@@ -542,6 +539,32 @@ public class CloudApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
 
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/action/externalips");
+        assertAccept(request, ExternalIpsDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListExternalIpsWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", ExternalIpsDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("externalips.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link =
+            new RESTLink("externalips", "/cloud/virtualdatacenters/1/action/externalips");
+        link.setType(ExternalIpsDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().listExternalIps(dto,
+            ExternalIpListOptions.builder().limit(0).all(true).build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/action/externalips?all=true&limit=0");
         assertAccept(request, ExternalIpsDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
@@ -596,6 +619,32 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
     }
 
+    public void testListVirtualAppliancesWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vapps.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        RESTLink link =
+            new RESTLink("virtualappliances", "/cloud/virtualdatacenters/1/virtualappliances");
+        link.setType(VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getCloudApi().listVirtualAppliances(dto,
+            VirtualApplianceListOptions.builder().limit(0).expand("foo").build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/virtualappliances?expand=foo&limit=0");
+        assertAccept(request, VirtualAppliancesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
     public void testListVirtualDatacenters() throws Exception
     {
         MockResponse response = new MockResponse() //
@@ -609,7 +658,28 @@ public class CloudApiTest extends BaseMockTest
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", "/cloud/virtualdatacenters/");
+        assertRequest(request, "GET", "/cloud/virtualdatacenters");
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListVirtualDatacentersWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vdcs.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getCloudApi()
+            .listVirtualDatacenters(
+                VirtualDatacenterListOptions.builder().limit(0).datacenterId(2).enterpriseId(4)
+                    .build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters?datacenter=2&enterprise=4&limit=0");
         assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
@@ -641,6 +711,34 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
     }
 
+    public void testListVirtualMachinesWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vms.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualApplianceDto vapp = new VirtualApplianceDto();
+
+        RESTLink link =
+            new RESTLink("virtualmachines",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines");
+        link.setType(VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON);
+        vapp.addLink(link);
+
+        newApiClient().getCloudApi().listVirtualMachines(vapp,
+            VirtualMachineListOptions.builder().limit(0).key("foo").build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines?key=foo&limit=0");
+        assertAccept(request, VirtualMachinesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
     public void testListTiersfromVDC() throws Exception
     {
         MockResponse response =
@@ -662,61 +760,5 @@ public class CloudApiTest extends BaseMockTest
         assertRequest(request, "GET", "/cloud/virtualdatacenters/1/tiers");
         assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
-    }
-
-    public void testListFindTierfromVDC() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("tiersVDC.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        VirtualDatacenterDto dto = new VirtualDatacenterDto();
-        RESTLink link = new RESTLink("tiers", "/cloud/virtualdatacenters/1/tiers");
-        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
-        dto.addLink(link);
-
-        newApiClient().getCloudApi().findTier(dto, "Mixed NFS & ISCSI");
-
-        RecordedRequest request = server.takeRequest();
-
-        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/tiers");
-        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-
-    }
-
-    public void testListFindTierfromVDCNotFound() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("tiersVDC.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        VirtualDatacenterDto dto = new VirtualDatacenterDto();
-        RESTLink link = new RESTLink("tiers", "/cloud/virtualdatacenters/1/tiers");
-        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
-        dto.addLink(link);
-
-        try
-        {
-            newApiClient().getCloudApi().findTier(dto, "unexistent_tier");
-            fail("Test should have failed because tier does not exist");
-        }
-        catch (NoSuchElementException ex)
-        {
-
-        }
-        RecordedRequest request = server.takeRequest();
-
-        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/tiers");
-        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-
     }
 }

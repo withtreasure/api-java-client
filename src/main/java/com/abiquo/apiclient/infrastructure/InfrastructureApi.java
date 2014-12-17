@@ -17,11 +17,6 @@ package com.abiquo.apiclient.infrastructure;
 
 import static com.abiquo.apiclient.domain.ApiPath.DATACENTERS_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOADLEVELRULES_URL;
-import static com.abiquo.apiclient.domain.ApiPredicates.defaultNetworkServiceType;
-import static com.abiquo.apiclient.domain.ApiPredicates.locationName;
-import static com.abiquo.apiclient.domain.ApiPredicates.networkName;
-import static com.abiquo.apiclient.domain.ApiPredicates.storagePoolName;
-import static com.abiquo.apiclient.domain.ApiPredicates.tierName;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.find;
@@ -31,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.abiquo.apiclient.RestClient;
+import com.abiquo.apiclient.domain.options.DatacenterListOptions;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.server.core.enterprise.DatacenterLimitsDto;
@@ -55,6 +51,7 @@ import com.abiquo.server.core.infrastructure.storage.StoragePoolsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.infrastructure.storage.TiersDto;
 import com.abiquo.server.core.scheduler.MachineLoadRuleDto;
+import com.google.common.base.Predicate;
 
 public class InfrastructureApi
 {
@@ -70,6 +67,12 @@ public class InfrastructureApi
         return client.get(DATACENTERS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
     }
 
+    public DatacentersDto listDatacenters(final DatacenterListOptions options)
+    {
+        return client.get(DATACENTERS_URL, options.queryParams(), DatacentersDto.MEDIA_TYPE,
+            DatacentersDto.class);
+    }
+
     public RacksDto listRacks(final DatacenterDto datacenter)
     {
         return client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
@@ -81,30 +84,20 @@ public class InfrastructureApi
         return client.get(enterprise.searchLink("limits"), DatacentersLimitsDto.class);
     }
 
-    public DatacenterLimitsDto findLimits(final EnterpriseDto enterprise, final String locationName)
-    {
-        return find(listLimits(enterprise).getCollection(), locationName(locationName));
-    }
-
     public DatacenterLimitsDto getEnterpriseLimitsForDatacenter(final EnterpriseDto enterprise,
         final DatacenterDto datacenter)
     {
-        DatacentersLimitsDto limits =
-            client.get(enterprise.searchLink("limits").getHref(), DatacentersLimitsDto.MEDIA_TYPE,
-                DatacentersLimitsDto.class);
-
-        return find(limits.getCollection(), locationName(datacenter.getName()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("datacenter", datacenter.getId());
+        return client
+            .get(enterprise.searchLink("limits").getHref(), params,
+                DatacentersLimitsDto.MEDIA_TYPE, DatacentersLimitsDto.class).getCollection().get(0);
     }
 
     public VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
     {
         return client.get(limits.searchLink("externalnetworks").getHref(),
             VLANNetworksDto.MEDIA_TYPE, VLANNetworksDto.class);
-    }
-
-    public VLANNetworkDto findExternalNetwork(final DatacenterLimitsDto limits, final String name)
-    {
-        return find(listExternalNetworks(limits).getCollection(), networkName(name));
     }
 
     public DatacenterDto createDatacenter(final String name, final String location,
@@ -164,12 +157,10 @@ public class InfrastructureApi
             MachineDto.MEDIA_TYPE, machine, MachineDto.class);
     }
 
-    public NetworkServiceTypeDto findDefaultNetworkServiceType(final DatacenterDto datacenter)
+    public NetworkServiceTypesDto listNetworkServiceTypes(final DatacenterDto datacenter)
     {
-        NetworkServiceTypesDto netServiceTypes =
-            client.get(datacenter.searchLink("networkservicetypes").getHref(),
-                NetworkServiceTypesDto.MEDIA_TYPE, NetworkServiceTypesDto.class);
-        return find(netServiceTypes.getCollection(), defaultNetworkServiceType());
+        return client.get(datacenter.searchLink("networkservicetypes").getHref(),
+            NetworkServiceTypesDto.MEDIA_TYPE, NetworkServiceTypesDto.class);
     }
 
     public MachineLoadRuleDto createDatacenterLoadLevelRule(final DatacenterDto datacenter,
@@ -249,22 +240,27 @@ public class InfrastructureApi
             StorageDeviceDto.MEDIA_TYPE, device, StorageDeviceDto.class);
     }
 
-    public StoragePoolDto findRemotePool(final StorageDeviceDto device, final String name)
-    {
-        Map<String, Object> queryParams = new HashMap<String, Object>();
-        queryParams.put("sync", true);
-
-        StoragePoolsDto pools =
-            client.get(device.searchLink("pools").getHref(), queryParams,
-                StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
-        return find(pools.getCollection(), storagePoolName(name));
-    }
-
     public StoragePoolDto createPool(final DatacenterDto datacenter,
         final StorageDeviceDto storageDevice, final String pool, final String tierName)
     {
-        StoragePoolDto storagePool = findRemotePool(storageDevice, pool);
-        TierDto tier = findTier(datacenter, tierName);
+        StoragePoolDto storagePool =
+            find(listRemotePools(storageDevice).getCollection(), new Predicate<StoragePoolDto>()
+            {
+                @Override
+                public boolean apply(final StoragePoolDto input)
+                {
+                    return input.getName().equals(pool);
+                }
+            });
+
+        TierDto tier = find(listTiers(datacenter).getCollection(), new Predicate<TierDto>()
+        {
+            @Override
+            public boolean apply(final TierDto input)
+            {
+                return input.getName().equals(tierName);
+            }
+        });
 
         storagePool.setEnabled(true);
         storagePool.addLink(create("tier", tier.getEditLink().getHref(), tier.getEditLink()
@@ -275,16 +271,14 @@ public class InfrastructureApi
     }
 
     public VLANNetworkDto createExternalNetwork(final DatacenterDto datacenter,
-        final EnterpriseDto enterprise, final String name, final String address,
-        final String gateway, final int mask, final int tag)
+        final NetworkServiceTypeDto nst, final EnterpriseDto enterprise, final String name,
+        final String address, final String gateway, final int mask, final int tag)
     {
-        NetworkServiceTypeDto defaultNetType = findDefaultNetworkServiceType(datacenter);
-
         VLANNetworkDto vlan = new VLANNetworkDto();
         vlan.addLink(create("enterprise", enterprise.getEditLink().getHref(), enterprise
             .getEditLink().getType()));
-        vlan.addLink(create("networkservicetype", defaultNetType.getEditLink().getHref(),
-            defaultNetType.getEditLink().getType()));
+        vlan.addLink(create("networkservicetype", nst.getEditLink().getHref(), nst.getEditLink()
+            .getType()));
         vlan.setAddress(address);
         vlan.setName(name);
         vlan.setType(NetworkType.EXTERNAL);
@@ -300,14 +294,6 @@ public class InfrastructureApi
     {
         return client.get(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
             TiersDto.class);
-    }
-
-    public TierDto findTier(final DatacenterDto datacenter, final String name)
-    {
-        TiersDto tiers =
-            client.get(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
-                TiersDto.class);
-        return find(tiers.getCollection(), tierName(name));
     }
 
 }

@@ -20,6 +20,7 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
+import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
@@ -41,7 +42,7 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
 @Test
 public class TemplatesApiTest extends BaseMockTest
 {
-    public void testFindAvailableTemplate() throws Exception
+    public void testListTemplates() throws Exception
     {
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", VirtualMachineTemplatesDto.SHORT_MEDIA_TYPE_JSON) //
@@ -50,19 +51,42 @@ public class TemplatesApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        VirtualDatacenterDto dto = new VirtualDatacenterDto();
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
         RESTLink link = new RESTLink("templates", "/cloud/virtualdatacenters/1/action/templates");
         link.setType(VirtualMachineTemplatesDto.SHORT_MEDIA_TYPE_JSON);
-        dto.addLink(link);
+        vdc.addLink(link);
 
-        VirtualMachineTemplateDto vmTemplateDto =
-            newApiClient().getTemplatesApi().findAvailableTemplate(dto, "m0n0wall");
-
-        assertEquals(vmTemplateDto.getName(), "m0n0wall");
+        newApiClient().getTemplatesApi().listTemplates(vdc);
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/action/templates?limit=0");
+        assertRequest(request, "GET", "/cloud/virtualdatacenters/1/action/templates");
+        assertAccept(request, VirtualMachineTemplatesDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListTemplatesWithOptions() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachineTemplatesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("templates.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
+        RESTLink link = new RESTLink("templates", "/cloud/virtualdatacenters/1/action/templates");
+        link.setType(VirtualMachineTemplatesDto.SHORT_MEDIA_TYPE_JSON);
+        vdc.addLink(link);
+
+        TemplateListOptions options =
+            TemplateListOptions.builder().limit(0).category("foo").build();
+        newApiClient().getTemplatesApi().listTemplates(vdc, options);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters/1/action/templates?categoryName=foo&limit=0");
         assertAccept(request, VirtualMachineTemplatesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
@@ -133,7 +157,6 @@ public class TemplatesApiTest extends BaseMockTest
             "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
         assertAccept(third, VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testPromoteInstance() throws Exception
@@ -210,7 +233,6 @@ public class TemplatesApiTest extends BaseMockTest
             "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
         assertAccept(third, VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testRefreshLibrary() throws Exception
@@ -263,7 +285,6 @@ public class TemplatesApiTest extends BaseMockTest
         assertRequest(second, "GET",
             "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks/1");
         assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
-
     }
 
 }

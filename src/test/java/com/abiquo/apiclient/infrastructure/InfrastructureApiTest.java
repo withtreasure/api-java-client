@@ -17,13 +17,11 @@ package com.abiquo.apiclient.infrastructure;
 
 import static com.abiquo.apiclient.domain.ApiPath.DATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
-
-import java.util.NoSuchElementException;
 
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
+import com.abiquo.apiclient.domain.options.DatacenterListOptions;
 import com.abiquo.model.enumerator.NetworkType;
 import com.abiquo.model.enumerator.RemoteServiceType;
 import com.abiquo.model.rest.RESTLink;
@@ -56,10 +54,8 @@ import com.squareup.okhttp.mockwebserver.RecordedRequest;
 @Test
 public class InfrastructureApiTest extends BaseMockTest
 {
-
     public void testListDatacenters() throws Exception
     {
-
         MockResponse response =
             new MockResponse().setHeader("Content-Type", DatacentersDto.SHORT_MEDIA_TYPE_JSON)
                 .setBody(payloadFromResource("dcs.json"));
@@ -77,12 +73,32 @@ public class InfrastructureApiTest extends BaseMockTest
         assertRequest(request, "GET", DATACENTERS_URL);
         assertAccept(request, DatacentersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
+    }
 
+    public void testListDatacentersWithOptions() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type", DatacentersDto.SHORT_MEDIA_TYPE_JSON)
+                .setBody(payloadFromResource("dcs.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        RESTLink link = new RESTLink("datacenters", baseUrl() + DATACENTERS_URL);
+        link.setType(DatacentersDto.SHORT_MEDIA_TYPE_JSON);
+
+        newApiClient().getInfrastructureApi().listDatacenters(
+            DatacenterListOptions.builder().limit(0).pricing(5).build());
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", DATACENTERS_URL + "?limit=0&pricing=5");
+        assertAccept(request, DatacentersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
     }
 
     public void testCreateDatacenter() throws Exception
     {
-
         MockResponse response =
             new MockResponse().setHeader("Content-Type", DatacenterDto.SHORT_MEDIA_TYPE_JSON)
                 .setBody(payloadFromResource("dc.json"));
@@ -110,7 +126,6 @@ public class InfrastructureApiTest extends BaseMockTest
         assertEquals(requestBody.getLocation(), "Berlin");
         assertEquals(requestBody.getRemoteServices().getCollection().get(0).getType(),
             RemoteServiceType.VIRTUAL_SYSTEM_MONITOR);
-
     }
 
     public void testAddDatacenterToEnteprise() throws Exception
@@ -166,7 +181,6 @@ public class InfrastructureApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         RackDto requestBody = readBody(request, RackDto.class);
         assertEquals(requestBody.getName(), "KVM");
-
     }
 
     public void testCreateMachine() throws Exception
@@ -198,7 +212,6 @@ public class InfrastructureApiTest extends BaseMockTest
         MachineDto requestBody = readBody(request, MachineDto.class);
         assertEquals(requestBody.getIp(), "10.60.11.210");
         assertEquals(requestBody.getType(), "KVM");
-
     }
 
     public void testDiscoverMachines() throws Exception
@@ -223,7 +236,6 @@ public class InfrastructureApiTest extends BaseMockTest
             "/admin/datacenters/1/action/discover?hypervisor=KVM&ip=10.60.12.4&password=pwd&user=foo");
         assertAccept(request, MachinesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testCreateDevice() throws Exception
@@ -288,70 +300,8 @@ public class InfrastructureApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
     }
 
-    public void testFindExternalNetwork() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", VLANNetworksDto.SHORT_MEDIA_TYPE_JSON)
-                .setBody(payloadFromResource("externalnetworks.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        DatacenterLimitsDto limits = new DatacenterLimitsDto();
-        RESTLink link =
-            new RESTLink("externalnetworks", "/admin/enterprises/1/limits/1/externalnetworks");
-        link.setType(VLANNetworksDto.SHORT_MEDIA_TYPE_JSON);
-        limits.addLink(link);
-
-        newApiClient().getInfrastructureApi().findExternalNetwork(limits, "External_test");
-
-        RecordedRequest request = server.takeRequest();
-        assertRequest(request, "GET", "/admin/enterprises/1/limits/1/externalnetworks");
-        assertAccept(request, VLANNetworksDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-    }
-
-    public void testExternalNetworkNotFound() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", VLANNetworksDto.SHORT_MEDIA_TYPE_JSON)
-                .setBody(payloadFromResource("externalnetworks.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        DatacenterLimitsDto limits = new DatacenterLimitsDto();
-        RESTLink link =
-            new RESTLink("externalnetworks", "/admin/enterprises/1/limits/1/externalnetworks");
-        link.setType(VLANNetworksDto.SHORT_MEDIA_TYPE_JSON);
-        limits.addLink(link);
-
-        try
-        {
-            newApiClient().getInfrastructureApi()
-                .findExternalNetwork(limits, "External_unexistent");
-            fail("Test should have failed because network does not exist");
-        }
-        catch (NoSuchElementException ex)
-        {
-
-        }
-
-        RecordedRequest request = server.takeRequest();
-        assertRequest(request, "GET", "/admin/enterprises/1/limits/1/externalnetworks");
-        assertAccept(request, VLANNetworksDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-    }
-
     public void testCreateExternalNetwork() throws Exception
     {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type",
-                NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("networkservicestype.json"));
-
-        server.enqueue(response);
-
         server.enqueue(new MockResponse().addHeader("Content-type",
             VLANNetworkDto.SHORT_MEDIA_TYPE_JSON).setBody(
             payloadFromResource("externalnetwork.json")));
@@ -371,26 +321,21 @@ public class InfrastructureApiTest extends BaseMockTest
         network.setType(VLANNetworksDto.SHORT_MEDIA_TYPE_JSON);
         datacenter.addLink(network);
 
-        newApiClient().getInfrastructureApi().createExternalNetwork(datacenter, enterprise, "ext1",
-            "10.10.10.30", "10.10.10.1", 24, 1);
+        NetworkServiceTypeDto nst = new NetworkServiceTypeDto();
+        RESTLink nstlink = new RESTLink("edit", "/admin/datacenters/1/networkservicetypes/1");
+        nstlink.setType(NetworkServiceTypeDto.SHORT_MEDIA_TYPE_JSON);
+        nst.addLink(nstlink);
 
-        // Make sure the polling has retried once
-        assertEquals(server.getRequestCount(), 2);
+        newApiClient().getInfrastructureApi().createExternalNetwork(datacenter, nst, enterprise,
+            "ext1", "10.10.10.30", "10.10.10.1", 24, 1);
 
-        // Verify the first request
         RecordedRequest request = server.takeRequest();
-        assertRequest(request, "GET", "/admin/datacenters/1/networkservicetypes");
-        assertAccept(request, NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON,
+        assertRequest(request, "POST", "/admin/datacenters/1/network");
+        assertAccept(request, VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
-        // Verify the second request
-        RecordedRequest second = server.takeRequest();
-        assertRequest(second, "POST", "/admin/datacenters/1/network");
-        assertAccept(second, VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
+        assertContentType(request, VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-        assertContentType(second, VLANNetworkDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-        VLANNetworkDto requestBody = readBody(second, VLANNetworkDto.class);
+        VLANNetworkDto requestBody = readBody(request, VLANNetworkDto.class);
         assertEquals(requestBody.getName(), "ext1");
         assertEquals(requestBody.getAddress(), "10.10.10.30");
         assertEquals(requestBody.getGateway(), "10.10.10.1");
@@ -403,65 +348,8 @@ public class InfrastructureApiTest extends BaseMockTest
             "networkservicetype", NetworkServiceTypeDto.SHORT_MEDIA_TYPE_JSON);
     }
 
-    public void testDefaultNetworkServiceType() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type",
-                NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("networkservicestype.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        DatacenterDto datacenter = new DatacenterDto();
-        RESTLink link =
-            new RESTLink("networkservicetypes", "/admin/datacenters/1/networkservicetypes");
-        link.setType(NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON);
-        datacenter.addLink(link);
-
-        newApiClient().getInfrastructureApi().findDefaultNetworkServiceType(datacenter);
-
-        RecordedRequest request = server.takeRequest();
-        assertRequest(request, "GET", "/admin/datacenters/1/networkservicetypes");
-        assertAccept(request, NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-    }
-
-    public void testDefaultNetworkServiceTypeNotFound() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type",
-                NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("networkservicestypewithoutdefault.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        DatacenterDto datacenter = new DatacenterDto();
-        RESTLink link =
-            new RESTLink("networkservicetypes", "/admin/datacenters/1/networkservicetypes");
-        link.setType(NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON);
-        datacenter.addLink(link);
-
-        try
-        {
-            newApiClient().getInfrastructureApi().findDefaultNetworkServiceType(datacenter);
-            fail("Test should have failed because default network service type does not exist");
-        }
-        catch (NoSuchElementException ex)
-        {
-
-        }
-
-        RecordedRequest request = server.takeRequest();
-        assertRequest(request, "GET", "/admin/datacenters/1/networkservicetypes");
-        assertAccept(request, NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-    }
-
     public void testCreatePool() throws Exception
     {
-
         server.enqueue(new MockResponse().setHeader("Content-Type",
             StoragePoolsDto.SHORT_MEDIA_TYPE_JSON).setBody(payloadFromResource("pools.json")));
 
@@ -507,12 +395,10 @@ public class InfrastructureApiTest extends BaseMockTest
         assertEquals(requestBody.getEnabled(), true);
         assertLinkExist(requestBody, requestBody.searchLink("tier").getHref(), "tier",
             TierDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
     public void testListRemoteServices() throws Exception
     {
-
         MockResponse response =
             new MockResponse().setHeader("Content-Type", RemoteServicesDto.SHORT_MEDIA_TYPE_JSON)
                 .setBody(payloadFromResource("remoteservices.json"));
@@ -579,7 +465,6 @@ public class InfrastructureApiTest extends BaseMockTest
         assertRequest(request, "GET", "/admin/datacenters/enterprises/1/limits");
         assertAccept(request, DatacentersLimitsDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testGetEnterpriseLimitsForDatacenter() throws Exception
@@ -592,7 +477,7 @@ public class InfrastructureApiTest extends BaseMockTest
         server.play();
 
         DatacenterDto datacenter = new DatacenterDto();
-        datacenter.setName("Private Berlin");
+        datacenter.setId(4);
 
         EnterpriseDto enterprise = new EnterpriseDto();
         RESTLink link = new RESTLink("limits", "/admin/enterprises/1/limits");
@@ -604,46 +489,9 @@ public class InfrastructureApiTest extends BaseMockTest
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", "/admin/enterprises/1/limits");
+        assertRequest(request, "GET", "/admin/enterprises/1/limits?datacenter=4");
         assertAccept(request, DatacentersLimitsDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
-    }
-
-    public void testGetEnterpriseLimitsForDatacenterNotFound() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", DatacenterLimitsDto.SHORT_MEDIA_TYPE_JSON)
-                .setBody(payloadFromResource("limits.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        DatacenterDto datacenter = new DatacenterDto();
-        datacenter.setName("Unexistent");
-
-        EnterpriseDto enterprise = new EnterpriseDto();
-        RESTLink link = new RESTLink("limits", "/admin/enterprises/1/limits");
-        link.setType(DatacentersLimitsDto.SHORT_MEDIA_TYPE_JSON);
-        enterprise.addLink(link);
-
-        try
-        {
-            newApiClient().getInfrastructureApi().getEnterpriseLimitsForDatacenter(enterprise,
-                datacenter);
-            fail("Test should have failed because there are no limits for datacenter requested");
-
-        }
-        catch (NoSuchElementException ex)
-        {
-
-        }
-
-        RecordedRequest request = server.takeRequest();
-        assertRequest(request, "GET", "/admin/enterprises/1/limits");
-        assertAccept(request, DatacentersLimitsDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testListPools() throws Exception
@@ -692,63 +540,8 @@ public class InfrastructureApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
     }
 
-    public void findRemotePool() throws Exception
-    {
-
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", StoragePoolDto.SHORT_MEDIA_TYPE_JSON)
-                .setBody(payloadFromResource("pools.json"));
-        server.enqueue(response);
-        server.play();
-
-        StorageDeviceDto device = new StorageDeviceDto();
-        RESTLink pools = new RESTLink("pools", "/admin/datacenters/1/storage/devices/1/pools");
-        pools.setType(StoragePoolsDto.SHORT_MEDIA_TYPE_JSON);
-        device.addLink(pools);
-
-        newApiClient().getInfrastructureApi().findRemotePool(device, "zpool");
-
-        RecordedRequest request = server.takeRequest();
-
-        assertRequest(request, "GET", "/admin/datacenters/1/storage/devices/1/pools?sync=true");
-        assertAccept(request, StoragePoolsDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-    }
-
-    public void findRemotePoolNotFound() throws Exception
-    {
-
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", StoragePoolDto.SHORT_MEDIA_TYPE_JSON)
-                .setBody(payloadFromResource("pools.json"));
-        server.enqueue(response);
-        server.play();
-
-        StorageDeviceDto device = new StorageDeviceDto();
-        RESTLink pools = new RESTLink("pools", "/admin/datacenters/1/storage/devices/1/pools");
-        pools.setType(StoragePoolsDto.SHORT_MEDIA_TYPE_JSON);
-        device.addLink(pools);
-
-        try
-        {
-            newApiClient().getInfrastructureApi().findRemotePool(device, "non_existent");
-            fail("Test should have failed because pool does not exist");
-        }
-        catch (NoSuchElementException ex)
-        {
-
-        }
-
-        RecordedRequest request = server.takeRequest();
-
-        assertRequest(request, "GET", "/admin/datacenters/1/storage/devices/1/pools?sync=true");
-        assertAccept(request, StoragePoolsDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-    }
-
     public void testListDevices() throws Exception
     {
-
         MockResponse response =
             new MockResponse().setHeader("Content-Type", StorageDevicesDto.SHORT_MEDIA_TYPE_JSON)
                 .setBody(payloadFromResource("devices.json"));
@@ -768,12 +561,10 @@ public class InfrastructureApiTest extends BaseMockTest
         assertRequest(request, "GET", "/admin/datacenters/1/storage/devices");
         assertAccept(request, StorageDevicesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testListTiersfromDC() throws Exception
     {
-
         MockResponse response =
             new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
                 payloadFromResource("tiersDC.json"));
@@ -793,62 +584,31 @@ public class InfrastructureApiTest extends BaseMockTest
         assertRequest(request, "GET", "/admin/datacenters/1/storage/tiers");
         assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
     }
 
-    public void testFindTierfromDatacenter() throws Exception
+    public void testListNetworkServiceTypes() throws Exception
     {
         MockResponse response =
-            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("tiersDC.json"));
+            new MockResponse().setHeader("Content-Type",
+                NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("networkservicetypes.json"));
 
         server.enqueue(response);
         server.play();
 
         DatacenterDto dto = new DatacenterDto();
-        RESTLink link = new RESTLink("tiers", "/admin/datacenters/1/storage/tiers");
-        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
+        RESTLink link =
+            new RESTLink("networkservicetypes", "/admin/datacenters/1/networkservicetypes");
+        link.setType(NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        newApiClient().getInfrastructureApi().findTier(dto, "Nexenta");
+        newApiClient().getInfrastructureApi().listNetworkServiceTypes(dto);
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", "/admin/datacenters/1/storage/tiers");
-        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
+        assertRequest(request, "GET", "/admin/datacenters/1/networkservicetypes");
+        assertAccept(request, NetworkServiceTypesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
-
-    }
-
-    public void testFindTierfromDatacenterNotFound() throws Exception
-    {
-        MockResponse response =
-            new MockResponse().setHeader("Content-Type", TiersDto.SHORT_MEDIA_TYPE_JSON).setBody(
-                payloadFromResource("tiersDC.json"));
-
-        server.enqueue(response);
-        server.play();
-
-        DatacenterDto dto = new DatacenterDto();
-        RESTLink link = new RESTLink("tiers", "/admin/datacenters/1/storage/tiers");
-        link.setType(TiersDto.SHORT_MEDIA_TYPE_JSON);
-        dto.addLink(link);
-
-        try
-        {
-            newApiClient().getInfrastructureApi().findTier(dto, "Unexistent_tier");
-            fail("Test should have failed because tier does not exist");
-        }
-        catch (NoSuchElementException ex)
-        {
-
-        }
-        RecordedRequest request = server.takeRequest();
-
-        assertRequest(request, "GET", "/admin/datacenters/1/storage/tiers");
-        assertAccept(request, TiersDto.SHORT_MEDIA_TYPE_JSON,
-            SingleResourceTransportDto.API_VERSION);
-
     }
 
     public void testCreateDatacenterLoadLevelRule() throws Exception
@@ -868,7 +628,7 @@ public class InfrastructureApiTest extends BaseMockTest
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "POST", "/admin/rules/machineLoadLevel/");
+        assertRequest(request, "POST", "/admin/rules/machineLoadLevel");
         assertAccept(request, MachineLoadRuleDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, MachineLoadRuleDto.SHORT_MEDIA_TYPE_JSON,
@@ -878,7 +638,6 @@ public class InfrastructureApiTest extends BaseMockTest
         assertEquals(requestBody.getRamLoadPercentage(), new Integer(75));
         assertLinkExist(requestBody, requestBody.searchLink("datacenter").getHref(), "datacenter",
             DatacenterDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
     public void testCreateRackLoadLevelRule() throws Exception
@@ -898,7 +657,7 @@ public class InfrastructureApiTest extends BaseMockTest
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "POST", "/admin/rules/machineLoadLevel/");
+        assertRequest(request, "POST", "/admin/rules/machineLoadLevel");
         assertAccept(request, MachineLoadRuleDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, MachineLoadRuleDto.SHORT_MEDIA_TYPE_JSON,
@@ -908,7 +667,6 @@ public class InfrastructureApiTest extends BaseMockTest
         assertEquals(requestBody.getRamLoadPercentage(), new Integer(75));
         assertLinkExist(requestBody, requestBody.searchLink("rack").getHref(), "rack",
             RackDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
     public void testCreateMachineLoadLevelRule() throws Exception
@@ -928,7 +686,7 @@ public class InfrastructureApiTest extends BaseMockTest
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "POST", "/admin/rules/machineLoadLevel/");
+        assertRequest(request, "POST", "/admin/rules/machineLoadLevel");
         assertAccept(request, MachineLoadRuleDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
         assertContentType(request, MachineLoadRuleDto.SHORT_MEDIA_TYPE_JSON,
@@ -938,7 +696,6 @@ public class InfrastructureApiTest extends BaseMockTest
         assertEquals(requestBody.getRamLoadPercentage(), new Integer(75));
         assertLinkExist(requestBody, requestBody.searchLink("machine").getHref(), "machine",
             MachineDto.SHORT_MEDIA_TYPE_JSON);
-
     }
 
 }

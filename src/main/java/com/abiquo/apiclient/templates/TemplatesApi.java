@@ -15,17 +15,14 @@
  */
 package com.abiquo.apiclient.templates;
 
-import static com.abiquo.apiclient.domain.ApiPredicates.templateName;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.abiquo.server.core.task.TaskState.FINISHED_SUCCESSFULLY;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Iterables.find;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.RestClient;
+import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateRequestDto;
@@ -47,16 +44,17 @@ public class TemplatesApi
         this.client = checkNotNull(client, "client cannot be null");
     }
 
-    public VirtualMachineTemplateDto findAvailableTemplate(final VirtualDatacenterDto vdc,
-        final String name)
+    public VirtualMachineTemplatesDto listTemplates(final VirtualDatacenterDto vdc)
     {
-        Map<String, Object> queryParams = new HashMap<String, Object>();
-        queryParams.put("limit", 0);
+        return client.get(vdc.searchLink("templates").getHref(),
+            VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
+    }
 
-        VirtualMachineTemplatesDto templates =
-            client.get(vdc.searchLink("templates").getHref(), queryParams,
-                VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
-        return find(templates.getCollection(), templateName(name));
+    public VirtualMachineTemplatesDto listTemplates(final VirtualDatacenterDto vdc,
+        final TemplateListOptions options)
+    {
+        return client.get(vdc.searchLink("templates").getHref(), options.queryParams(),
+            VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
     }
 
     public VirtualMachineTemplateDto instanceVirtualMachine(final VirtualMachineDto vm,
