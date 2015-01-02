@@ -73,7 +73,8 @@ public class StreamClient implements Closeable
 
         config.setRealm(new Realm.RealmBuilder() //
             .setPrincipal(username) //
-            .setPassword(password).setUsePreemptiveAuth(true) //
+            .setPassword(password) //
+            .setUsePreemptiveAuth(true) //
             .setScheme(Realm.AuthScheme.BASIC) //
             .build());
 
@@ -109,8 +110,7 @@ public class StreamClient implements Closeable
                     {
                         try
                         {
-                            com.abiquo.event.model.Event event =
-                                json.readValue(rawEvent, Event.class);
+                            Event event = json.readValue(rawEvent, Event.class);
                             subscriber.onNext(event);
                         }
                         catch (IOException e)
