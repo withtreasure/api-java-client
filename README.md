@@ -129,7 +129,7 @@ events.filter(event -> event.getType().equals("VIRTUAL_MACHINE")) //
 events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
     .buffer(1, TimeUnit.HOURS)
     .map(List::size)
-    .forEach(count -> log.info("VMs deployed in the last minute: {}", count));
+    .forEach(count -> log.info("VMs deployed in the last hour: {}", count));
     
 // Use the REST API client to get the details for every undeployed virtual machine
 events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
