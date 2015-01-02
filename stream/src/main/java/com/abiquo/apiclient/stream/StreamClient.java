@@ -15,6 +15,8 @@
  */
 package com.abiquo.apiclient.stream;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static org.atmosphere.wasync.Event.CLOSE;
 import static org.atmosphere.wasync.Event.ERROR;
 import static org.atmosphere.wasync.Event.MESSAGE;
@@ -30,8 +32,8 @@ import org.atmosphere.wasync.Function;
 import org.atmosphere.wasync.Request.METHOD;
 import org.atmosphere.wasync.Request.TRANSPORT;
 import org.atmosphere.wasync.Socket;
+import org.atmosphere.wasync.Socket.STATUS;
 import org.atmosphere.wasync.impl.AtmosphereClient;
-import org.atmosphere.wasync.impl.AtmosphereRequest;
 
 import rx.Observable;
 import rx.Observable.OnSubscribe;
@@ -50,11 +52,11 @@ import com.ning.http.client.Realm;
 
 public class StreamClient implements Closeable
 {
-    private final AsyncHttpClient asyncClient;
-
     private final Socket socket;
 
-    private final AtmosphereRequest request;
+    private final AtmosphereClient client;
+
+    private final String endpoint;
 
     private final ObjectMapper json;
 
@@ -62,6 +64,8 @@ public class StreamClient implements Closeable
     private StreamClient(final String endpoint, final String username, final String password,
         final SSLConfiguration sslConfiguration)
     {
+        this.endpoint = checkNotNull(endpoint, "endpoint cannot be null");
+
         AsyncHttpClientConfig.Builder config = new AsyncHttpClientConfig.Builder();
         config.setRequestTimeoutInMs(-1);
         config.setIdleConnectionTimeoutInMs(-1);
@@ -72,19 +76,14 @@ public class StreamClient implements Closeable
         }
 
         config.setRealm(new Realm.RealmBuilder() //
-            .setPrincipal(username) //
-            .setPassword(password) //
+            .setPrincipal(checkNotNull(username, "username cannot be null")) //
+            .setPassword(checkNotNull(password, "password cannot be null")) //
             .setUsePreemptiveAuth(true) //
             .setScheme(Realm.AuthScheme.BASIC) //
             .build());
 
-        asyncClient = new AsyncHttpClient(config.build());
-        AtmosphereClient client = ClientFactory.getDefault().newClient(AtmosphereClient.class);
-
-        request =
-            client.newRequestBuilder().method(METHOD.GET)
-                .uri(endpoint + "?Content-Type=application/json").transport(TRANSPORT.SSE).build();
-
+        client = ClientFactory.getDefault().newClient(AtmosphereClient.class);
+        AsyncHttpClient asyncClient = new AsyncHttpClient(config.build());
         socket = client.create(client.newOptionsBuilder().runtime(asyncClient).build());
 
         json =
@@ -96,7 +95,14 @@ public class StreamClient implements Closeable
 
     public Observable<Event> events() throws IOException
     {
-        socket.open(request);
+        checkState(STATUS.CLOSE == socket.status(),
+            "a connection to the streaming api already exists");
+
+        socket.open(client.newRequestBuilder() //
+            .method(METHOD.GET)//
+            .uri(endpoint + "?Content-Type=application/json") //
+            .transport(TRANSPORT.SSE) //
+            .build());
 
         return Observable.create(new OnSubscribe<Event>()
         {
@@ -140,7 +146,6 @@ public class StreamClient implements Closeable
     @Override
     public void close() throws IOException
     {
-        asyncClient.close();
         socket.close();
     }
 

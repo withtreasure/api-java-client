@@ -6,8 +6,8 @@ This is an API client for the [Abiquo API](http://wiki.abiquo.com/). The Abiquo 
 so any REST client can be used to connect to it. This project uses [OkHttp](http://square.github.io/okhttp/) and [Jackson](https://github.com/FasterXML/jackson) and just provides some high level functions 
 to enforce some best practices to make it easier to perform the common tasks.
 
-It also provides an client for the Abiquo Streaming API based on [Atmosphere](http://async-io.org/) and
-[RxJava](https://github.com/ReactiveX/RxJava) allowing users to develop reactive tools that integrate with
+It also provides a client for the Abiquo Streaming API based on [Atmosphere](http://async-io.org/) and
+[RxJava](https://github.com/ReactiveX/RxJava), allowing users to develop reactive tools that integrate with
 the Abiquo platform.
 
 ## Installation
@@ -121,12 +121,13 @@ for a detailed reference, but here are some examples using Java 8:
 Observable<Event> events = stream.events();
 
 // Subscribe to all actions performed to virtual machines
-events.filter(event -> event.getType().equals("VIRTUAL_MACHINE")) //
-    .map(Event::getAction) //
+events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
+    .map(Event::getAction)
     .forEach(System.out::println);
     
 // Count how many virtual machines are deployed every hour
 events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
+    .filter(event -> event.getAction().equals("DEPLOY_FINISH"))
     .buffer(1, TimeUnit.HOURS)
     .map(List::size)
     .forEach(count -> log.info("VMs deployed in the last hour: {}", count));
@@ -134,12 +135,10 @@ events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
 // Use the REST API client to get the details for every undeployed virtual machine
 events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
     .filter(event -> event.getAction().equals("UNDEPLOY_FINISH"))
-    .forEach(event -> {
-        String vmUri = event.getEntityIdentifier().get();
-        VirtualMachineDto vm = restClient.getClient()
-            .get(vmUri, VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class);
-        System.out.println(vm.getName());
-    });
+    .map(event -> event.getEntityIdentifier.get())
+    .map(uri -> restClient.get(uri, VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class))
+    .map(VirtualMachineDto::getName)
+    .forEach(System.out::println);
 ```
 
 As you can see, the [RxJava Observable](https://github.com/ReactiveX/RxJava/wiki/Observable) provides a very rich
