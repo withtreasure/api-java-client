@@ -1,0 +1,46 @@
+{
+    "links": [
+        {
+            "href": "https://localhost:443/api/admin/enterprises/1", 
+            "rel": "enterprise", 
+            "title": "Abiquo", 
+            "type": "application/vnd.abiquo.enterprise+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/1/datacenterrepositories/1", 
+            "rel": "edit", 
+            "title": "10.60.1.1:/opt/preproduction/vm_repository_dc1", 
+            "type": "application/vnd.abiquo.datacenterrepository+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates", 
+            "rel": "virtualmachinetemplates", 
+            "title": "virtual machine templates", 
+            "type": "application/vnd.abiquo.virtualmachinetemplates+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/actions/refresh", 
+            "rel": "refresh", 
+            "title": "refresh", 
+            "type": "application/vnd.abiquo.acceptedrequest+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/tasks", 
+            "rel": "tasks", 
+            "title": "tasks", 
+            "type": "application/vnd.abiquo.tasks+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/datacenters/1", 
+            "rel": "datacenter", 
+            "title": "Berlin", 
+            "type": "application/vnd.abiquo.datacenter+json"
+        }, 
+        {
+            "href": "https://localhost:443/am/erepos/1", 
+            "rel": "applianceManagerRepositoryUri"
+        }
+    ], 
+    "name": "repo", 
+    "repositoryLocation": "10.60.1.1:/opt/preproduction/vm_repository_dc1"
+}

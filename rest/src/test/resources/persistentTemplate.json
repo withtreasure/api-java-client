@@ -1,0 +1,86 @@
+{
+    "chefEnabled": false, 
+    "cpuRequired": 1, 
+    "creationDate": "2014-11-04T11:40:35.000+0000", 
+    "creationUser": "suent", 
+    "description": "MicroLinux", 
+    "diskController": "LsiLogic", 
+    "diskControllerType": "SCSI", 
+    "diskFileSize": 0, 
+    "diskFormatType": "RAW", 
+    "hdRequired": 20971520, 
+    "iconUrl": "http://icons.abiquo.com/debian.png", 
+    "id": 262, 
+    "links": [
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10", 
+            "rel": "enterprise", 
+            "title": "Enterprise", 
+            "type": "application/vnd.abiquo.enterprise+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/config/categories/1", 
+            "rel": "category", 
+            "title": "Others", 
+            "type": "application/vnd.abiquo.category+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10/datacenterrepositories/1/virtualmachinetemplates/262", 
+            "rel": "edit", 
+            "title": "persistentTemplate", 
+            "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10/datacenterrepositories/1/virtualmachinetemplates/262/tasks", 
+            "rel": "tasks", 
+            "title": "tasks", 
+            "type": "application/vnd.abiquo.tasks+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10/datacenterrepositories/1", 
+            "rel": "datacenterrepository", 
+            "title": "repository", 
+            "type": "application/vnd.abiquo.datacenterrepository+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10/datacenterrepositories/1/virtualmachinetemplates/262/conversions", 
+            "rel": "conversions", 
+            "title": "conversions", 
+            "type": "application/vnd.abiquo.conversions+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10/datacenterrepositories/1/virtualmachinetemplates/262/action/virtualmachines", 
+            "rel": "virtualmachines", 
+            "title": "virtual machines", 
+            "type": "application/vnd.abiquo.virtualmachines+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/enterprises/10/datacenterrepositories/1/virtualmachinetemplates/261", 
+            "rel": "master", 
+            "title": "MicroLinux", 
+            "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+        }, 
+        {
+            "href": "https://localhost:443/api/cloud/virtualdatacenters/142/volumes/107477", 
+            "rel": "volume", 
+            "title": "MicroLinux", 
+            "type": "application/vnd.abiquo.volume+json"
+        }, 
+        {
+            "href": "https://localhost:443/am/erepos/10/templates/10.60.20.23:/volumes/abiquo/pool2%23abiquo/VirtualDisks/ABQ_5e459cfe-8fcc-4f5b-b9b7-4921972cc494", 
+            "rel": "template", 
+            "title": "template"
+        }, 
+        {
+            "href": "https://localhost:443/am/files/10.60.20.23:/volumes/abiquo/pool2%23abiquo/VirtualDisks/ABQ_5e459cfe-8fcc-4f5b-b9b7-4921972cc494", 
+            "rel": "diskfile", 
+            "title": "diskfile"
+        }
+    ], 
+    "name": "persistentTemplate", 
+    "osType": "LINUX", 
+    "path": "10.60.20.23:/volumes/abiquo/pool2#abiquo/VirtualDisks/ABQ_5e459cfe-8fcc-4f5b-b9b7-4921972cc494", 
+    "ramRequired": 256, 
+    "shared": false, 
+    "state": "DONE"
+}

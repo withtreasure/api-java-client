@@ -16,6 +16,9 @@
 package com.abiquo.apiclient.templates;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
 
 import org.testng.annotations.Test;
 
@@ -27,6 +30,7 @@ import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.appslibrary.DatacenterRepositoriesDto;
 import com.abiquo.server.core.appslibrary.DatacenterRepositoryDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
+import com.abiquo.server.core.appslibrary.VirtualMachineTemplatePersistentDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateRequestDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplatesDto;
 import com.abiquo.server.core.cloud.VirtualDatacenterDto;
@@ -34,6 +38,7 @@ import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.cloud.VirtualMachineInstanceDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
+import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.abiquo.server.core.task.TaskState;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -287,4 +292,220 @@ public class TemplatesApiTest extends BaseMockTest
         assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
     }
 
+    public void testCreatePersistent() throws Exception
+    {
+
+        AcceptedRequestDto<String> acceptDto = new AcceptedRequestDto<String>();
+        RESTLink link =
+            new RESTLink("status",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks/1");
+        link.setType(TaskDto.SHORT_MEDIA_TYPE_JSON);
+        acceptDto.addLink(link);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(acceptDto)));
+
+        TaskDto inProgress = new TaskDto();
+        inProgress.setState(TaskState.PENDING);
+        TaskDto completed = new TaskDto();
+        completed.setState(TaskState.FINISHED_SUCCESSFULLY);
+        link =
+            new RESTLink("result",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        link.setType(VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+        completed.addLink(link);
+
+        server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
+            .setBody(json.write(inProgress)));
+        server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
+            .setBody(json.write(completed)));
+
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type",
+                VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("persistentTemplate.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        TierDto tier = new TierDto();
+        link = new RESTLink("self", "/cloud/virtualdatacenters/1/tiers/1");
+        link.setType(TierDto.SHORT_MEDIA_TYPE_JSON);
+        tier.addLink(link);
+
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
+        link = new RESTLink("edit", "/cloud/virtualdatacenters/1");
+        link.setType(VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON);
+        vdc.addLink(link);
+
+        VirtualMachineTemplateDto vmt = new VirtualMachineTemplateDto();
+        link =
+            new RESTLink("edit",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        link.setType(VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+        vmt.addLink(link);
+        link =
+            new RESTLink("datacenterrepository", "/admin/enterprises/1/datacenterrepositories/1");
+        link.setType(DatacenterRepositoriesDto.SHORT_MEDIA_TYPE_JSON);
+        vmt.addLink(link);
+
+        newApiClient().getTemplatesApi().createPersistent(vdc, vmt, "persistentName", tier, 1, 300,
+            TimeUnit.SECONDS);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 4);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineTemplatePersistentDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        VirtualMachineTemplatePersistentDto requestBody =
+            readBody(request, VirtualMachineTemplatePersistentDto.class);
+        assertEquals(requestBody.getPersistentTemplateName(), "persistentName");
+        assertEquals(requestBody.getPersistentVolumeName(), "persistentName");
+        assertLinkExist(requestBody, requestBody.searchLink("tier").getHref(), "tier",
+            TierDto.SHORT_MEDIA_TYPE_JSON);
+        assertLinkExist(requestBody, requestBody.searchLink("virtualdatacenter").getHref(),
+            "virtualdatacenter", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON);
+        assertLinkExist(requestBody, requestBody.searchLink("virtualmachinetemplate").getHref(),
+            "virtualmachinetemplate", VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks/1");
+        assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
+
+        // Verify the third request
+        RecordedRequest third = server.takeRequest();
+        assertRequest(third, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks/1");
+        assertAccept(third, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
+
+        // Verify the fourth request
+        RecordedRequest fourth = server.takeRequest();
+        assertRequest(fourth, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        assertAccept(fourth, VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testCreatePersistentFails() throws Exception
+    {
+
+        AcceptedRequestDto<String> acceptDto = new AcceptedRequestDto<String>();
+        RESTLink link =
+            new RESTLink("status",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks/1");
+        link.setType(TaskDto.SHORT_MEDIA_TYPE_JSON);
+        acceptDto.addLink(link);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(acceptDto)));
+
+        TaskDto unsuccesful = new TaskDto();
+        unsuccesful.setState(TaskState.FINISHED_UNSUCCESSFULLY);
+        link =
+            new RESTLink("result",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        link.setType(VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+        unsuccesful.addLink(link);
+
+        server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
+            .setBody(json.write(unsuccesful)));
+
+        server.play();
+
+        TierDto tier = new TierDto();
+        link = new RESTLink("self", "/cloud/virtualdatacenters/1/tiers/1");
+        link.setType(TierDto.SHORT_MEDIA_TYPE_JSON);
+        tier.addLink(link);
+
+        VirtualDatacenterDto vdc = new VirtualDatacenterDto();
+        link = new RESTLink("edit", "/cloud/virtualdatacenters/1");
+        link.setType(VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON);
+        vdc.addLink(link);
+
+        VirtualMachineTemplateDto vmt = new VirtualMachineTemplateDto();
+        link =
+            new RESTLink("edit",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        link.setType(VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+        vmt.addLink(link);
+        link =
+            new RESTLink("datacenterrepository", "/admin/enterprises/1/datacenterrepositories/1");
+        link.setType(DatacenterRepositoriesDto.SHORT_MEDIA_TYPE_JSON);
+        vmt.addLink(link);
+
+        try
+        {
+            newApiClient().getTemplatesApi().createPersistent(vdc, vmt, "persistentName", tier, 1,
+                300, TimeUnit.SECONDS);
+            fail("Persistent operation failed");
+        }
+        catch (RuntimeException ex)
+        {
+            assertEquals("Persistent operation failed", ex.getMessage());
+        }
+
+        assertEquals(server.getRequestCount(), 2);
+
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineTemplatePersistentDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        VirtualMachineTemplatePersistentDto requestBody =
+            readBody(request, VirtualMachineTemplatePersistentDto.class);
+        assertEquals(requestBody.getPersistentTemplateName(), "persistentName");
+        assertEquals(requestBody.getPersistentVolumeName(), "persistentName");
+        assertLinkExist(requestBody, requestBody.searchLink("tier").getHref(), "tier",
+            TierDto.SHORT_MEDIA_TYPE_JSON);
+        assertLinkExist(requestBody, requestBody.searchLink("virtualdatacenter").getHref(),
+            "virtualdatacenter", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON);
+        assertLinkExist(requestBody, requestBody.searchLink("virtualmachinetemplate").getHref(),
+            "virtualmachinetemplate", VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON);
+
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks/1");
+        assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetDatacenterRepository() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type",
+                DatacenterRepositoryDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("repository.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        DatacenterDto datacenter = new DatacenterDto();
+        datacenter.setId(1);
+        EnterpriseDto enterprise = new EnterpriseDto();
+        RESTLink link =
+            new RESTLink("datacenterrepositories", "/admin/enterprises/1/datacenterrepositories");
+        link.setType(DatacenterRepositoriesDto.SHORT_MEDIA_TYPE_JSON);
+        enterprise.addLink(link);
+
+        newApiClient().getTemplatesApi().getDatacenterRepository(enterprise, datacenter);
+
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "GET", "/admin/enterprises/1/datacenterrepositories/1");
+        assertAccept(request, DatacenterRepositoryDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
 }

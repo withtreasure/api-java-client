@@ -24,7 +24,9 @@ import java.util.concurrent.TimeUnit;
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.transport.AcceptedRequestDto;
+import com.abiquo.server.core.appslibrary.DatacenterRepositoryDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
+import com.abiquo.server.core.appslibrary.VirtualMachineTemplatePersistentDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateRequestDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplatesDto;
 import com.abiquo.server.core.cloud.VirtualDatacenterDto;
@@ -32,6 +34,7 @@ import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.cloud.VirtualMachineInstanceDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
+import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.google.common.reflect.TypeToken;
 
@@ -127,4 +130,48 @@ public class TemplatesApi
         }
     }
 
+    public DatacenterRepositoryDto getDatacenterRepository(final EnterpriseDto enterprise,
+        final DatacenterDto datacenter)
+    {
+        return client
+            .get(
+                enterprise.searchLink("datacenterrepositories").getHref() + "/"
+                    + datacenter.getId(), DatacenterRepositoryDto.MEDIA_TYPE,
+                DatacenterRepositoryDto.class);
+    }
+
+    public VirtualMachineTemplateDto createPersistent(final VirtualDatacenterDto vdc,
+        final VirtualMachineTemplateDto vmt, final String persistentTemplateName,
+        final TierDto tier, final int pollInterval, final int maxWait, final TimeUnit unit)
+    {
+
+        VirtualMachineTemplatePersistentDto persistentTemplateDto =
+            new VirtualMachineTemplatePersistentDto();
+        persistentTemplateDto.setPersistentTemplateName(persistentTemplateName);
+        persistentTemplateDto.setPersistentVolumeName(persistentTemplateDto
+            .getPersistentTemplateName());
+        persistentTemplateDto.addLink(create("tier", tier.searchLink("self").getHref(), tier
+            .searchLink("self").getType()));
+        persistentTemplateDto.addLink(create("virtualdatacenter", vdc.getEditLink().getHref(), vdc
+            .getEditLink().getType()));
+        persistentTemplateDto.addLink(create("virtualmachinetemplate", vmt.getEditLink().getHref(),
+            vmt.getEditLink().getType()));
+
+        AcceptedRequestDto<String> acceptedRequest =
+            client.post(vmt.searchLink("datacenterrepository").getHref()
+                + "/virtualmachinetemplates", AcceptedRequestDto.MEDIA_TYPE,
+                VirtualMachineTemplatePersistentDto.MEDIA_TYPE, persistentTemplateDto,
+                new TypeToken<AcceptedRequestDto<String>>()
+                {
+                    private static final long serialVersionUID = -6348281615419377868L;
+                });
+        TaskDto task = client.waitForTask(acceptedRequest, pollInterval, maxWait, unit);
+        if (FINISHED_SUCCESSFULLY != task.getState())
+        {
+            throw new RuntimeException("Persistent operation failed");
+        }
+
+        return client.get(task.searchLink("result").getHref(),
+            VirtualMachineTemplateDto.MEDIA_TYPE, VirtualMachineTemplateDto.class);
+    }
 }
