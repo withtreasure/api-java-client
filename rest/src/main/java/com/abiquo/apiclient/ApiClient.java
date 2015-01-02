@@ -15,6 +15,9 @@
  */
 package com.abiquo.apiclient;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+
 import com.abiquo.apiclient.cloud.CloudApi;
 import com.abiquo.apiclient.enterprise.EnterpriseApi;
 import com.abiquo.apiclient.infrastructure.InfrastructureApi;
@@ -90,6 +93,19 @@ public class ApiClient
         {
             return new ApiClient(endpoint, username, password, version, sslConfiguration);
         }
+    }
+
+    public static interface SSLConfiguration
+    {
+        /**
+         * Provides the SSLContext to be used in the SSL sessions.
+         */
+        public SSLContext sslContext();
+
+        /**
+         * Provides the hostname verifier to be used in the SSL sessions.
+         */
+        public HostnameVerifier hostnameVerifier();
     }
 
     public RestClient getClient()

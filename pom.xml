@@ -18,10 +18,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.abiquo</groupId>
-    <artifactId>api-java-client</artifactId>
+    <artifactId>api-java-client-project</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-    <name>Abiquo API Client</name>
+    <name>Abiquo API Client :: Project</name>
     <description>Abiquo API Java client</description>
     <url>https://github.com/abiquo/api-java-client</url>
     <inceptionYear>2008</inceptionYear>
@@ -29,12 +30,6 @@
         <name>Abiquo Holdings S.L.</name>
         <url>http://www.abiquo.com</url>
     </organization>
-
-    <properties>
-        <api.version>3.1.0</api.version>
-        <okhttp.version>2.1.0</okhttp.version>
-        <jackson.version>2.2.2</jackson.version>
-    </properties>
 
     <licenses>
         <license>
@@ -73,40 +68,47 @@
         </snapshotRepository>
     </distributionManagement>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.abiquo</groupId>
-            <artifactId>api-model-transport</artifactId>
-            <version>${api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${okhttp.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>17.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8.8</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp</groupId>
-            <artifactId>mockwebserver</artifactId>
-            <version>${okhttp.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>rest</module>
+        <module>stream</module>
+    </modules>
+    
+    <properties>
+        <okhttp.version>2.1.0</okhttp.version>
+        <jackson.version>2.2.2</jackson.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>17.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>6.8.8</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.okhttp</groupId>
+                <artifactId>mockwebserver</artifactId>
+                <version>${okhttp.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

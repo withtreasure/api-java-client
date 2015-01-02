@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import com.abiquo.apiclient.ApiClient.SSLConfiguration;
 import com.abiquo.apiclient.domain.exception.AbiquoException;
 import com.abiquo.apiclient.domain.exception.AuthorizationException;
 import com.abiquo.apiclient.domain.exception.HttpException;

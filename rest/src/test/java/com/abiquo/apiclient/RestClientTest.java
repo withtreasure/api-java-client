@@ -35,6 +35,7 @@ import javax.net.ssl.X509TrustManager;
 
 import org.testng.annotations.Test;
 
+import com.abiquo.apiclient.ApiClient.SSLConfiguration;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
