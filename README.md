@@ -118,27 +118,29 @@ Abiquo Streaming API. You can have a look at the fantastic [RxJava wiki](https:/
 for a detailed reference, but here are some examples using Java 8:
 
 ```java
-Observable<Event> events = stream.newEventStream();
-
 // Subscribe to all actions performed to virtual machines
-events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
-    .forEach(action -> log.info("New VM event: {}", event.getAction()));
+stream.newEventStream()
+    .filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
+    .forEach(event -> log.info("New VM event: {}", event.getAction()));
     
 // Count how many virtual machines are deployed every hour
-events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
+stream.newEventStream()
+    .filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
     .filter(event -> event.getAction().equals("DEPLOY_FINISH"))
     .buffer(1, TimeUnit.HOURS)
     .forEach(events -> log.info("{} VMs deployed in the last hour", events.size()));
     
 // Use the REST API client to get the details for every undeployed virtual machine
-events.filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
+stream.newEventStream()
+    .filter(event -> event.getType().equals("VIRTUAL_MACHINE"))
     .filter(event -> event.getAction().equals("UNDEPLOY_FINISH"))
     .map(event -> event.getEntityIdentifier.get())
     .map(uri -> restClient.get(uri, VirtualMachineDto.MEDIA_TYPE, VirtualMachineDto.class))
     .forEach(vm -> notifyBillingSystem(vm));
 
 // Subscribe to all errors
-events.filter(event -> Severity.ERROR == event.getSeverity())
+stream.newEventStream()
+    .filter(event -> Severity.ERROR == event.getSeverity())
     .map(event -> event.getDetails().get())
     .cast(ErrorDetails.class)
     .forEach(details -> log.error("Error {}: {}",
