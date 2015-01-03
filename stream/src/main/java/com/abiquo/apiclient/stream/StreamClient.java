@@ -16,7 +16,6 @@
 package com.abiquo.apiclient.stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static org.atmosphere.wasync.Event.CLOSE;
 import static org.atmosphere.wasync.Event.ERROR;
 import static org.atmosphere.wasync.Event.MESSAGE;
@@ -34,6 +33,7 @@ import org.atmosphere.wasync.Request.TRANSPORT;
 import org.atmosphere.wasync.Socket;
 import org.atmosphere.wasync.Socket.STATUS;
 import org.atmosphere.wasync.impl.AtmosphereClient;
+import org.atmosphere.wasync.impl.AtmosphereRequest;
 
 import rx.Observable;
 import rx.Observable.OnSubscribe;
@@ -54,9 +54,9 @@ public class StreamClient implements Closeable
 {
     private final Socket socket;
 
-    private final AtmosphereClient client;
+    private final AsyncHttpClient asyncClient;
 
-    private final String endpoint;
+    private final AtmosphereRequest request;
 
     private final ObjectMapper json;
 
@@ -64,7 +64,9 @@ public class StreamClient implements Closeable
     private StreamClient(final String endpoint, final String username, final String password,
         final SSLConfiguration sslConfiguration)
     {
-        this.endpoint = checkNotNull(endpoint, "endpoint cannot be null");
+        checkNotNull(endpoint, "endpoint cannot be null");
+        checkNotNull(username, "username cannot be null");
+        checkNotNull(password, "password cannot be null");
 
         AsyncHttpClientConfig.Builder config = new AsyncHttpClientConfig.Builder();
         config.setRequestTimeoutInMs(-1);
@@ -74,17 +76,22 @@ public class StreamClient implements Closeable
             config.setHostnameVerifier(sslConfiguration.hostnameVerifier());
             config.setSSLContext(sslConfiguration.sslContext());
         }
-
         config.setRealm(new Realm.RealmBuilder() //
-            .setPrincipal(checkNotNull(username, "username cannot be null")) //
-            .setPassword(checkNotNull(password, "password cannot be null")) //
+            .setPrincipal(username) //
+            .setPassword(password) //
             .setUsePreemptiveAuth(true) //
             .setScheme(Realm.AuthScheme.BASIC) //
             .build());
 
-        client = ClientFactory.getDefault().newClient(AtmosphereClient.class);
-        AsyncHttpClient asyncClient = new AsyncHttpClient(config.build());
+        AtmosphereClient client = ClientFactory.getDefault().newClient(AtmosphereClient.class);
+        asyncClient = new AsyncHttpClient(config.build());
         socket = client.create(client.newOptionsBuilder().runtime(asyncClient).build());
+        request = client.newRequestBuilder() //
+            .method(METHOD.GET) //
+            .uri(endpoint + "?Content-Type=application/json") //
+            .transport(TRANSPORT.SSE) //
+            .transport(TRANSPORT.LONG_POLLING) //
+            .build();
 
         json =
             new ObjectMapper().setAnnotationIntrospector( //
@@ -93,18 +100,9 @@ public class StreamClient implements Closeable
                 .registerModule(new AbiquoModule());
     }
 
-    public Observable<Event> events() throws IOException
+    public Observable<Event> newEventStream() throws IOException
     {
-        checkState(STATUS.CLOSE == socket.status(),
-            "a connection to the streaming api already exists");
-
-        socket.open(client.newRequestBuilder() //
-            .method(METHOD.GET)//
-            .uri(endpoint + "?Content-Type=application/json") //
-            .transport(TRANSPORT.SSE) //
-            .build());
-
-        return Observable.create(new OnSubscribe<Event>()
+        Observable<Event> observable = Observable.create(new OnSubscribe<Event>()
         {
             @Override
             public void call(final Subscriber< ? super Event> subscriber)
@@ -119,9 +117,10 @@ public class StreamClient implements Closeable
                             Event event = json.readValue(rawEvent, Event.class);
                             subscriber.onNext(event);
                         }
-                        catch (IOException e)
+                        catch (IOException ex)
                         {
-                            subscriber.onError(e);
+                            subscriber.onError(new RuntimeException("Error parsing event: "
+                                + rawEvent, ex));
                         }
                     }
                 }).on(ERROR, new Function<String>()
@@ -141,11 +140,22 @@ public class StreamClient implements Closeable
                 });
             }
         });
+
+        synchronized (socket)
+        {
+            if (STATUS.CLOSE == socket.status())
+            {
+                socket.open(request);
+            }
+        }
+
+        return observable;
     }
 
     @Override
     public void close() throws IOException
     {
+        asyncClient.close();
         socket.close();
     }
 
