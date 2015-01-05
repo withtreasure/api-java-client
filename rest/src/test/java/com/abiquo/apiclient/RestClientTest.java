@@ -46,6 +46,7 @@ import com.abiquo.server.core.cloud.VirtualMachineState;
 import com.abiquo.server.core.task.TaskDto;
 import com.abiquo.server.core.task.TaskState;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.internal.SslContextBuilder;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
@@ -409,6 +410,26 @@ public class RestClientTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "GET", dto.getEditLink().getHref());
         assertAccept(request, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testQueryParametersAreURLEncoded() throws Exception
+    {
+        MockResponse vdcsResponse = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vdcs.json"));
+
+        server.enqueue(vdcsResponse);
+        server.play();
+
+        newApiClient().getClient().get("/cloud/virtualdatacenters",
+            ImmutableMap.<String, Object> of("foo", "param to encode"),
+            VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacentersDto.class);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters?foo=param+to+encode");
+        assertAccept(request, VirtualDatacentersDto.MEDIA_TYPE,
             SingleResourceTransportDto.API_VERSION);
     }
 

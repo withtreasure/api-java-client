@@ -19,11 +19,14 @@ import static com.abiquo.apiclient.LogUtils.logRequest;
 import static com.abiquo.apiclient.LogUtils.logResponse;
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Maps.transformValues;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +42,7 @@ import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.model.transport.error.ErrorsDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.task.TaskDto;
+import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
@@ -406,7 +410,22 @@ public class RestClient
     private String queryLine(final Map<String, Object> queryParams)
     {
         Map<String, Object> queryParamsSorted = new TreeMap<String, Object>(queryParams);
-        return Joiner.on('&').withKeyValueSeparator("=").join(queryParamsSorted);
+        return Joiner.on('&').withKeyValueSeparator("=")
+            .join(transformValues(queryParamsSorted, new Function<Object, String>()
+            {
+                @Override
+                public String apply(final Object input)
+                {
+                    try
+                    {
+                        return URLEncoder.encode(input.toString(), "UTF-8");
+                    }
+                    catch (UnsupportedEncodingException ex)
+                    {
+                        throw Throwables.propagate(ex);
+                    }
+                }
+            }));
     }
 
     public TaskDto waitForTask(final AcceptedRequestDto< ? > acceptedRequest,
