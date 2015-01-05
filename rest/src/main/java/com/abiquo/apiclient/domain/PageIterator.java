@@ -29,7 +29,7 @@ import com.google.common.collect.Iterators;
 /**
  * An {@link Iterator} that is capable of advancing between the pages of a paginated collection.
  * <p>
- * To create this iterator use the {{@link #flatten(ApiClient, WrapperDto)} method.
+ * To create this iterator use the {@link #flatten(ApiClient, WrapperDto)} method.
  * 
  * @author Ignasi Barrera
  */

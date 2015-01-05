@@ -19,12 +19,6 @@ import com.abiquo.model.rest.RESTLink;
 
 public final class Links
 {
-
-    private Links()
-    {
-        throw new AssertionError("Constant class. Clients shouldn't instantiate it directly.");
-    }
-
     public static RESTLink create(final String rel, final String href, final String type)
     {
         RESTLink link = new RESTLink(rel, href);
@@ -32,4 +26,8 @@ public final class Links
         return link;
     }
 
+    private Links()
+    {
+        throw new AssertionError("Constant class. Clients shouldn't instantiate it directly.");
+    }
 }
