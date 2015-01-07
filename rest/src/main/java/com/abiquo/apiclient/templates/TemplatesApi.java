@@ -44,16 +44,16 @@ public class TemplatesApi
         this.client = checkNotNull(client, "client cannot be null");
     }
 
-    public VirtualMachineTemplatesDto listTemplates(final VirtualDatacenterDto vdc)
+    public Iterable<VirtualMachineTemplateDto> listTemplates(final VirtualDatacenterDto vdc)
     {
-        return client.get(vdc.searchLink("templates").getHref(),
+        return client.list(vdc.searchLink("templates").getHref(),
             VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
     }
 
-    public VirtualMachineTemplatesDto listTemplates(final VirtualDatacenterDto vdc,
+    public Iterable<VirtualMachineTemplateDto> listTemplates(final VirtualDatacenterDto vdc,
         final TemplateListOptions options)
     {
-        return client.get(vdc.searchLink("templates").getHref(), options.queryParams(),
+        return client.list(vdc.searchLink("templates").getHref(), options.queryParams(),
             VirtualMachineTemplatesDto.MEDIA_TYPE, VirtualMachineTemplatesDto.class);
     }
 

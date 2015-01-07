@@ -36,6 +36,7 @@ import javax.net.ssl.X509TrustManager;
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.ApiClient.SSLConfiguration;
+import com.abiquo.apiclient.domain.PageIterator.AdvancingIterable;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
@@ -88,6 +89,56 @@ public class RestClientTest extends BaseMockTest
         link.setType(VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON);
 
         newApiClient().getClient().get(link, VirtualDatacentersDto.class);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters");
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testListAbsoluteLinkReturnsAnIterable() throws Exception
+    {
+        MockResponse vdcsResponse = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vdcs.json"));
+
+        server.enqueue(vdcsResponse);
+        server.play();
+
+        RESTLink link = new RESTLink("virtualdatacenters", baseUrl() + "/cloud/virtualdatacenters");
+        link.setType(VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON);
+
+        Iterable<VirtualDatacenterDto> vdcs =
+            newApiClient().getClient().list(link, VirtualDatacentersDto.class);
+
+        assertTrue(vdcs instanceof AdvancingIterable);
+        assertEquals(AdvancingIterable.class.cast(vdcs).size(), 2);
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", "/cloud/virtualdatacenters");
+        assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testGetRelativeLinkReturnsAnIterable() throws Exception
+    {
+        MockResponse vdcsResponse = new MockResponse() //
+            .setHeader("Content-Type", VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("vdcs.json"));
+
+        server.enqueue(vdcsResponse);
+        server.play();
+
+        RESTLink link = new RESTLink("virtualdatacenters", "/cloud/virtualdatacenters");
+        link.setType(VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON);
+
+        Iterable<VirtualDatacenterDto> vdcs =
+            newApiClient().getClient().list(link, VirtualDatacentersDto.class);
+
+        assertTrue(vdcs instanceof AdvancingIterable);
+        assertEquals(AdvancingIterable.class.cast(vdcs).size(), 2);
 
         RecordedRequest request = server.takeRequest();
 

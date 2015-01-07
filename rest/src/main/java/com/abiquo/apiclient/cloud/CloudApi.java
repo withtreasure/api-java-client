@@ -43,8 +43,10 @@ import com.abiquo.server.core.cloud.VirtualMachinesDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.PublicCloudRegionDto;
+import com.abiquo.server.core.infrastructure.network.ExternalIpDto;
 import com.abiquo.server.core.infrastructure.network.ExternalIpsDto;
 import com.abiquo.server.core.infrastructure.network.VLANNetworkDto;
+import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationDto;
 import com.abiquo.server.core.infrastructure.network.VMNetworkConfigurationsDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.infrastructure.storage.TiersDto;
@@ -67,41 +69,42 @@ public class CloudApi
             VirtualDatacenterDto.class);
     }
 
-    public VirtualDatacentersDto listVirtualDatacenters()
+    public Iterable<VirtualDatacenterDto> listVirtualDatacenters()
     {
-        return client.get(VIRTUALDATACENTERS_URL, VirtualDatacentersDto.MEDIA_TYPE,
+        return client.list(VIRTUALDATACENTERS_URL, VirtualDatacentersDto.MEDIA_TYPE,
             VirtualDatacentersDto.class);
     }
 
-    public VirtualDatacentersDto listVirtualDatacenters(final VirtualDatacenterListOptions options)
+    public Iterable<VirtualDatacenterDto> listVirtualDatacenters(
+        final VirtualDatacenterListOptions options)
     {
-        return client.get(VIRTUALDATACENTERS_URL, options.queryParams(),
+        return client.list(VIRTUALDATACENTERS_URL, options.queryParams(),
             VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacentersDto.class);
     }
 
-    public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc)
+    public Iterable<ExternalIpDto> listExternalIps(final VirtualDatacenterDto vdc)
     {
-        return client.get(vdc.searchLink("externalips").getHref(), ExternalIpsDto.MEDIA_TYPE,
+        return client.list(vdc.searchLink("externalips").getHref(), ExternalIpsDto.MEDIA_TYPE,
             ExternalIpsDto.class);
     }
 
-    public ExternalIpsDto listExternalIps(final VirtualDatacenterDto vdc,
+    public Iterable<ExternalIpDto> listExternalIps(final VirtualDatacenterDto vdc,
         final ExternalIpListOptions options)
     {
-        return client.get(vdc.searchLink("externalips").getHref(), options.queryParams(),
+        return client.list(vdc.searchLink("externalips").getHref(), options.queryParams(),
             ExternalIpsDto.MEDIA_TYPE, ExternalIpsDto.class);
     }
 
-    public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc)
+    public Iterable<VirtualApplianceDto> listVirtualAppliances(final VirtualDatacenterDto vdc)
     {
-        return client.get(vdc.searchLink("virtualappliances").getHref(),
+        return client.list(vdc.searchLink("virtualappliances").getHref(),
             VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
     }
 
-    public VirtualAppliancesDto listVirtualAppliances(final VirtualDatacenterDto vdc,
+    public Iterable<VirtualApplianceDto> listVirtualAppliances(final VirtualDatacenterDto vdc,
         final VirtualApplianceListOptions options)
     {
-        return client.get(vdc.searchLink("virtualappliances").getHref(), options.queryParams(),
+        return client.list(vdc.searchLink("virtualappliances").getHref(), options.queryParams(),
             VirtualAppliancesDto.MEDIA_TYPE, VirtualAppliancesDto.class);
     }
 
@@ -112,16 +115,16 @@ public class CloudApi
             VirtualApplianceDto.MEDIA_TYPE, VirtualApplianceDto.class);
     }
 
-    public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp)
+    public Iterable<VirtualMachineDto> listVirtualMachines(final VirtualApplianceDto vapp)
     {
-        return client.get(vapp.searchLink("virtualmachines").getHref(),
+        return client.list(vapp.searchLink("virtualmachines").getHref(),
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
-    public VirtualMachinesDto listVirtualMachines(final VirtualApplianceDto vapp,
+    public Iterable<VirtualMachineDto> listVirtualMachines(final VirtualApplianceDto vapp,
         final VirtualMachineListOptions options)
     {
-        return client.get(vapp.searchLink("virtualmachines").getHref(), options.queryParams(),
+        return client.list(vapp.searchLink("virtualmachines").getHref(), options.queryParams(),
             VirtualMachinesDto.MEDIA_TYPE, VirtualMachinesDto.class);
     }
 
@@ -131,9 +134,9 @@ public class CloudApi
             VLANNetworkDto.MEDIA_TYPE, VLANNetworkDto.class);
     }
 
-    public VMNetworkConfigurationsDto listNetworkConfigurations(final VirtualMachineDto vm)
+    public Iterable<VMNetworkConfigurationDto> listNetworkConfigurations(final VirtualMachineDto vm)
     {
-        return client.get(vm.searchLink("configurations").getHref(),
+        return client.list(vm.searchLink("configurations").getHref(),
             VMNetworkConfigurationsDto.MEDIA_TYPE, VMNetworkConfigurationsDto.class);
     }
 
@@ -311,9 +314,9 @@ public class CloudApi
             TaskDto.class);
     }
 
-    public TiersDto listTiers(final VirtualDatacenterDto vdc)
+    public Iterable<TierDto> listTiers(final VirtualDatacenterDto vdc)
     {
-        return client.get(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
+        return client.list(vdc.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE, TiersDto.class);
     }
 
 }

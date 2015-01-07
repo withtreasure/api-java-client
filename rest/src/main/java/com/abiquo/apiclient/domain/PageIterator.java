@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Iterator;
 
 import com.abiquo.apiclient.ApiClient;
+import com.abiquo.apiclient.RestClient;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.model.transport.WrapperDto;
@@ -36,44 +37,14 @@ import com.google.common.collect.Iterators;
 public class PageIterator<T extends WrapperDto< ? extends SingleResourceTransportDto>> extends
     AbstractIterator<T>
 {
-    /**
-     * Creates an iterator capable of advancing over the elements of a paginated collection, and
-     * lazily fetch new pages as they are needed.
-     * 
-     * @param api The API client used to fetch new pages when needed.
-     * @param dto The collection to iterate.
-     * @return An iterator capable of advancing between pages.
-     */
-    public static <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> flatten(
-        final ApiClient api, final W dto)
-    {
-        return new Iterable<T>()
-        {
-            @Override
-            public Iterator<T> iterator()
-            {
-                final PageIterator<W> pageIterator = new PageIterator<W>(api, dto);
-                return Iterators.concat(new AbstractIterator<Iterator<T>>()
-                {
-                    @Override
-                    protected Iterator<T> computeNext()
-                    {
-                        return pageIterator.hasNext() ? pageIterator.next().getCollection()
-                            .iterator() : endOfData();
-                    }
-                });
-            }
-        };
-    }
-
-    private final ApiClient api;
+    private final RestClient api;
 
     private T currentPage;
 
     private boolean unread;
 
     /* For internal use only. Use the factory methods. */
-    private PageIterator(final ApiClient api, final T initialPage)
+    private PageIterator(final RestClient api, final T initialPage)
     {
         this.api = checkNotNull(api, "api cannot be null");
         this.currentPage = checkNotNull(initialPage, "initialPage cannot be null");
@@ -107,10 +78,65 @@ public class PageIterator<T extends WrapperDto< ? extends SingleResourceTranspor
             else
             {
                 currentPage =
-                    api.getClient().get(next.getHref(), currentPage.getMediaType(),
+                    api.get(next.getHref(), currentPage.getMediaType(),
                         (Class<T>) currentPage.getClass());
                 return currentPage;
             }
         }
+    }
+
+    /**
+     * Creates an iterator capable of advancing over the elements of a paginated collection, and
+     * lazily fetch new pages as they are needed.
+     * 
+     * @param api The rest client used to fetch new pages when needed.
+     * @param dto The collection to iterate.
+     * @return An iterator capable of advancing between pages.
+     */
+    public static <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> flatten(
+        final RestClient api, final W dto)
+    {
+        return new AdvancingIterable<T, W>(api, dto);
+    }
+
+    /**
+     * An {@link Iterable} that is capable of advancing between pages.
+     * 
+     * @author Ignasi Barrera
+     */
+    public static class AdvancingIterable<T extends SingleResourceTransportDto, W extends WrapperDto<T>>
+        implements Iterable<T>
+    {
+        private final RestClient api;
+
+        private final W initialPage;
+
+        // For internal use only.
+        private AdvancingIterable(final RestClient api, final W initialPage)
+        {
+            this.api = checkNotNull(api, "api cannot be null");
+            this.initialPage = checkNotNull(initialPage, "initialPage cannot be null");
+        }
+
+        public int size()
+        {
+            return initialPage.getTotalSize();
+        }
+
+        @Override
+        public Iterator<T> iterator()
+        {
+            final PageIterator<W> pageIterator = new PageIterator<W>(api, initialPage);
+            return Iterators.concat(new AbstractIterator<Iterator<T>>()
+            {
+                @Override
+                protected Iterator<T> computeNext()
+                {
+                    return pageIterator.hasNext() ? pageIterator.next().getCollection().iterator()
+                        : endOfData();
+                }
+            });
+        }
+
     }
 }

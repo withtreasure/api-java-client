@@ -207,14 +207,18 @@
          "diskHardLimitInMb" : 0
       }
    ],
-   "totalSize" : 1,
+   "totalSize" : 2,
    "links" : [
       {
          "rel" : "first",
          "href" : "https://localhost:443/api/cloud/virtualdatacenters?limit=25&by=name"
       },
       {
-         "href" : "https://localhost:443/api/cloud/virtualdatacenters?startwith=0&limit=25&by=name",
+         "rel" : "next",
+         "href" : "https://localhost:443/api/cloud/virtualdatacenters?startwith=25,limit=25&by=name"
+      },
+      {
+         "href" : "https://localhost:443/api/cloud/virtualdatacenters?startwith=25&limit=25&by=name",
          "rel" : "last"
       }
    ]

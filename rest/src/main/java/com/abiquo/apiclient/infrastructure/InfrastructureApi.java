@@ -62,26 +62,26 @@ public class InfrastructureApi
         this.client = checkNotNull(client, "client cannot be null");
     }
 
-    public DatacentersDto listDatacenters()
+    public Iterable<DatacenterDto> listDatacenters()
     {
-        return client.get(DATACENTERS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
+        return client.list(DATACENTERS_URL, DatacentersDto.MEDIA_TYPE, DatacentersDto.class);
     }
 
-    public DatacentersDto listDatacenters(final DatacenterListOptions options)
+    public Iterable<DatacenterDto> listDatacenters(final DatacenterListOptions options)
     {
-        return client.get(DATACENTERS_URL, options.queryParams(), DatacentersDto.MEDIA_TYPE,
+        return client.list(DATACENTERS_URL, options.queryParams(), DatacentersDto.MEDIA_TYPE,
             DatacentersDto.class);
     }
 
-    public RacksDto listRacks(final DatacenterDto datacenter)
+    public Iterable<RackDto> listRacks(final DatacenterDto datacenter)
     {
-        return client.get(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
+        return client.list(datacenter.searchLink("racks").getHref(), RacksDto.MEDIA_TYPE,
             RacksDto.class);
     }
 
-    public DatacentersLimitsDto listLimits(final EnterpriseDto enterprise)
+    public Iterable<DatacenterLimitsDto> listLimits(final EnterpriseDto enterprise)
     {
-        return client.get(enterprise.searchLink("limits"), DatacentersLimitsDto.class);
+        return client.list(enterprise.searchLink("limits"), DatacentersLimitsDto.class);
     }
 
     public DatacenterLimitsDto getEnterpriseLimitsForDatacenter(final EnterpriseDto enterprise,
@@ -94,9 +94,9 @@ public class InfrastructureApi
                 DatacentersLimitsDto.MEDIA_TYPE, DatacentersLimitsDto.class).getCollection().get(0);
     }
 
-    public VLANNetworksDto listExternalNetworks(final DatacenterLimitsDto limits)
+    public Iterable<VLANNetworkDto> listExternalNetworks(final DatacenterLimitsDto limits)
     {
-        return client.get(limits.searchLink("externalnetworks").getHref(),
+        return client.list(limits.searchLink("externalnetworks").getHref(),
             VLANNetworksDto.MEDIA_TYPE, VLANNetworksDto.class);
     }
 
@@ -115,9 +115,9 @@ public class InfrastructureApi
             datacenter, DatacenterDto.class);
     }
 
-    public RemoteServicesDto listRemoteServices(final DatacenterDto datacenter)
+    public Iterable<RemoteServiceDto> listRemoteServices(final DatacenterDto datacenter)
     {
-        return client.get(datacenter.searchLink("remoteservices"), RemoteServicesDto.class);
+        return client.list(datacenter.searchLink("remoteservices"), RemoteServicesDto.class);
     }
 
     public RackDto createRack(final DatacenterDto datacenter, final String name)
@@ -157,9 +157,9 @@ public class InfrastructureApi
             MachineDto.MEDIA_TYPE, machine, MachineDto.class);
     }
 
-    public NetworkServiceTypesDto listNetworkServiceTypes(final DatacenterDto datacenter)
+    public Iterable<NetworkServiceTypeDto> listNetworkServiceTypes(final DatacenterDto datacenter)
     {
-        return client.get(datacenter.searchLink("networkservicetypes").getHref(),
+        return client.list(datacenter.searchLink("networkservicetypes").getHref(),
             NetworkServiceTypesDto.MEDIA_TYPE, NetworkServiceTypesDto.class);
     }
 
@@ -199,24 +199,24 @@ public class InfrastructureApi
             MachineLoadRuleDto.MEDIA_TYPE, rule, MachineLoadRuleDto.class);
     }
 
-    public StorageDevicesDto listDevices(final DatacenterDto datacenter)
+    public Iterable<StorageDeviceDto> listDevices(final DatacenterDto datacenter)
     {
-        return client.get(datacenter.searchLink("devices").getHref(), StorageDevicesDto.MEDIA_TYPE,
-            StorageDevicesDto.class);
+        return client.list(datacenter.searchLink("devices").getHref(),
+            StorageDevicesDto.MEDIA_TYPE, StorageDevicesDto.class);
     }
 
-    public StoragePoolsDto listPools(final StorageDeviceDto device)
+    public Iterable<StoragePoolDto> listPools(final StorageDeviceDto device)
     {
-        return client.get(device.searchLink("pools").getHref(), StoragePoolsDto.MEDIA_TYPE,
+        return client.list(device.searchLink("pools").getHref(), StoragePoolsDto.MEDIA_TYPE,
             StoragePoolsDto.class);
     }
 
-    public StoragePoolsDto listRemotePools(final StorageDeviceDto device)
+    public Iterable<StoragePoolDto> listRemotePools(final StorageDeviceDto device)
     {
         Map<String, Object> queryParams = new HashMap<String, Object>();
         queryParams.put("sync", true);
 
-        return client.get(device.searchLink("pools").getHref(), queryParams,
+        return client.list(device.searchLink("pools").getHref(), queryParams,
             StoragePoolsDto.MEDIA_TYPE, StoragePoolsDto.class);
     }
 
@@ -244,7 +244,7 @@ public class InfrastructureApi
         final StorageDeviceDto storageDevice, final String pool, final String tierName)
     {
         StoragePoolDto storagePool =
-            find(listRemotePools(storageDevice).getCollection(), new Predicate<StoragePoolDto>()
+            find(listRemotePools(storageDevice), new Predicate<StoragePoolDto>()
             {
                 @Override
                 public boolean apply(final StoragePoolDto input)
@@ -253,7 +253,7 @@ public class InfrastructureApi
                 }
             });
 
-        TierDto tier = find(listTiers(datacenter).getCollection(), new Predicate<TierDto>()
+        TierDto tier = find(listTiers(datacenter), new Predicate<TierDto>()
         {
             @Override
             public boolean apply(final TierDto input)
@@ -290,9 +290,9 @@ public class InfrastructureApi
             VLANNetworkDto.MEDIA_TYPE, vlan, VLANNetworkDto.class);
     }
 
-    public TiersDto listTiers(final DatacenterDto datacenter)
+    public Iterable<TierDto> listTiers(final DatacenterDto datacenter)
     {
-        return client.get(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
+        return client.list(datacenter.searchLink("tiers").getHref(), TiersDto.MEDIA_TYPE,
             TiersDto.class);
     }
 

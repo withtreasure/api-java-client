@@ -15,6 +15,7 @@
  */
 package com.abiquo.apiclient.domain;
 
+import static com.abiquo.apiclient.domain.PageIterator.flatten;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -45,7 +46,7 @@ public class PageIteratorTest extends BaseMockTest
 
         server.play();
 
-        Iterator<DatacenterDto> it = PageIterator.flatten(newApiClient(), datacenters).iterator();
+        Iterator<DatacenterDto> it = flatten(newApiClient().getClient(), datacenters).iterator();
 
         assertTrue(it.hasNext());
         assertEquals(it.next(), datacenter);
@@ -72,7 +73,7 @@ public class PageIteratorTest extends BaseMockTest
         datacenters.addLink(new RESTLink("next", server.getUrl("")
             + "/api/admin/datacenters?startwith=2"));
 
-        Iterator<DatacenterDto> it = PageIterator.flatten(newApiClient(), datacenters).iterator();
+        Iterator<DatacenterDto> it = flatten(newApiClient().getClient(), datacenters).iterator();
 
         // First two elements are in the initial page. No request should be performed, as the
         // elements in the second page are still not needed

@@ -17,6 +17,7 @@ package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.LogUtils.logRequest;
 import static com.abiquo.apiclient.LogUtils.logResponse;
+import static com.abiquo.apiclient.domain.PageIterator.flatten;
 import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.transformValues;
@@ -39,6 +40,7 @@ import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
+import com.abiquo.model.transport.WrapperDto;
 import com.abiquo.model.transport.error.ErrorsDto;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
 import com.abiquo.server.core.task.TaskDto;
@@ -107,11 +109,6 @@ public class RestClient
         });
     }
 
-    public <T extends SingleResourceTransportDto> T get(final RESTLink link, final Class<T> clazz)
-    {
-        return get(link.getHref(), link.getType(), clazz);
-    }
-
     public <T extends SingleResourceTransportDto> T edit(final T dto)
     {
         RESTLink link =
@@ -142,6 +139,43 @@ public class RestClient
         Class<T> clazz = (Class<T>) dto.getClass();
 
         checkNotNull(link, "The given object does not have an edit/self link");
+        return get(link.getHref(), link.getType(), clazz);
+    }
+
+    public <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> list(
+        final RESTLink link, final Class<W> clazz)
+    {
+        return flatten(this, get(link, clazz));
+    }
+
+    public <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> list(
+        final String uri, final String accept, final Class<W> returnClass)
+    {
+        return flatten(this, get(uri, accept, returnClass));
+    }
+
+    public <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> list(
+        final String uri, final String accept, final TypeToken<W> returnType)
+    {
+        return flatten(this, get(uri, accept, returnType));
+    }
+
+    public <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> list(
+        final String uri, final Map<String, Object> queryParams, final String accept,
+        final Class<W> returnClass)
+    {
+        return flatten(this, get(uri, queryParams, accept, returnClass));
+    }
+
+    public <T extends SingleResourceTransportDto, W extends WrapperDto<T>> Iterable<T> list(
+        final String uri, final Map<String, Object> queryParams, final String accept,
+        final TypeToken<W> returnType)
+    {
+        return flatten(this, get(uri, queryParams, accept, returnType));
+    }
+
+    public <T extends SingleResourceTransportDto> T get(final RESTLink link, final Class<T> clazz)
+    {
         return get(link.getHref(), link.getType(), clazz);
     }
 

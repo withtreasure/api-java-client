@@ -51,14 +51,14 @@ public class EnterpriseApi
             .get(ENTERPRISES_URL + "/" + id, EnterpriseDto.MEDIA_TYPE, EnterpriseDto.class);
     }
 
-    public EnterprisesDto listEnterprises()
+    public Iterable<EnterpriseDto> listEnterprises()
     {
-        return client.get(ENTERPRISES_URL, EnterprisesDto.MEDIA_TYPE, EnterprisesDto.class);
+        return client.list(ENTERPRISES_URL, EnterprisesDto.MEDIA_TYPE, EnterprisesDto.class);
     }
 
-    public EnterprisesDto listEnterprises(final EnterpriseListOptions options)
+    public Iterable<EnterpriseDto> listEnterprises(final EnterpriseListOptions options)
     {
-        return client.get(ENTERPRISES_URL, options.queryParams(), EnterprisesDto.MEDIA_TYPE,
+        return client.list(ENTERPRISES_URL, options.queryParams(), EnterprisesDto.MEDIA_TYPE,
             EnterprisesDto.class);
     }
 
@@ -67,14 +67,14 @@ public class EnterpriseApi
         return client.get(LOGIN_URL, UserDto.MEDIA_TYPE, UserDto.class);
     }
 
-    public UsersDto listUsers()
+    public Iterable<UserDto> listUsers()
     {
-        return client.get(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
+        return client.list(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
     }
 
-    public UsersDto listUsers(final UserListOptions options)
+    public Iterable<UserDto> listUsers(final UserListOptions options)
     {
-        return client.get(USERS_URL, options.queryParams(), UsersDto.MEDIA_TYPE, UsersDto.class);
+        return client.list(USERS_URL, options.queryParams(), UsersDto.MEDIA_TYPE, UsersDto.class);
     }
 
 }
