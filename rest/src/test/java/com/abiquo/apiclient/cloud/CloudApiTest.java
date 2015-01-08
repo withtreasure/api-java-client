@@ -32,6 +32,7 @@ import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.cloud.VirtualApplianceDto;
+import com.abiquo.server.core.cloud.VirtualApplianceState;
 import com.abiquo.server.core.cloud.VirtualAppliancesDto;
 import com.abiquo.server.core.cloud.VirtualDatacenterDto;
 import com.abiquo.server.core.cloud.VirtualDatacentersDto;
@@ -204,7 +205,205 @@ public class CloudApiTest extends BaseMockTest
             TierDto.SHORT_MEDIA_TYPE_JSON);
     }
 
-    public void testDeploy() throws Exception
+    public void testDeployVirtualAppliance() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualApplianceDto deployed = new VirtualApplianceDto();
+        deployed.setState(VirtualApplianceState.DEPLOYED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(deployed)));
+
+        server.play();
+
+        VirtualApplianceDto dto = new VirtualApplianceDto();
+        RESTLink link =
+            new RESTLink("deploy", "/cloud/virtualdatacenters/1/virtualappliances/1/action/deploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link = new RESTLink("edit", "/cloud/virtualdatacenters/1/virtualappliances/1");
+        link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualApplianceDto vapp = newApiClient().getCloudApi().deploy(dto);
+
+        // Verify the returned status is the right one
+        assertEquals(vapp.getState(), VirtualApplianceState.DEPLOYED);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/action/deploy?force=false");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testDeployVirtualApplianceWithForce() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualApplianceDto deployed = new VirtualApplianceDto();
+        deployed.setState(VirtualApplianceState.DEPLOYED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(deployed)));
+
+        server.play();
+
+        VirtualApplianceDto dto = new VirtualApplianceDto();
+        RESTLink link =
+            new RESTLink("deploy", "/cloud/virtualdatacenters/1/virtualappliances/1/action/deploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link = new RESTLink("edit", "/cloud/virtualdatacenters/1/virtualappliances/1");
+        link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualApplianceDto vapp = newApiClient().getCloudApi().deploy(dto, true);
+
+        // Verify the returned status is the right one
+        assertEquals(vapp.getState(), VirtualApplianceState.DEPLOYED);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/action/deploy?force=true");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testUndeployVirtualAppliance() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualApplianceDto notDeployed = new VirtualApplianceDto();
+        notDeployed.setState(VirtualApplianceState.NOT_DEPLOYED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(notDeployed)));
+
+        server.play();
+
+        VirtualApplianceDto dto = new VirtualApplianceDto();
+        RESTLink link =
+            new RESTLink("undeploy",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/action/undeploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link = new RESTLink("edit", "/cloud/virtualdatacenters/1/virtualappliances/1");
+        link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualApplianceDto vm = newApiClient().getCloudApi().undeploy(dto);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualApplianceState.NOT_DEPLOYED);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/action/undeploy");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineTaskDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        VirtualMachineTaskDto requestBody = readBody(request, VirtualMachineTaskDto.class);
+        assertEquals(requestBody.getForceUndeploy(), false);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testUndeployVirtualApplianceWithForce() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualApplianceDto notDeployed = new VirtualApplianceDto();
+        notDeployed.setState(VirtualApplianceState.NOT_DEPLOYED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(notDeployed)));
+
+        server.play();
+
+        VirtualApplianceDto dto = new VirtualApplianceDto();
+        RESTLink link =
+            new RESTLink("undeploy",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/action/undeploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link = new RESTLink("edit", "/cloud/virtualdatacenters/1/virtualappliances/1");
+        link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualApplianceDto vm = newApiClient().getCloudApi().undeploy(dto, true);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualApplianceState.NOT_DEPLOYED);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/action/undeploy");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineTaskDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        VirtualMachineTaskDto requestBody = readBody(request, VirtualMachineTaskDto.class);
+        assertEquals(requestBody.getForceUndeploy(), true);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testDeployVirtualMachine() throws Exception
     {
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
@@ -243,7 +442,7 @@ public class CloudApiTest extends BaseMockTest
         // Verify the first request
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "POST",
-            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy");
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy?force=false");
         assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
@@ -254,7 +453,57 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
     }
 
-    public void testUndeploy() throws Exception
+    public void testDeployVirtualMachineWithForce() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualMachineDto powerOn = new VirtualMachineDto();
+        powerOn.setState(VirtualMachineState.ON);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(powerOn)));
+
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("deploy",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link =
+            new RESTLink("edit",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualMachineDto vm = newApiClient().getCloudApi().deploy(dto, true);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualMachineState.ON);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/deploy?force=true");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testUndeployVirtualMachine() throws Exception
     {
         MockResponse response = new MockResponse() //
             .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
@@ -300,6 +549,60 @@ public class CloudApiTest extends BaseMockTest
             SingleResourceTransportDto.API_VERSION);
         VirtualMachineTaskDto requestBody = readBody(request, VirtualMachineTaskDto.class);
         assertEquals(requestBody.getForceUndeploy(), false);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.getEditLink().getHref());
+        assertAccept(second, VirtualMachineDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testUndeployVirtualMachineWithForce() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("acceptedRequest.json"));
+
+        server.enqueue(response);
+
+        VirtualMachineDto notAllocated = new VirtualMachineDto();
+        notAllocated.setState(VirtualMachineState.NOT_ALLOCATED);
+
+        server.enqueue(new MockResponse().addHeader("Content-type",
+            VirtualMachineDto.SHORT_MEDIA_TYPE_JSON).setBody(json.write(notAllocated)));
+
+        server.play();
+
+        VirtualMachineDto dto = new VirtualMachineDto();
+        RESTLink link =
+            new RESTLink("undeploy",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy");
+        link.setType(AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+        link =
+            new RESTLink("edit",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1");
+        link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        VirtualMachineDto vm = newApiClient().getCloudApi().undeploy(dto, true);
+
+        // Verify the returned status is the right one
+        assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST",
+            "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/action/undeploy");
+        assertAccept(request, AcceptedRequestDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, VirtualMachineTaskDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+        VirtualMachineTaskDto requestBody = readBody(request, VirtualMachineTaskDto.class);
+        assertEquals(requestBody.getForceUndeploy(), true);
 
         // Verify the second request
         RecordedRequest second = server.takeRequest();

@@ -16,6 +16,7 @@
 package com.abiquo.apiclient.domain;
 
 import com.abiquo.model.rest.RESTLink;
+import com.abiquo.model.transport.SingleResourceTransportDto;
 
 public final class Links
 {
@@ -23,6 +24,23 @@ public final class Links
     {
         RESTLink link = new RESTLink(rel, href);
         link.setType(type);
+        return link;
+    }
+
+    public static RESTLink withRel(final String newRel, final RESTLink source)
+    {
+        RESTLink link = create(newRel, source.getHref(), source.getType());
+        link.setTitle(source.getTitle());
+        return link;
+    }
+
+    public static RESTLink editOrSelf(final SingleResourceTransportDto dto)
+    {
+        RESTLink link = dto.getEditLink();
+        if (link == null)
+        {
+            link = dto.searchLink("self");
+        }
         return link;
     }
 

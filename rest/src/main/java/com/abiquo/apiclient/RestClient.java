@@ -18,7 +18,6 @@ package com.abiquo.apiclient;
 import static com.abiquo.apiclient.LogUtils.logRequest;
 import static com.abiquo.apiclient.LogUtils.logResponse;
 import static com.abiquo.apiclient.domain.PageIterator.flatten;
-import static com.abiquo.server.core.cloud.VirtualMachineState.LOCKED;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.transformValues;
 
@@ -42,7 +41,10 @@ import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.model.transport.WrapperDto;
 import com.abiquo.model.transport.error.ErrorsDto;
+import com.abiquo.server.core.cloud.VirtualApplianceDto;
+import com.abiquo.server.core.cloud.VirtualApplianceState;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
+import com.abiquo.server.core.cloud.VirtualMachineState;
 import com.abiquo.server.core.task.TaskDto;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -500,7 +502,7 @@ public class RestClient
         while (watch.elapsed(timeUnit) < maxWait)
         {
             VirtualMachineDto refreshed = refresh(vm);
-            if (!LOCKED.equals(refreshed.getState()))
+            if (!VirtualMachineState.LOCKED.equals(refreshed.getState()))
             {
                 return refreshed;
             }
@@ -509,6 +511,24 @@ public class RestClient
         }
 
         throw new RuntimeException("Virtual machine did not reach the desired state in the configured timeout");
+    }
+
+    public VirtualApplianceDto waitUntilUnlocked(final VirtualApplianceDto vapp,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
+    {
+        Stopwatch watch = Stopwatch.createStarted();
+        while (watch.elapsed(timeUnit) < maxWait)
+        {
+            VirtualApplianceDto refreshed = refresh(vapp);
+            if (!VirtualApplianceState.LOCKED.equals(refreshed.getState()))
+            {
+                return refreshed;
+            }
+
+            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
+        }
+
+        throw new RuntimeException("Virtual appliance did not reach the desired state in the configured timeout");
     }
 
     private <T> T execute(final Request request, final Class<T> resultClass) throws IOException

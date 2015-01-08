@@ -32,6 +32,7 @@ import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.cloud.VirtualApplianceDto;
+import com.abiquo.server.core.cloud.VirtualApplianceState;
 import com.abiquo.server.core.cloud.VirtualAppliancesDto;
 import com.abiquo.server.core.cloud.VirtualDatacenterDto;
 import com.abiquo.server.core.cloud.VirtualDatacentersDto;
@@ -201,8 +202,13 @@ public class CloudApi
 
     public VirtualMachineDto deploy(final VirtualMachineDto vm)
     {
-        client.post(vm.searchLink("deploy").getHref(), AcceptedRequestDto.MEDIA_TYPE,
-            new TypeToken<AcceptedRequestDto<String>>()
+        return deploy(vm, false);
+    }
+
+    public VirtualMachineDto deploy(final VirtualMachineDto vm, final boolean forceDeploy)
+    {
+        client.post(vm.searchLink("deploy").getHref() + "?force=" + forceDeploy,
+            AcceptedRequestDto.MEDIA_TYPE, new TypeToken<AcceptedRequestDto<String>>()
             {
                 private static final long serialVersionUID = -6348281615419377868L;
             });
@@ -217,10 +223,33 @@ public class CloudApi
         return refreshed;
     }
 
-    public VirtualMachineDto undeploy(final VirtualMachineDto vm)
+    public VirtualApplianceDto deploy(final VirtualApplianceDto vapp)
+    {
+        return deploy(vapp, false);
+    }
+
+    public VirtualApplianceDto deploy(final VirtualApplianceDto vapp, final boolean forceDeploy)
+    {
+        client.post(vapp.searchLink("deploy").getHref() + "?force=" + forceDeploy,
+            AcceptedRequestDto.MEDIA_TYPE, new TypeToken<AcceptedRequestDto<String>>()
+            {
+                private static final long serialVersionUID = -6348281615419377868L;
+            });
+
+        // Wait a maximum of 5 minutes and poll every 5 seconds
+        VirtualApplianceDto refreshed = client.waitUntilUnlocked(vapp, 5, 300, TimeUnit.SECONDS);
+        if (VirtualApplianceState.DEPLOYED != refreshed.getState())
+        {
+            throw new RuntimeException("Deploy virtual appliance operation failed");
+        }
+
+        return refreshed;
+    }
+
+    public VirtualMachineDto undeploy(final VirtualMachineDto vm, final boolean forceUndeploy)
     {
         VirtualMachineTaskDto virtualMachineTask = new VirtualMachineTaskDto();
-        virtualMachineTask.setForceUndeploy(false);
+        virtualMachineTask.setForceUndeploy(forceUndeploy);
 
         client.post(vm.searchLink("undeploy").getHref(), AcceptedRequestDto.MEDIA_TYPE,
             VirtualMachineTaskDto.MEDIA_TYPE, virtualMachineTask,
@@ -237,6 +266,38 @@ public class CloudApi
         }
 
         return refreshed;
+    }
+
+    public VirtualMachineDto undeploy(final VirtualMachineDto vm)
+    {
+        return undeploy(vm, false);
+    }
+
+    public VirtualApplianceDto undeploy(final VirtualApplianceDto vapp, final boolean forceUndeploy)
+    {
+        VirtualMachineTaskDto virtualMachineTask = new VirtualMachineTaskDto();
+        virtualMachineTask.setForceUndeploy(forceUndeploy);
+
+        client.post(vapp.searchLink("undeploy").getHref(), AcceptedRequestDto.MEDIA_TYPE,
+            VirtualMachineTaskDto.MEDIA_TYPE, virtualMachineTask,
+            new TypeToken<AcceptedRequestDto<String>>()
+            {
+                private static final long serialVersionUID = -6348281615419377868L;
+            });
+
+        // Wait a maximum of 5 minutes and poll every 5 seconds
+        VirtualApplianceDto refreshed = client.waitUntilUnlocked(vapp, 5, 300, TimeUnit.SECONDS);
+        if (VirtualApplianceState.NOT_DEPLOYED != refreshed.getState())
+        {
+            throw new RuntimeException("Undeploy virtual appliance operation failed");
+        }
+
+        return refreshed;
+    }
+
+    public VirtualApplianceDto undeploy(final VirtualApplianceDto vapp)
+    {
+        return undeploy(vapp, false);
     }
 
     public VirtualMachineDto powerState(final VirtualMachineDto vm, final VirtualMachineState state)
