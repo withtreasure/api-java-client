@@ -1,0 +1,115 @@
+{
+    "collection": [
+        {
+            "blocked": true, 
+            "id": 1, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/roles/1", 
+                    "rel": "edit", 
+                    "title": "CLOUD_ADMIN", 
+                    "type": "application/vnd.abiquo.role+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/roles/1/action/privileges", 
+                    "rel": "privileges", 
+                    "title": "privileges", 
+                    "type": "application/vnd.abiquo.privileges+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/scopes/1", 
+                    "rel": "scope", 
+                    "title": "Global scope", 
+                    "type": "application/vnd.abiquo.scope+json"
+                }
+            ], 
+            "name": "CLOUD_ADMIN"
+        }, 
+        {
+            "blocked": false, 
+            "id": 3, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/roles/3", 
+                    "rel": "edit", 
+                    "title": "ENTERPRISE_ADMIN", 
+                    "type": "application/vnd.abiquo.role+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/roles/3/action/privileges", 
+                    "rel": "privileges", 
+                    "title": "privileges", 
+                    "type": "application/vnd.abiquo.privileges+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/scopes/1", 
+                    "rel": "scope", 
+                    "title": "Global scope", 
+                    "type": "application/vnd.abiquo.scope+json"
+                }
+            ], 
+            "name": "ENTERPRISE_ADMIN"
+        }, 
+        {
+            "blocked": false, 
+            "id": 4, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/roles/4", 
+                    "rel": "edit", 
+                    "title": "OUTBOUND_API_EVENTS", 
+                    "type": "application/vnd.abiquo.role+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/roles/4/action/privileges", 
+                    "rel": "privileges", 
+                    "title": "privileges", 
+                    "type": "application/vnd.abiquo.privileges+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/scopes/1", 
+                    "rel": "scope", 
+                    "title": "Global scope", 
+                    "type": "application/vnd.abiquo.scope+json"
+                }
+            ], 
+            "name": "OUTBOUND_API_EVENTS"
+        }, 
+        {
+            "blocked": false, 
+            "id": 2, 
+            "links": [
+                {
+                    "href": "https://localhost:443/api/admin/roles/2", 
+                    "rel": "edit", 
+                    "title": "USER", 
+                    "type": "application/vnd.abiquo.role+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/roles/2/action/privileges", 
+                    "rel": "privileges", 
+                    "title": "privileges", 
+                    "type": "application/vnd.abiquo.privileges+json"
+                }, 
+                {
+                    "href": "https://localhost:443/api/admin/scopes/1", 
+                    "rel": "scope", 
+                    "title": "Global scope", 
+                    "type": "application/vnd.abiquo.scope+json"
+                }
+            ], 
+            "name": "USER"
+        }
+    ], 
+    "links": [
+        {
+            "href": "https://localhost:443/api/admin/roles?limit=25&by=name", 
+            "rel": "first"
+        }, 
+        {
+            "href": "https://localhost:443/api/admin/roles?startwith=0&limit=25&by=name", 
+            "rel": "last"
+        }
+    ], 
+    "totalSize": 4
+}

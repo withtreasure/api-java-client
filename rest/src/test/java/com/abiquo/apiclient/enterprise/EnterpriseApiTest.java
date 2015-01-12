@@ -17,17 +17,25 @@ package com.abiquo.apiclient.enterprise;
 
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
+import static com.abiquo.apiclient.domain.ApiPath.ROLES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
 import static org.testng.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.apiclient.domain.options.EnterpriseListOptions;
 import com.abiquo.apiclient.domain.options.UserListOptions;
+import com.abiquo.model.enumerator.AuthType;
+import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
+import com.abiquo.server.core.enterprise.RoleDto;
+import com.abiquo.server.core.enterprise.RolesDto;
 import com.abiquo.server.core.enterprise.UserDto;
 import com.abiquo.server.core.enterprise.UsersDto;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -164,6 +172,74 @@ public class EnterpriseApiTest extends BaseMockTest
 
         assertRequest(request, "GET", USERS_URL + "?connected=true&limit=0");
         assertAccept(request, UsersDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testCreateUser() throws Exception
+    {
+        MockResponse response =
+            new MockResponse().setHeader("Content-Type", UserDto.SHORT_MEDIA_TYPE_JSON).setBody(
+                payloadFromResource("user.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        EnterpriseDto enterprise = new EnterpriseDto();
+        RESTLink link = new RESTLink("users", "/admin/enterprises/1/users");
+        link.setType(UsersDto.SHORT_MEDIA_TYPE_JSON);
+        enterprise.addLink(link);
+
+        RoleDto role = new RoleDto();
+        link = new RESTLink("edit", "/admin/roles/1");
+        link.setType(RoleDto.SHORT_MEDIA_TYPE_JSON);
+        role.addLink(link);
+
+        List<Integer> availableVdcsIds = new ArrayList<Integer>();
+        availableVdcsIds.add(1);
+        availableVdcsIds.add(7);
+
+        newApiClient().getEnterpriseApi().createUser("Cloud", "Administrator", "admin", "foo",
+            "e@gmail.com", "Main administrator", true, "en_US", AuthType.ABIQUO, "bar",
+            availableVdcsIds, enterprise, role);
+
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "POST", "/admin/enterprises/1/users");
+        assertAccept(request, UserDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
+        assertContentType(request, UserDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        UserDto requestBody = readBody(request, UserDto.class);
+        assertEquals(requestBody.getName(), "Cloud");
+        assertEquals(requestBody.getSurname(), "Administrator");
+        assertEquals(requestBody.getNick(), "admin");
+        assertEquals(requestBody.getPassword(), "foo");
+        assertEquals(requestBody.getEmail(), "e@gmail.com");
+        assertEquals(requestBody.getDescription(), "Main administrator");
+        assertEquals(requestBody.isActive(), true);
+        assertEquals(requestBody.getLocale(), "en_US");
+        assertEquals(requestBody.getAuthType(), "ABIQUO");
+        assertEquals(requestBody.getPublicSshKey(), "bar");
+        assertEquals(requestBody.getAvailableVirtualDatacenters(), "1,7");
+        assertLinkExist(requestBody, requestBody.searchLink("role").getHref(), "role",
+            RoleDto.SHORT_MEDIA_TYPE_JSON);
+
+    }
+
+    public void testListRoles() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", RolesDto.SHORT_MEDIA_TYPE_JSON) //
+            .setBody(payloadFromResource("roles.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        newApiClient().getEnterpriseApi().listRoles();
+
+        RecordedRequest request = server.takeRequest();
+
+        assertRequest(request, "GET", ROLES_URL);
+        assertAccept(request, RolesDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 }

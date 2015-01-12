@@ -31,6 +31,8 @@ public final class ApiPath
 
     public static final String LOGIN_URL = "/login";
 
+    public static final String ROLES_URL = "/admin/roles";
+
     private ApiPath()
     {
         throw new AssertionError("Constant class. Clients shouldn't instantiate it directly.");

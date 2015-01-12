@@ -17,16 +17,24 @@ package com.abiquo.apiclient.enterprise;
 
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
+import static com.abiquo.apiclient.domain.ApiPath.ROLES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
+import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.List;
 
 import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.options.EnterpriseListOptions;
 import com.abiquo.apiclient.domain.options.UserListOptions;
+import com.abiquo.model.enumerator.AuthType;
 import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.enterprise.EnterprisesDto;
+import com.abiquo.server.core.enterprise.RoleDto;
+import com.abiquo.server.core.enterprise.RolesDto;
 import com.abiquo.server.core.enterprise.UserDto;
 import com.abiquo.server.core.enterprise.UsersDto;
+import com.google.common.base.Joiner;
 
 public class EnterpriseApi
 {
@@ -62,6 +70,32 @@ public class EnterpriseApi
             EnterprisesDto.class);
     }
 
+    public UserDto createUser(final String name, final String surname, final String nick,
+        final String password, final String email, final String description, final boolean active,
+        final String locale, final AuthType authType, final String publicSshKey,
+        final List<Integer> availableVirtualDatacentersIds, final EnterpriseDto enterprise,
+        final RoleDto role)
+    {
+        UserDto user = new UserDto();
+        user.setName(name);
+        user.setSurname(surname);
+        user.setNick(nick);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setDescription(description);
+        user.setActive(active);
+        user.setLocale(locale);
+        user.setAuthType(authType.toString());
+        user.setPublicSshKey(publicSshKey);
+
+        user.setAvailableVirtualDatacenters(Joiner.on(",").skipNulls()
+            .join(availableVirtualDatacentersIds));
+        user.addLink(create("role", role.getEditLink().getHref(), role.getEditLink().getType()));
+
+        return client.post(enterprise.searchLink("users").getHref(), UserDto.MEDIA_TYPE,
+            UserDto.MEDIA_TYPE, user, UserDto.class);
+    }
+
     public UserDto getCurrentUser()
     {
         return client.get(LOGIN_URL, UserDto.MEDIA_TYPE, UserDto.class);
@@ -75,6 +109,11 @@ public class EnterpriseApi
     public Iterable<UserDto> listUsers(final UserListOptions options)
     {
         return client.list(USERS_URL, options.queryParams(), UsersDto.MEDIA_TYPE, UsersDto.class);
+    }
+
+    public Iterable<RoleDto> listRoles()
+    {
+        return client.list(ROLES_URL, RolesDto.MEDIA_TYPE, RolesDto.class);
     }
 
 }
