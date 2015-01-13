@@ -16,12 +16,15 @@
 package com.abiquo.apiclient.stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static org.atmosphere.wasync.Event.CLOSE;
 import static org.atmosphere.wasync.Event.ERROR;
 import static org.atmosphere.wasync.Event.MESSAGE;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -31,7 +34,6 @@ import org.atmosphere.wasync.Function;
 import org.atmosphere.wasync.Request.METHOD;
 import org.atmosphere.wasync.Request.TRANSPORT;
 import org.atmosphere.wasync.Socket;
-import org.atmosphere.wasync.Socket.STATUS;
 import org.atmosphere.wasync.impl.AtmosphereClient;
 import org.atmosphere.wasync.impl.AtmosphereRequest;
 
@@ -46,25 +48,32 @@ import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.google.common.base.Throwables;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.AsyncHttpClientConfig;
 import com.ning.http.client.Realm;
 
 public class StreamClient implements Closeable
 {
-    private final Socket socket;
+    private static final Logger LOG = Logger.getLogger("abiquo.stream");
 
-    private final AsyncHttpClient asyncClient;
+    private final AsyncHttpClientConfig clientConfig;
 
-    private final AtmosphereRequest request;
+    private final String endpoint;
 
     private final ObjectMapper json;
+
+    private final AtomicInteger subscriberCount = new AtomicInteger(0);
+
+    private Socket socket;
+
+    private AsyncHttpClient asyncClient;
 
     // Do not use directly. Use the builder.
     private StreamClient(final String endpoint, final String username, final String password,
         final SSLConfiguration sslConfiguration)
     {
-        checkNotNull(endpoint, "endpoint cannot be null");
+        this.endpoint = checkNotNull(endpoint, "endpoint cannot be null");
         checkNotNull(username, "username cannot be null");
         checkNotNull(password, "password cannot be null");
 
@@ -83,21 +92,41 @@ public class StreamClient implements Closeable
             .setScheme(Realm.AuthScheme.BASIC) //
             .build());
 
-        AtmosphereClient client = ClientFactory.getDefault().newClient(AtmosphereClient.class);
-        asyncClient = new AsyncHttpClient(config.build());
-        socket = client.create(client.newOptionsBuilder().runtime(asyncClient).build());
-        request = client.newRequestBuilder() //
-            .method(METHOD.GET) //
-            .uri(endpoint + "?Content-Type=application/json") //
-            .transport(TRANSPORT.SSE) //
-            .transport(TRANSPORT.LONG_POLLING) //
-            .build();
+        clientConfig = config.build();
 
         json =
             new ObjectMapper().setAnnotationIntrospector( //
                 new AnnotationIntrospectorPair(new JacksonAnnotationIntrospector(),
                     new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()))) //
                 .registerModule(new AbiquoModule());
+    }
+
+    private void connect() throws IOException
+    {
+        checkState(socket == null, "the client is already listening to events");
+        checkState(asyncClient == null, "the client is already listening to events");
+
+        LOG.fine("Connecting to " + endpoint + "...");
+
+        AtmosphereClient client = ClientFactory.getDefault().newClient(AtmosphereClient.class);
+
+        AtmosphereRequest request = client.newRequestBuilder() //
+            .method(METHOD.GET) //
+            .uri(endpoint + "?Content-Type=application/json") //
+            .transport(TRANSPORT.SSE) //
+            .transport(TRANSPORT.LONG_POLLING) //
+            .build();
+
+        asyncClient = new AsyncHttpClient(clientConfig);
+        socket = client.create(client.newOptionsBuilder().runtime(asyncClient).build());
+        socket.open(request);
+
+        LOG.fine("Connected!");
+    }
+
+    public boolean isConnected()
+    {
+        return socket != null;
     }
 
     public Observable<Event> newEventStream() throws IOException
@@ -107,20 +136,29 @@ public class StreamClient implements Closeable
             @Override
             public void call(final Subscriber< ? super Event> subscriber)
             {
+                subscriberCount.incrementAndGet();
+
                 socket.on(MESSAGE, new Function<String>()
                 {
                     @Override
                     public void on(final String rawEvent)
                     {
-                        try
+                        if (subscriber.isUnsubscribed())
                         {
-                            Event event = json.readValue(rawEvent, Event.class);
-                            subscriber.onNext(event);
+                            subscriberGone(subscriber);
                         }
-                        catch (IOException ex)
+                        else
                         {
-                            subscriber.onError(new RuntimeException("Error parsing event: "
-                                + rawEvent, ex));
+                            try
+                            {
+                                Event event = json.readValue(rawEvent, Event.class);
+                                subscriber.onNext(event);
+                            }
+                            catch (IOException ex)
+                            {
+                                subscriber.onError(new RuntimeException("Error parsing event: "
+                                    + rawEvent, ex));
+                            }
                         }
                     }
                 }).on(ERROR, new Function<String>()
@@ -128,35 +166,76 @@ public class StreamClient implements Closeable
                     @Override
                     public void on(final String rawEvent)
                     {
-                        subscriber.onError(new RuntimeException("Unexpected error: " + rawEvent));
+                        if (subscriber.isUnsubscribed())
+                        {
+                            subscriberGone(subscriber);
+                        }
+                        else
+                        {
+                            subscriber
+                                .onError(new RuntimeException("Unexpected error: " + rawEvent));
+                        }
                     }
                 }).on(CLOSE, new Function<String>()
                 {
                     @Override
                     public void on(final String rawEvent)
                     {
-                        subscriber.onCompleted();
+                        if (!subscriber.isUnsubscribed())
+                        {
+                            subscriber.onCompleted();
+                        }
                     }
                 });
             }
         });
 
-        synchronized (socket)
+        synchronized (this)
         {
-            if (STATUS.CLOSE == socket.status())
+            if (!isConnected())
             {
-                socket.open(request);
+                connect();
             }
         }
 
         return observable;
     }
 
-    @Override
-    public void close() throws IOException
+    private void subscriberGone(final Subscriber< ? super Event> subscriber)
     {
-        asyncClient.close();
-        socket.close();
+        if (subscriberCount.decrementAndGet() == 0)
+        {
+            LOG.fine("There are no subscribers left. Will disconnect.");
+
+            try
+            {
+                close();
+            }
+            catch (IOException ex)
+            {
+                throw Throwables.propagate(ex);
+            }
+        }
+    }
+
+    @Override
+    public synchronized void close() throws IOException
+    {
+        LOG.fine("Disconnecting...");
+
+        if (asyncClient != null)
+        {
+            asyncClient.closeAsynchronously();
+        }
+        if (socket != null)
+        {
+            socket.close();
+        }
+
+        asyncClient = null;
+        socket = null;
+
+        LOG.fine("Disconnected!");
     }
 
     public static Builder builder()
