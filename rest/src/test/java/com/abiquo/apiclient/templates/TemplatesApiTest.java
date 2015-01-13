@@ -134,7 +134,8 @@ public class TemplatesApiTest extends BaseMockTest
         link.setType(VirtualMachineInstanceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        newApiClient().getTemplatesApi().instanceVirtualMachine(dto, "GRML-Small-Functional");
+        newApiClient().getTemplatesApi().instanceVirtualMachine(dto, "GRML-Small-Functional", 1,
+            300, TimeUnit.SECONDS);
 
         // Make sure the polling has retried once
         assertEquals(server.getRequestCount(), 3);
@@ -206,7 +207,8 @@ public class TemplatesApiTest extends BaseMockTest
         link.setType(DatacenterRepositoryDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        newApiClient().getTemplatesApi().promoteInstance(dto, "promotedNameTest");
+        newApiClient().getTemplatesApi().promoteInstance(dto, "promotedNameTest", 1, 300,
+            TimeUnit.SECONDS);
 
         // Make sure the polling has retried once
         assertEquals(server.getRequestCount(), 3);
@@ -273,7 +275,8 @@ public class TemplatesApiTest extends BaseMockTest
         link.setType(DatacenterRepositoriesDto.SHORT_MEDIA_TYPE_JSON);
         enterprise.addLink(link);
 
-        newApiClient().getTemplatesApi().refreshAppslibrary(enterprise, dc);
+        newApiClient().getTemplatesApi().refreshAppslibrary(enterprise, dc, 1, 300,
+            TimeUnit.SECONDS);
 
         // Make sure the polling has retried once
         assertEquals(server.getRequestCount(), 2);

@@ -61,7 +61,8 @@ public class TemplatesApi
     }
 
     public VirtualMachineTemplateDto instanceVirtualMachine(final VirtualMachineDto vm,
-        final String snapshotName)
+        final String snapshotName, final int pollInterval, final int maxWait,
+        final TimeUnit timeUnit)
     {
         VirtualMachineInstanceDto instance = new VirtualMachineInstanceDto();
         instance.setInstanceName(snapshotName);
@@ -73,8 +74,7 @@ public class TemplatesApi
                     private static final long serialVersionUID = -6348281615419377868L;
                 });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        TaskDto task = client.waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
+        TaskDto task = client.waitForTask(acceptedRequest, pollInterval, maxWait, timeUnit);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
             throw new RuntimeException("Virtual machine instance operation failed");
@@ -85,7 +85,8 @@ public class TemplatesApi
     }
 
     public VirtualMachineTemplateDto promoteInstance(final VirtualMachineTemplateDto template,
-        final String promotedName)
+        final String promotedName, final int pollInterval, final int maxWait,
+        final TimeUnit timeUnit)
     {
         VirtualMachineTemplateRequestDto promote = new VirtualMachineTemplateRequestDto();
         promote.addLink(create("virtualmachinetemplate", template.getEditLink().getHref(),
@@ -100,8 +101,7 @@ public class TemplatesApi
                     private static final long serialVersionUID = -6348281615419377868L;
                 });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        TaskDto task = client.waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
+        TaskDto task = client.waitForTask(acceptedRequest, pollInterval, maxWait, timeUnit);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
             throw new RuntimeException("Promote instance operation failed");
@@ -111,7 +111,8 @@ public class TemplatesApi
             VirtualMachineTemplateDto.MEDIA_TYPE, VirtualMachineTemplateDto.class);
     }
 
-    public void refreshAppslibrary(final EnterpriseDto enterprise, final DatacenterDto datacenter)
+    public void refreshAppslibrary(final EnterpriseDto enterprise, final DatacenterDto datacenter,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
     {
         AcceptedRequestDto<String> acceptedRequest =
             client.put(
@@ -122,8 +123,7 @@ public class TemplatesApi
                     private static final long serialVersionUID = -6348281615419377868L;
                 });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        TaskDto task = client.waitForTask(acceptedRequest, 5, 300, TimeUnit.SECONDS);
+        TaskDto task = client.waitForTask(acceptedRequest, pollInterval, maxWait, timeUnit);
         if (FINISHED_SUCCESSFULLY != task.getState())
         {
             throw new RuntimeException("Refresh repository operation failed");

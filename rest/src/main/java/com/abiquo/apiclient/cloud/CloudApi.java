@@ -200,12 +200,14 @@ public class CloudApi
                 VirtualMachineDto.MEDIA_TYPE, vm, VirtualMachineDto.class);
     }
 
-    public VirtualMachineDto deploy(final VirtualMachineDto vm)
+    public VirtualMachineDto deploy(final VirtualMachineDto vm, final int pollInterval,
+        final int maxWait, final TimeUnit timeUnit)
     {
-        return deploy(vm, false);
+        return deploy(vm, false, pollInterval, maxWait, timeUnit);
     }
 
-    public VirtualMachineDto deploy(final VirtualMachineDto vm, final boolean forceDeploy)
+    public VirtualMachineDto deploy(final VirtualMachineDto vm, final boolean forceDeploy,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
     {
         client.post(vm.searchLink("deploy").getHref() + "?force=" + forceDeploy,
             AcceptedRequestDto.MEDIA_TYPE, new TypeToken<AcceptedRequestDto<String>>()
@@ -213,8 +215,7 @@ public class CloudApi
                 private static final long serialVersionUID = -6348281615419377868L;
             });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, pollInterval, maxWait, timeUnit);
         if (!refreshed.getState().isDeployed())
         {
             throw new RuntimeException("Deploy virtual machine operation failed");
@@ -223,12 +224,14 @@ public class CloudApi
         return refreshed;
     }
 
-    public VirtualApplianceDto deploy(final VirtualApplianceDto vapp)
+    public VirtualApplianceDto deploy(final VirtualApplianceDto vapp, final int pollInterval,
+        final int maxWait, final TimeUnit timeUnit)
     {
-        return deploy(vapp, false);
+        return deploy(vapp, false, pollInterval, maxWait, timeUnit);
     }
 
-    public VirtualApplianceDto deploy(final VirtualApplianceDto vapp, final boolean forceDeploy)
+    public VirtualApplianceDto deploy(final VirtualApplianceDto vapp, final boolean forceDeploy,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
     {
         client.post(vapp.searchLink("deploy").getHref() + "?force=" + forceDeploy,
             AcceptedRequestDto.MEDIA_TYPE, new TypeToken<AcceptedRequestDto<String>>()
@@ -236,8 +239,8 @@ public class CloudApi
                 private static final long serialVersionUID = -6348281615419377868L;
             });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualApplianceDto refreshed = client.waitUntilUnlocked(vapp, 5, 300, TimeUnit.SECONDS);
+        VirtualApplianceDto refreshed =
+            client.waitUntilUnlocked(vapp, pollInterval, maxWait, timeUnit);
         if (VirtualApplianceState.DEPLOYED != refreshed.getState())
         {
             throw new RuntimeException("Deploy virtual appliance operation failed");
@@ -246,7 +249,8 @@ public class CloudApi
         return refreshed;
     }
 
-    public VirtualMachineDto undeploy(final VirtualMachineDto vm, final boolean forceUndeploy)
+    public VirtualMachineDto undeploy(final VirtualMachineDto vm, final boolean forceUndeploy,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
     {
         VirtualMachineTaskDto virtualMachineTask = new VirtualMachineTaskDto();
         virtualMachineTask.setForceUndeploy(forceUndeploy);
@@ -258,8 +262,7 @@ public class CloudApi
                 private static final long serialVersionUID = -6348281615419377868L;
             });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, pollInterval, maxWait, timeUnit);
         if (refreshed.getState().isDeployed())
         {
             throw new RuntimeException("Undeploy virtual machine operation failed");
@@ -268,12 +271,15 @@ public class CloudApi
         return refreshed;
     }
 
-    public VirtualMachineDto undeploy(final VirtualMachineDto vm)
+    public VirtualMachineDto undeploy(final VirtualMachineDto vm, final int pollInterval,
+        final int maxWait, final TimeUnit timeUnit)
     {
-        return undeploy(vm, false);
+        return undeploy(vm, false, pollInterval, maxWait, timeUnit);
     }
 
-    public VirtualApplianceDto undeploy(final VirtualApplianceDto vapp, final boolean forceUndeploy)
+    public VirtualApplianceDto undeploy(final VirtualApplianceDto vapp,
+        final boolean forceUndeploy, final int pollInterval, final int maxWait,
+        final TimeUnit timeUnit)
     {
         VirtualMachineTaskDto virtualMachineTask = new VirtualMachineTaskDto();
         virtualMachineTask.setForceUndeploy(forceUndeploy);
@@ -285,8 +291,8 @@ public class CloudApi
                 private static final long serialVersionUID = -6348281615419377868L;
             });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualApplianceDto refreshed = client.waitUntilUnlocked(vapp, 5, 300, TimeUnit.SECONDS);
+        VirtualApplianceDto refreshed =
+            client.waitUntilUnlocked(vapp, pollInterval, maxWait, timeUnit);
         if (VirtualApplianceState.NOT_DEPLOYED != refreshed.getState())
         {
             throw new RuntimeException("Undeploy virtual appliance operation failed");
@@ -295,12 +301,15 @@ public class CloudApi
         return refreshed;
     }
 
-    public VirtualApplianceDto undeploy(final VirtualApplianceDto vapp)
+    public VirtualApplianceDto undeploy(final VirtualApplianceDto vapp, final int pollInterval,
+        final int maxWait, final TimeUnit timeUnit)
     {
-        return undeploy(vapp, false);
+        return undeploy(vapp, false, pollInterval, maxWait, timeUnit);
     }
 
-    public VirtualMachineDto powerState(final VirtualMachineDto vm, final VirtualMachineState state)
+    public VirtualMachineDto powerState(final VirtualMachineDto vm,
+        final VirtualMachineState state, final int pollInterval, final int maxWait,
+        final TimeUnit timeUnit)
     {
         VirtualMachineStateDto vmState = new VirtualMachineStateDto();
         vmState.setState(state);
@@ -311,8 +320,7 @@ public class CloudApi
                 private static final long serialVersionUID = -6348281615419377868L;
             });
 
-        // Wait a maximum of 5 minutes and poll every 5 seconds
-        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+        VirtualMachineDto refreshed = client.waitUntilUnlocked(vm, pollInterval, maxWait, timeUnit);
         if (state != refreshed.getState())
         {
             throw new RuntimeException("Virtual machine power state '" + state.name()
@@ -322,7 +330,8 @@ public class CloudApi
         return refreshed;
     }
 
-    public VirtualMachineDto editVirtualMachine(final VirtualMachineDto vm)
+    public VirtualMachineDto editVirtualMachine(final VirtualMachineDto vm, final int pollInterval,
+        final int maxWait, final TimeUnit timeUnit)
     {
         VirtualMachineDto refreshed = null;
 
@@ -334,8 +343,7 @@ public class CloudApi
                     private static final long serialVersionUID = -6348281615419377868L;
                 });
 
-            // Wait a maximum of 5 minutes and poll every 5 seconds
-            refreshed = client.waitUntilUnlocked(vm, 5, 300, TimeUnit.SECONDS);
+            refreshed = client.waitUntilUnlocked(vm, pollInterval, maxWait, timeUnit);
             if (VirtualMachineState.OFF != refreshed.getState())
             {
                 throw new RuntimeException("Virtual machine reconfigure operation failed");

@@ -19,6 +19,8 @@ import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
+import java.util.concurrent.TimeUnit;
+
 import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.BaseMockTest;
@@ -230,7 +232,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualApplianceDto vapp = newApiClient().getCloudApi().deploy(dto);
+        VirtualApplianceDto vapp =
+            newApiClient().getCloudApi().deploy(dto, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vapp.getState(), VirtualApplianceState.DEPLOYED);
@@ -277,7 +280,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualApplianceDto vapp = newApiClient().getCloudApi().deploy(dto, true);
+        VirtualApplianceDto vapp =
+            newApiClient().getCloudApi().deploy(dto, true, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vapp.getState(), VirtualApplianceState.DEPLOYED);
@@ -325,7 +329,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualApplianceDto vm = newApiClient().getCloudApi().undeploy(dto);
+        VirtualApplianceDto vm =
+            newApiClient().getCloudApi().undeploy(dto, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualApplianceState.NOT_DEPLOYED);
@@ -377,7 +382,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualApplianceDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualApplianceDto vm = newApiClient().getCloudApi().undeploy(dto, true);
+        VirtualApplianceDto vm =
+            newApiClient().getCloudApi().undeploy(dto, true, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualApplianceState.NOT_DEPLOYED);
@@ -431,7 +437,7 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualMachineDto vm = newApiClient().getCloudApi().deploy(dto);
+        VirtualMachineDto vm = newApiClient().getCloudApi().deploy(dto, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.ON);
@@ -481,7 +487,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualMachineDto vm = newApiClient().getCloudApi().deploy(dto, true);
+        VirtualMachineDto vm =
+            newApiClient().getCloudApi().deploy(dto, true, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.ON);
@@ -531,7 +538,7 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualMachineDto vm = newApiClient().getCloudApi().undeploy(dto);
+        VirtualMachineDto vm = newApiClient().getCloudApi().undeploy(dto, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
@@ -585,7 +592,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        VirtualMachineDto vm = newApiClient().getCloudApi().undeploy(dto, true);
+        VirtualMachineDto vm =
+            newApiClient().getCloudApi().undeploy(dto, true, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
@@ -635,7 +643,8 @@ public class CloudApiTest extends BaseMockTest
         dto.addLink(link);
         dto.setState(VirtualMachineState.NOT_ALLOCATED);
 
-        VirtualMachineDto vm = newApiClient().getCloudApi().editVirtualMachine(dto);
+        VirtualMachineDto vm =
+            newApiClient().getCloudApi().editVirtualMachine(dto, 1, 300, TimeUnit.SECONDS);
 
         // Verify the returned status is the right one
         assertEquals(vm.getState(), VirtualMachineState.NOT_ALLOCATED);
@@ -678,7 +687,8 @@ public class CloudApiTest extends BaseMockTest
         link.setType(VirtualMachineDto.SHORT_MEDIA_TYPE_JSON);
         dto.addLink(link);
 
-        newApiClient().getCloudApi().powerState(dto, VirtualMachineState.OFF);
+        newApiClient().getCloudApi().powerState(dto, VirtualMachineState.OFF, 1, 300,
+            TimeUnit.SECONDS);
 
         // Make sure the polling has retried once
         assertEquals(server.getRequestCount(), 2);
