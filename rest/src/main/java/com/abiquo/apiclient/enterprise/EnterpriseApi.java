@@ -18,7 +18,6 @@ package com.abiquo.apiclient.enterprise;
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
 import static com.abiquo.apiclient.domain.ApiPath.ROLES_URL;
-import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
 import static com.abiquo.apiclient.domain.Links.create;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -101,14 +100,16 @@ public class EnterpriseApi
         return client.get(LOGIN_URL, UserDto.MEDIA_TYPE, UserDto.class);
     }
 
-    public Iterable<UserDto> listUsers()
+    public Iterable<UserDto> listUsers(final EnterpriseDto enterprise)
     {
-        return client.list(USERS_URL, UsersDto.MEDIA_TYPE, UsersDto.class);
+        return client.list(enterprise.searchLink("users").getHref(), enterprise.searchLink("users")
+            .getType(), UsersDto.class);
     }
 
-    public Iterable<UserDto> listUsers(final UserListOptions options)
+    public Iterable<UserDto> listUsers(final EnterpriseDto enterprise, final UserListOptions options)
     {
-        return client.list(USERS_URL, options.queryParams(), UsersDto.MEDIA_TYPE, UsersDto.class);
+        return client.list(enterprise.searchLink("users").getHref(), options.queryParams(),
+            enterprise.searchLink("users").getType(), UsersDto.class);
     }
 
     public Iterable<RoleDto> listRoles()

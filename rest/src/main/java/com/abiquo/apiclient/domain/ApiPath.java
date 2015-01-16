@@ -19,8 +19,6 @@ public final class ApiPath
 {
     public static final String ENTERPRISES_URL = "/admin/enterprises";
 
-    public static final String USERS_URL = "/admin/enterprises/_/users";
-
     public static final String DATACENTERS_URL = "/admin/datacenters";
 
     public static final String LOADLEVELRULES_URL = "/admin/rules/machineLoadLevel";

@@ -18,7 +18,6 @@ package com.abiquo.apiclient.enterprise;
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
 import static com.abiquo.apiclient.domain.ApiPath.ROLES_URL;
-import static com.abiquo.apiclient.domain.ApiPath.USERS_URL;
 import static org.testng.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -147,11 +146,16 @@ public class EnterpriseApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getEnterpriseApi().listUsers();
+        EnterpriseDto dto = new EnterpriseDto();
+        RESTLink link = new RESTLink("users", "/admin/enterprises/1/users");
+        link.setType(UsersDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getEnterpriseApi().listUsers(dto);
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", USERS_URL);
+        assertRequest(request, "GET", "/admin/enterprises/1/users");
         assertAccept(request, UsersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
@@ -165,12 +169,17 @@ public class EnterpriseApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getEnterpriseApi().listUsers(
+        EnterpriseDto dto = new EnterpriseDto();
+        RESTLink link = new RESTLink("users", "/admin/enterprises/1/users");
+        link.setType(UsersDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        newApiClient().getEnterpriseApi().listUsers(dto,
             UserListOptions.builder().limit(0).connected(true).build());
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", USERS_URL + "?connected=true&limit=0");
+        assertRequest(request, "GET", "/admin/enterprises/1/users?connected=true&limit=0");
         assertAccept(request, UsersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
