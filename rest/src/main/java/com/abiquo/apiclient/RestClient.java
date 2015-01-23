@@ -469,19 +469,30 @@ public class RestClient
     {
         RESTLink status = acceptedRequest.getStatusLink();
 
-        Stopwatch watch = Stopwatch.createStarted();
+        return waitForTask(status, pollInterval, maxWait, timeUnit);
+    }
+
+    public TaskDto waitForTask(final TaskDto taskDto, final int pollInterval, final int maxWait,
+        final TimeUnit timeUnit)
+    {
+        return waitForTask(taskDto.searchLink("self"), pollInterval, maxWait, timeUnit);
+    }
+
+    private TaskDto waitForTask(final RESTLink restLink, final int pollInterval, final int maxWait,
+        final TimeUnit timeUnit)
+    {
+        final Stopwatch watch = Stopwatch.createStarted();
         while (watch.elapsed(timeUnit) < maxWait)
         {
-            TaskDto task = get(status.getHref(), TaskDto.MEDIA_TYPE, TaskDto.class);
-
-            switch (task.getState())
+            TaskDto updatedTask = get(restLink.getHref(), TaskDto.MEDIA_TYPE, TaskDto.class);
+            switch (updatedTask.getState())
             {
                 case FINISHED_SUCCESSFULLY:
                 case FINISHED_UNSUCCESSFULLY:
                 case ABORTED:
                 case ACK_ERROR:
                 case CANCELLED:
-                    return task;
+                    return updatedTask;
                 case PENDING:
                 case QUEUEING:
                 case STARTED:

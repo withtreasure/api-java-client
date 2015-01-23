@@ -305,7 +305,7 @@ public class RestClientTest extends BaseMockTest
         assertRequest(request, "DELETE", "/cloud/virtualdatacenters/1");
     }
 
-    public void testWaitForTask() throws Exception
+    public void testWaitForTaskAcceptedRequest() throws Exception
     {
         TaskDto inProgress = new TaskDto();
         inProgress.setState(TaskState.PENDING);
@@ -343,6 +343,47 @@ public class RestClientTest extends BaseMockTest
         // Verify the second request
         RecordedRequest second = server.takeRequest();
         assertRequest(second, "GET", dto.getStatusLink().getHref());
+        assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testWaitForTaskDto() throws Exception
+    {
+        TaskDto inProgress = new TaskDto();
+        inProgress.setState(TaskState.PENDING);
+
+        TaskDto completed = new TaskDto();
+        completed.setState(TaskState.FINISHED_SUCCESSFULLY);
+
+        // Enqueue two tasks: one in progress, and one completed
+        server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
+            .setBody(json.write(inProgress)));
+        server.enqueue(new MockResponse().addHeader("Content-type", TaskDto.SHORT_MEDIA_TYPE_JSON)
+            .setBody(json.write(completed)));
+        server.play();
+
+        TaskDto dto = new TaskDto();
+        RESTLink link =
+            new RESTLink("self",
+                "/cloud/virtualdatacenters/1/virtualappliances/1/virtualmachines/1/tasks/1");
+        link.setType(TaskDto.SHORT_MEDIA_TYPE_JSON);
+        dto.addLink(link);
+
+        TaskDto task = newApiClient().getClient().waitForTask(dto, 100, 500, TimeUnit.MILLISECONDS);
+
+        // Verify the returned status is the right one
+        assertEquals(task.getState(), TaskState.FINISHED_SUCCESSFULLY);
+
+        // Make sure the polling has retried once
+        assertEquals(server.getRequestCount(), 2);
+
+        // Verify the first request
+        RecordedRequest first = server.takeRequest();
+        assertRequest(first, "GET", dto.searchLink("self").getHref());
+        assertAccept(first, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
+
+        // Verify the second request
+        RecordedRequest second = server.takeRequest();
+        assertRequest(second, "GET", dto.searchLink("self").getHref());
         assertAccept(second, TaskDto.SHORT_MEDIA_TYPE_JSON, SingleResourceTransportDto.API_VERSION);
     }
 

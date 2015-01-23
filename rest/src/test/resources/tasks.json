@@ -1,0 +1,54 @@
+{
+    "collection": [
+        {
+            "creationTimestamp": 1422284164, 
+            "jobs": {
+                "collection": [
+                    {
+                        "creationTimestamp": 1422284164, 
+                        "description": "Download task's download on virtual machine template with id 1", 
+                        "id": "44d2be2b-2668-4ca5-b72d-f79941abfd5e", 
+                        "links": [], 
+                        "parentTaskId": "245071c9-3969-4042-8d7e", 
+                        "rollbackState": "UNKNOWN", 
+                        "state": "DONE", 
+                        "timestamp": 1422284198, 
+                        "type": "DOWNLOAD"
+                    }
+                ], 
+                "links": []
+            }, 
+            "links": [
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks/1", 
+                    "rel": "self"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks", 
+                    "rel": "parent"
+                }, 
+                {
+                    "href": "https://localhost/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1", 
+                    "rel": "result", 
+                    "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+                }
+            ], 
+            "ownerId": "433", 
+            "state": "FINISHED_SUCCESSFULLY", 
+            "taskId": "245071c9-3969-4042", 
+            "timestamp": 1422284198, 
+            "type": "DOWNLOAD", 
+            "userId": "6"
+        }
+    ], 
+    "links": [
+        {
+            "href": "https://localhost/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks", 
+            "rel": "self"
+        }, 
+        {
+            "href": "https://localhost/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1", 
+            "rel": "parent"
+        }
+    ]
+}

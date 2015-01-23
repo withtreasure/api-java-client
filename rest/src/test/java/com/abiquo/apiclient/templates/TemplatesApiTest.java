@@ -41,6 +41,7 @@ import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.abiquo.server.core.task.TaskState;
+import com.abiquo.server.core.task.TasksDto;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.RecordedRequest;
 
@@ -508,6 +509,28 @@ public class TemplatesApiTest extends BaseMockTest
         RecordedRequest request = server.takeRequest();
         assertRequest(request, "GET", "/admin/enterprises/1/datacenterrepositories/1");
         assertAccept(request, DatacenterRepositoryDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+    }
+
+    public void testGetVirtualMachineTemplateTasks() throws Exception
+    {
+        MockResponse response = new MockResponse() //
+            .setHeader("Content-Type", TasksDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("tasks.json"));
+
+        server.enqueue(response);
+        server.play();
+
+        VirtualMachineTemplateDto vmt = new VirtualMachineTemplateDto();
+        vmt.addLink(new RESTLink("tasks",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks"));
+        newApiClient().getTemplatesApi().getVirtualMachineTemplateTasks(vmt);
+
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks");
+        assertAccept(request, TasksDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
 
     }

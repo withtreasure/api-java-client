@@ -36,6 +36,7 @@ import com.abiquo.server.core.enterprise.EnterpriseDto;
 import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.task.TaskDto;
+import com.abiquo.server.core.task.TasksDto;
 import com.google.common.reflect.TypeToken;
 
 public class TemplatesApi
@@ -173,5 +174,10 @@ public class TemplatesApi
 
         return client.get(task.searchLink("result").getHref(),
             VirtualMachineTemplateDto.MEDIA_TYPE, VirtualMachineTemplateDto.class);
+    }
+
+    public Iterable<TaskDto> getVirtualMachineTemplateTasks(final VirtualMachineTemplateDto vmt)
+    {
+        return client.list(vmt.searchLink("tasks").getHref(), TasksDto.MEDIA_TYPE, TasksDto.class);
     }
 }
