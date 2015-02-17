@@ -37,6 +37,7 @@ import org.testng.annotations.Test;
 
 import com.abiquo.apiclient.ApiClient.SSLConfiguration;
 import com.abiquo.apiclient.domain.PageIterator.AdvancingIterable;
+import com.abiquo.apiclient.domain.exception.AuthorizationException;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
@@ -523,6 +524,54 @@ public class RestClientTest extends BaseMockTest
         assertRequest(request, "GET", "/cloud/virtualdatacenters?foo=param+to+encode");
         assertAccept(request, VirtualDatacentersDto.MEDIA_TYPE,
             SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testAuthenticatorDoesNotRetryOn401() throws Exception
+    {
+        MockResponse response401 =
+            new MockResponse().setResponseCode(401).setHeader("WWW-Authenticate",
+                "Basic realm=\"Abiquo Api\"");
+        // Unused response. Just to make sure MWS does not hang
+        MockResponse response200 = new MockResponse();
+
+        server.enqueue(response401);
+        server.enqueue(response200);
+        server.play();
+
+        try
+        {
+            newApiClient().getClient().get("/cloud/virtualdatacenters",
+                VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacenterDto.class);
+            fail("Request should have failed and an AuthorizationException should have been thrown");
+        }
+        catch (AuthorizationException ex)
+        {
+            assertEquals(server.getRequestCount(), 1); // Request should not be retried
+        }
+    }
+
+    public void testAuthenticatorDoesNotRetryOn403() throws Exception
+    {
+        MockResponse response403 =
+            new MockResponse().setResponseCode(403).setHeader("WWW-Authenticate",
+                "Basic realm=\"Abiquo Api\"");
+        // Unused response. Just to make sure MWS does not hang
+        MockResponse response200 = new MockResponse();
+
+        server.enqueue(response403);
+        server.enqueue(response200);
+        server.play();
+
+        try
+        {
+            newApiClient().getClient().get("/cloud/virtualdatacenters",
+                VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacenterDto.class);
+            fail("Request should have failed and an AuthorizationException should have been thrown");
+        }
+        catch (AuthorizationException ex)
+        {
+            assertEquals(server.getRequestCount(), 1); // Request should not be retried
+        }
     }
 
     private static class RelaxedSSLConfig implements SSLConfiguration

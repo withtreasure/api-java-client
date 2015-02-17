@@ -24,7 +24,6 @@ import static com.google.common.collect.Maps.transformValues;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -54,7 +53,6 @@ import com.google.common.base.Throwables;
 import com.google.common.net.HttpHeaders;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Credentials;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -93,22 +91,6 @@ public class RestClient
             client.setHostnameVerifier(sslConfiguration.hostnameVerifier());
             client.setSslSocketFactory(sslConfiguration.sslContext().getSocketFactory());
         }
-
-        client.setAuthenticator(new Authenticator()
-        {
-            @Override
-            public Request authenticate(final Proxy proxy, final Response response)
-            {
-                return response.request().newBuilder()
-                    .header(HttpHeaders.AUTHORIZATION, authHeader).build();
-            }
-
-            @Override
-            public Request authenticateProxy(final Proxy proxy, final Response response)
-            {
-                return null;
-            }
-        });
     }
 
     public <T extends SingleResourceTransportDto> T edit(final T dto)
