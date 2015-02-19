@@ -36,11 +36,13 @@ import com.abiquo.apiclient.domain.exception.AuthorizationException;
 import com.abiquo.apiclient.domain.exception.HttpException;
 import com.abiquo.apiclient.interceptors.AuthenticationInterceptor;
 import com.abiquo.apiclient.json.Json;
+import com.abiquo.model.enumerator.VMTemplateState;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 import com.abiquo.model.transport.WrapperDto;
 import com.abiquo.model.transport.error.ErrorsDto;
+import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
 import com.abiquo.server.core.cloud.VirtualApplianceDto;
 import com.abiquo.server.core.cloud.VirtualApplianceState;
 import com.abiquo.server.core.cloud.VirtualMachineDto;
@@ -527,6 +529,24 @@ public class RestClient
         }
 
         throw new RuntimeException("Virtual appliance did not reach the desired state in the configured timeout");
+    }
+
+    public VirtualMachineTemplateDto waitProgress(final VirtualMachineTemplateDto vmt,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
+    {
+        Stopwatch watch = Stopwatch.createStarted();
+        while (watch.elapsed(timeUnit) < maxWait)
+        {
+            VirtualMachineTemplateDto refreshed = refresh(vmt);
+            if (!VMTemplateState.IN_PROGRESS.equals(refreshed.getState()))
+            {
+                return refreshed;
+            }
+
+            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
+        }
+
+        throw new RuntimeException("Virtual machine template did not reach the desired state in the configured timeout");
     }
 
     private <T> T execute(final Request request, final Class<T> resultClass) throws IOException

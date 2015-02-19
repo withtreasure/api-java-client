@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import com.abiquo.apiclient.domain.Links;
 import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.enumerator.VMTemplateState;
+import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.server.core.appslibrary.ConversionDto;
 import com.abiquo.server.core.appslibrary.ConversionsDto;
@@ -174,10 +175,23 @@ public class TemplatesApi
         VirtualMachineTemplatePersistentDto persistentTemplateDto =
             new VirtualMachineTemplatePersistentDto();
         persistentTemplateDto.setPersistentTemplateName(persistentTemplateName);
-        persistentTemplateDto.setPersistentVolumeName(persistentTemplateDto
-            .getPersistentTemplateName());
-        persistentTemplateDto.addLink(create("tier", tier.searchLink("self").getHref(), tier
-            .searchLink("self").getType()));
+        // persistentTemplateDto.setPersistentVolumeName(persistentTemplateName);
+
+        for (RESTLink l : vmt.getLinks())
+        {
+            if (l.getRel().startsWith("disk") && !l.getRel().equalsIgnoreCase("disks"))
+            {
+                Integer seq = Integer.valueOf(l.getRel().substring("disk".length()));
+
+                persistentTemplateDto.addLink(l);
+                RESTLink tierOfDisk =
+                    create("tier" + seq, tier.searchLink("self").getHref(), tier.searchLink("self")
+                        .getType());
+                // tierOfDisk.setTitle(persistentTemplateName);
+                persistentTemplateDto.addLink(tierOfDisk);
+            }
+        }
+
         persistentTemplateDto.addLink(create("virtualdatacenter", vdc.getEditLink().getHref(), vdc
             .getEditLink().getType()));
         persistentTemplateDto.addLink(create("virtualmachinetemplate", vmt.getEditLink().getHref(),
@@ -198,6 +212,9 @@ public class TemplatesApi
             throw new RuntimeException("Persistent operation failed");
         }
 
+        // FIXME multidisk 406 not acceptable
+        // FIXME configure .log
+        // FIXME RestClient#checkException include request
         return client.get(task.searchLink("result").getHref(),
             VirtualMachineTemplateDto.MEDIA_TYPE, VirtualMachineTemplateDto.class);
     }
@@ -304,5 +321,11 @@ public class TemplatesApi
         }
 
         throw new RuntimeException("Virtual machine template did not reach the desired state in the configured timeout");
+    }
+
+    public VirtualMachineTemplateDto waitProgress(final VirtualMachineTemplateDto vmt,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
+    {
+        return client.waitProgress(vmt, pollInterval, maxWait, timeUnit);
     }
 }

@@ -33,6 +33,7 @@ import com.abiquo.server.core.appslibrary.ConversionDto;
 import com.abiquo.server.core.appslibrary.ConversionsDto;
 import com.abiquo.server.core.appslibrary.DatacenterRepositoriesDto;
 import com.abiquo.server.core.appslibrary.DatacenterRepositoryDto;
+import com.abiquo.server.core.appslibrary.DiskDto;
 import com.abiquo.server.core.appslibrary.TemplateDefinitionDto;
 import com.abiquo.server.core.appslibrary.TemplateDefinitionListDto;
 import com.abiquo.server.core.appslibrary.VirtualMachineTemplateDto;
@@ -197,7 +198,7 @@ public class TemplatesApiTest extends BaseMockTest
         dto.addLink(link);
 
         newApiClient().getTemplatesApi().instanceVirtualMachine(dto, "GRML-Small-Functional", 1,
-            300, TimeUnit.SECONDS);
+            900, TimeUnit.SECONDS);
 
         // Make sure the polling has retried once
         assertEquals(server.getRequestCount(), 3);
@@ -412,6 +413,11 @@ public class TemplatesApiTest extends BaseMockTest
             new RESTLink("datacenterrepository", "/admin/enterprises/1/datacenterrepositories/1");
         link.setType(DatacenterRepositoriesDto.SHORT_MEDIA_TYPE_JSON);
         vmt.addLink(link);
+        link =
+            new RESTLink("disk0",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/disks/1");
+        link.setType(DiskDto.SHORT_MEDIA_TYPE_JSON);
+        vmt.addLink(link);
 
         newApiClient().getTemplatesApi().createPersistent(vdc, vmt, "persistentName", tier, 1, 300,
             TimeUnit.SECONDS);
@@ -431,8 +437,7 @@ public class TemplatesApiTest extends BaseMockTest
         VirtualMachineTemplatePersistentDto requestBody =
             readBody(request, VirtualMachineTemplatePersistentDto.class);
         assertEquals(requestBody.getPersistentTemplateName(), "persistentName");
-        assertEquals(requestBody.getPersistentVolumeName(), "persistentName");
-        assertLinkExist(requestBody, requestBody.searchLink("tier").getHref(), "tier",
+        assertLinkExist(requestBody, requestBody.searchLink("tier0").getHref(), "tier0",
             TierDto.SHORT_MEDIA_TYPE_JSON);
         assertLinkExist(requestBody, requestBody.searchLink("virtualdatacenter").getHref(),
             "virtualdatacenter", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON);
@@ -504,6 +509,11 @@ public class TemplatesApiTest extends BaseMockTest
             new RESTLink("datacenterrepository", "/admin/enterprises/1/datacenterrepositories/1");
         link.setType(DatacenterRepositoriesDto.SHORT_MEDIA_TYPE_JSON);
         vmt.addLink(link);
+        link =
+            new RESTLink("disk0",
+                "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/disks/1");
+        link.setType(DiskDto.SHORT_MEDIA_TYPE_JSON);
+        vmt.addLink(link);
 
         try
         {
@@ -529,8 +539,7 @@ public class TemplatesApiTest extends BaseMockTest
         VirtualMachineTemplatePersistentDto requestBody =
             readBody(request, VirtualMachineTemplatePersistentDto.class);
         assertEquals(requestBody.getPersistentTemplateName(), "persistentName");
-        assertEquals(requestBody.getPersistentVolumeName(), "persistentName");
-        assertLinkExist(requestBody, requestBody.searchLink("tier").getHref(), "tier",
+        assertLinkExist(requestBody, requestBody.searchLink("tier0").getHref(), "tier0",
             TierDto.SHORT_MEDIA_TYPE_JSON);
         assertLinkExist(requestBody, requestBody.searchLink("virtualdatacenter").getHref(),
             "virtualdatacenter", VirtualDatacenterDto.SHORT_MEDIA_TYPE_JSON);
