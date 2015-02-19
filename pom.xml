@@ -130,6 +130,7 @@
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
                 <version>2.6</version>
+                <inherited>false</inherited>
                 <configuration>
                     <header>header-asl.txt</header>
                     <properties>
