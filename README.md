@@ -66,23 +66,37 @@ To use the client you just have to create an instance of the `ApiClient` class p
 // Create a basic client
 ApiClient api = ApiClient.builder()
     .endpoint("http://abiquo-server/api")
-    .credentials("username", "password")
+    .authentication(basic("username", "password"))
     .build();
 
 // Create a client for a specific version of the Abiquo API
 ApiClient api = ApiClient.builder()
     .endpoint("http://abiquo-server/api")
-    .credentials("username", "password")
+    .authentication(basic("username", "password"))
     .version("3.2")
     .build();
 
 // Create a client with custom SSL configuration
 ApiClient api = ApiClient.builder()
     .endpoint("https://abiquo-server/api")
-    .credentials("username", "password")
+    .authentication(basic("username", "password"))
+    .sslConfiguration(customSSLConfig)
+    .build();
+    
+// Authenticate using OAuth
+ApiClient api = ApiClient.builder()
+    .endpoint("https://abiquo-server/api")
+    .authentication(oauth("consumer-key",
+                       "consumer-secret",
+                       "access-token",
+                       "access-token-secret"))
     .sslConfiguration(customSSLConfig)
     .build();
 ```
+
+Note that in order to authenticate using OAuth you need to have registered your application as an authorized application in the Abiquo API.
+This can be done easily by using the `register.py` script provided in the [api-python-client](https://github.com/abiquo/api-python-client).
+Checkout its README for further details on how to register the application.
 
 Once the `ApiClient` has been created you can use it to talk with the different endpoints exposed in the Abiquo API.
 
