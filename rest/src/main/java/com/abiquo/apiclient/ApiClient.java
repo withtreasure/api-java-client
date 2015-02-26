@@ -18,6 +18,7 @@ package com.abiquo.apiclient;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
+import com.abiquo.apiclient.auth.Authentication;
 import com.abiquo.apiclient.cloud.CloudApi;
 import com.abiquo.apiclient.enterprise.EnterpriseApi;
 import com.abiquo.apiclient.infrastructure.InfrastructureApi;
@@ -37,10 +38,10 @@ public class ApiClient
     private final TemplatesApi templatesApi;
 
     // Do not use directly. Use the builder.
-    private ApiClient(final String endpoint, final String username, final String password,
+    private ApiClient(final String endpoint, final Authentication authentication,
         final String version, final SSLConfiguration sslConfiguration)
     {
-        client = new RestClient(username, password, endpoint, version, sslConfiguration);
+        client = new RestClient(authentication, endpoint, version, sslConfiguration);
         enterpriseApi = new EnterpriseApi(client);
         infrastructureApi = new InfrastructureApi(client);
         cloudApi = new CloudApi(client);
@@ -56,9 +57,7 @@ public class ApiClient
     {
         private String endpoint;
 
-        private String username;
-
-        private String password;
+        private Authentication authentication;
 
         private String version = SingleResourceTransportDto.API_VERSION;
 
@@ -70,10 +69,9 @@ public class ApiClient
             return this;
         }
 
-        public Builder credentials(final String username, final String password)
+        public Builder authentication(final Authentication authentication)
         {
-            this.username = username;
-            this.password = password;
+            this.authentication = authentication;
             return this;
         }
 
@@ -91,7 +89,7 @@ public class ApiClient
 
         public ApiClient build()
         {
-            return new ApiClient(endpoint, username, password, version, sslConfiguration);
+            return new ApiClient(endpoint, authentication, version, sslConfiguration);
         }
     }
 

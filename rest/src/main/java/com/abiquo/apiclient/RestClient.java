@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import com.abiquo.apiclient.ApiClient.SSLConfiguration;
+import com.abiquo.apiclient.auth.Authentication;
 import com.abiquo.apiclient.domain.exception.AbiquoException;
 import com.abiquo.apiclient.domain.exception.AuthorizationException;
 import com.abiquo.apiclient.domain.exception.HttpException;
@@ -53,7 +54,7 @@ import com.google.common.base.Throwables;
 import com.google.common.net.HttpHeaders;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.squareup.okhttp.Credentials;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -70,16 +71,14 @@ public class RestClient
 
     private final String apiVersion;
 
-    private final String authHeader;
+    private final Authentication authentication;
 
     // Package protected. To be used only by the ApiClient
-    RestClient(final String username, final String password, final String baseURL,
-        final String apiVersion, final SSLConfiguration sslConfiguration)
+    RestClient(final Authentication authentication, final String baseURL, final String apiVersion,
+        final SSLConfiguration sslConfiguration)
     {
-        authHeader =
-            Credentials.basic(checkNotNull(username, "username cannot be null"),
-                checkNotNull(password, "password cannot be null"));
         this.json = new Json();
+        this.authentication = checkNotNull(authentication, "authentication cannot be null");
         this.baseURL = checkNotNull(baseURL, "baseURL cannot be null");
         this.apiVersion = checkNotNull(apiVersion, "apiVersion cannot be null");
 
@@ -91,6 +90,15 @@ public class RestClient
             client.setHostnameVerifier(sslConfiguration.hostnameVerifier());
             client.setSslSocketFactory(sslConfiguration.sslContext().getSocketFactory());
         }
+
+        client.networkInterceptors().add(new Interceptor()
+        {
+            @Override
+            public Response intercept(final Chain chain) throws IOException
+            {
+                return chain.proceed(RestClient.this.authentication.authenticate(chain.request()));
+            }
+        });
     }
 
     public <T extends SingleResourceTransportDto> T edit(final T dto)
@@ -170,7 +178,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
             return execute(request, returnClass);
@@ -188,7 +195,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
             return execute(request, returnType);
@@ -206,7 +212,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri) + "?" + queryLine(queryParams))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
             return execute(request, returnClass);
@@ -224,7 +229,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri) + "?" + queryLine(queryParams))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).get().build();
 
             return execute(request, returnType);
@@ -239,9 +243,7 @@ public class RestClient
     {
         try
         {
-            Request request =
-                new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader).delete().build();
+            Request request = new Request.Builder().url(absolute(uri)).delete().build();
             execute(request, (Class< ? >) null);
         }
         catch (IOException ex)
@@ -259,7 +261,6 @@ public class RestClient
                 RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
 
             return execute(request, returnClass);
@@ -280,7 +281,6 @@ public class RestClient
                 RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(requestBody).build();
 
             return execute(request, returnType);
@@ -298,7 +298,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(null).build();
 
             return execute(request, returnClass);
@@ -316,7 +315,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).post(null).build();
 
             return execute(request, returnType);
@@ -336,7 +334,6 @@ public class RestClient
                 RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
             return execute(request, returnClass);
@@ -354,7 +351,6 @@ public class RestClient
         {
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(null).build();
 
             return execute(request, returnType);
@@ -375,7 +371,6 @@ public class RestClient
                 RequestBody.create(MediaType.parse(withVersion(contentType)), json.write(body));
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
             return execute(request, returnType);
@@ -396,7 +391,6 @@ public class RestClient
                 RequestBody.create(MediaType.parse(withVersion(contentType)), rawBody);
             Request request =
                 new Request.Builder().url(absolute(uri))
-                    .addHeader(HttpHeaders.AUTHORIZATION, authHeader)
                     .addHeader(HttpHeaders.ACCEPT, withVersion(accept)).put(requestBody).build();
 
             execute(request, (Class< ? >) null);

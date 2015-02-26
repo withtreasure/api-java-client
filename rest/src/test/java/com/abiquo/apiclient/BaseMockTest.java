@@ -15,6 +15,7 @@
  */
 package com.abiquo.apiclient;
 
+import static com.abiquo.apiclient.auth.BasicAuthentication.basic;
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.Iterables.tryFind;
 import static org.testng.Assert.assertEquals;
@@ -98,7 +99,7 @@ public class BaseMockTest
         checkState(server != null, "server has not been initialised");
         return ApiClient.builder() //
             .endpoint(baseUrl()) //
-            .credentials(DEFAULT_USER, DEFAULT_PASS) //
+            .authentication(basic(DEFAULT_USER, DEFAULT_PASS)) //
             .version(version) //
             .sslConfiguration(sslConfiguration) //
             .build();

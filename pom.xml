@@ -74,7 +74,7 @@
     </modules>
     
     <properties>
-        <okhttp.version>2.1.0</okhttp.version>
+        <okhttp.version>2.2.0</okhttp.version>
         <jackson.version>2.2.2</jackson.version>
     </properties>
 
