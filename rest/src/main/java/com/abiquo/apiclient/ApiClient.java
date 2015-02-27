@@ -39,6 +39,14 @@ public class ApiClient
 
     private final ConfigApi configApi;
 
+    private final String endpoint;
+
+    private final Authentication authentication;
+
+    private final String version;
+
+    private final SSLConfiguration sslConfiguration;
+
     // Do not use directly. Use the builder.
     private ApiClient(final String endpoint, final Authentication authentication,
         final String version, final SSLConfiguration sslConfiguration)
@@ -49,6 +57,11 @@ public class ApiClient
         cloudApi = new CloudApi(client);
         templatesApi = new TemplatesApi(client);
         configApi = new ConfigApi(client);
+
+        this.endpoint = endpoint;
+        this.authentication = authentication;
+        this.version = version;
+        this.sslConfiguration = sslConfiguration;
     }
 
     public static Builder builder()
@@ -96,6 +109,12 @@ public class ApiClient
         }
     }
 
+    public Builder toBuilder()
+    {
+        return builder().endpoint(endpoint).authentication(authentication).version(version)
+            .sslConfiguration(sslConfiguration);
+    }
+
     public static interface SSLConfiguration
     {
         /**
@@ -107,6 +126,16 @@ public class ApiClient
          * Provides the hostname verifier to be used in the SSL sessions.
          */
         public HostnameVerifier hostnameVerifier();
+    }
+
+    public String getEndpoint()
+    {
+        return endpoint;
+    }
+
+    public SSLConfiguration getSSLConfiguration()
+    {
+        return sslConfiguration;
     }
 
     public RestClient getClient()

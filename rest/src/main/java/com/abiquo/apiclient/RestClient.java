@@ -101,6 +101,19 @@ public class RestClient
         });
     }
 
+    /**
+     * Returns a customizable raw client.
+     * <p>
+     * Note that the client is immutable, and changes made to the raw client returned by this method
+     * will not affect the current rest client.
+     * 
+     * @return A mutable raw client that can be used to perform customized requests.
+     */
+    public OkHttpClient rawClient()
+    {
+        return client.clone();
+    }
+
     public <T extends SingleResourceTransportDto> T edit(final T dto)
     {
         RESTLink link =
