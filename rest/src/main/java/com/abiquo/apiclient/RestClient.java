@@ -18,14 +18,13 @@ package com.abiquo.apiclient;
 import static com.abiquo.apiclient.LogUtils.logRequest;
 import static com.abiquo.apiclient.LogUtils.logResponse;
 import static com.abiquo.apiclient.domain.PageIterator.flatten;
+import static com.abiquo.apiclient.domain.options.BaseOptions.urlEncode;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.transformValues;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -460,14 +459,7 @@ public class RestClient
                 @Override
                 public String apply(final Object input)
                 {
-                    try
-                    {
-                        return URLEncoder.encode(input.toString(), "UTF-8");
-                    }
-                    catch (UnsupportedEncodingException ex)
-                    {
-                        throw Throwables.propagate(ex);
-                    }
+                    return urlEncode(input.toString());
                 }
             }));
     }

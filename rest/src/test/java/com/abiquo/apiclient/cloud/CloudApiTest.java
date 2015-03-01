@@ -985,14 +985,14 @@ public class CloudApiTest extends BaseMockTest
         server.enqueue(response);
         server.play();
 
-        newApiClient().getCloudApi()
-            .listVirtualDatacenters(
-                VirtualDatacenterListOptions.builder().limit(0).datacenterId(2).enterpriseId(4)
-                    .build());
+        newApiClient().getCloudApi().listVirtualDatacenters(
+            VirtualDatacenterListOptions.builder().has("foo bar*").limit(0).datacenterId(2)
+                .enterpriseId(4).build());
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", "/cloud/virtualdatacenters?datacenter=2&enterprise=4&limit=0");
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters?datacenter=2&enterprise=4&has=foo%20bar%2A&limit=0");
         assertAccept(request, VirtualDatacentersDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }

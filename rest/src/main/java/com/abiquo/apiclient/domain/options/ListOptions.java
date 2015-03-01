@@ -15,12 +15,8 @@
  */
 package com.abiquo.apiclient.domain.options;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.google.common.base.Throwables;
 
 public class ListOptions extends BaseOptions
 {
@@ -103,20 +99,5 @@ public class ListOptions extends BaseOptions
             return parameters;
         }
 
-        protected static void putIfPresent(final String key, final Object value,
-            final Map<String, Object> map)
-        {
-            if (value != null)
-            {
-                try
-                {
-                    map.put(key, URLEncoder.encode(value.toString(), "UTF-8"));
-                }
-                catch (UnsupportedEncodingException ex)
-                {
-                    throw Throwables.propagate(ex);
-                }
-            }
-        }
     }
 }

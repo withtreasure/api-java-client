@@ -515,13 +515,17 @@ public class RestClientTest extends BaseMockTest
         server.enqueue(vdcsResponse);
         server.play();
 
-        newApiClient().getClient().get("/cloud/virtualdatacenters",
-            ImmutableMap.<String, Object> of("foo", "param to encode"),
-            VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacentersDto.class);
+        newApiClient()
+            .getClient()
+            .get(
+                "/cloud/virtualdatacenters",
+                ImmutableMap.<String, Object> of("foo", "param to encode", "wildcard",
+                    "with*wildcard"), VirtualDatacentersDto.MEDIA_TYPE, VirtualDatacentersDto.class);
 
         RecordedRequest request = server.takeRequest();
 
-        assertRequest(request, "GET", "/cloud/virtualdatacenters?foo=param+to+encode");
+        assertRequest(request, "GET",
+            "/cloud/virtualdatacenters?foo=param%20to%20encode&wildcard=with%2Awildcard");
         assertAccept(request, VirtualDatacentersDto.MEDIA_TYPE,
             SingleResourceTransportDto.API_VERSION);
     }
