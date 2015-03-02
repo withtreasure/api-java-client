@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.enterprise;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.apiclient.domain.options.EnterpriseListOptions;
 import com.abiquo.apiclient.domain.options.UserListOptions;
 import com.abiquo.model.enumerator.AuthType;

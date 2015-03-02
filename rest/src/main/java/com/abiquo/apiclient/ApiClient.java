@@ -19,10 +19,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 import com.abiquo.apiclient.auth.Authentication;
-import com.abiquo.apiclient.cloud.CloudApi;
-import com.abiquo.apiclient.enterprise.EnterpriseApi;
-import com.abiquo.apiclient.infrastructure.InfrastructureApi;
-import com.abiquo.apiclient.templates.TemplatesApi;
 import com.abiquo.model.transport.SingleResourceTransportDto;
 
 public class ApiClient

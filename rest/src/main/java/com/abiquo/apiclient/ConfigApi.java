@@ -25,7 +25,8 @@ public class ConfigApi
 {
     private final RestClient client;
 
-    public ConfigApi(final RestClient client)
+    // Package private constructor to be used only by the ApiClient
+    ConfigApi(final RestClient client)
     {
         this.client = checkNotNull(client, "client cannot be null");
     }

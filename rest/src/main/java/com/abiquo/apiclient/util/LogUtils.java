@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient;
+package com.abiquo.apiclient.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class LogUtils
 {
     private static final Logger LOG = Logger.getLogger("abiquo.client");
 
-    static void logRequest(final Request request) throws IOException
+    public static void logRequest(final Request request) throws IOException
     {
         if (LOG.isLoggable(Level.FINE))
         {
@@ -71,7 +71,7 @@ public class LogUtils
         }
     }
 
-    static void logResponse(final Response response, final String body)
+    public static void logResponse(final Response response, final String body)
     {
         if (LOG.isLoggable(Level.FINE))
         {

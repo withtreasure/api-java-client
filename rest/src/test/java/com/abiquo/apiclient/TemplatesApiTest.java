@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.templates;
+package com.abiquo.apiclient;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
@@ -24,7 +24,6 @@ import javax.ws.rs.core.MediaType;
 
 import org.testng.annotations.Test;
 
-import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;

@@ -15,10 +15,10 @@
  */
 package com.abiquo.apiclient;
 
-import static com.abiquo.apiclient.LogUtils.logRequest;
-import static com.abiquo.apiclient.LogUtils.logResponse;
 import static com.abiquo.apiclient.domain.PageIterator.flatten;
 import static com.abiquo.apiclient.domain.options.BaseOptions.urlEncode;
+import static com.abiquo.apiclient.util.LogUtils.logRequest;
+import static com.abiquo.apiclient.util.LogUtils.logResponse;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Maps.transformValues;
 
@@ -34,6 +34,7 @@ import com.abiquo.apiclient.auth.Authentication;
 import com.abiquo.apiclient.domain.exception.AbiquoException;
 import com.abiquo.apiclient.domain.exception.AuthorizationException;
 import com.abiquo.apiclient.domain.exception.HttpException;
+import com.abiquo.apiclient.interceptors.AuthenticationInterceptor;
 import com.abiquo.apiclient.json.Json;
 import com.abiquo.model.rest.RESTLink;
 import com.abiquo.model.transport.AcceptedRequestDto;
@@ -53,7 +54,6 @@ import com.google.common.base.Throwables;
 import com.google.common.net.HttpHeaders;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.Uninterruptibles;
-import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -70,47 +70,34 @@ public class RestClient
 
     private final String apiVersion;
 
-    private final Authentication authentication;
-
     // Package protected. To be used only by the ApiClient
     RestClient(final Authentication authentication, final String baseURL, final String apiVersion,
         final SSLConfiguration sslConfiguration)
     {
         this.json = new Json();
-        this.authentication = checkNotNull(authentication, "authentication cannot be null");
         this.baseURL = checkNotNull(baseURL, "baseURL cannot be null");
         this.apiVersion = checkNotNull(apiVersion, "apiVersion cannot be null");
 
         client = new OkHttpClient();
         client.setReadTimeout(0, TimeUnit.MILLISECONDS);
+        client.networkInterceptors().add(new AuthenticationInterceptor(authentication));
 
         if (sslConfiguration != null)
         {
             client.setHostnameVerifier(sslConfiguration.hostnameVerifier());
             client.setSslSocketFactory(sslConfiguration.sslContext().getSocketFactory());
         }
-
-        client.networkInterceptors().add(new Interceptor()
-        {
-            @Override
-            public Response intercept(final Chain chain) throws IOException
-            {
-                return chain.proceed(RestClient.this.authentication.authenticate(chain.request()));
-            }
-        });
     }
 
     /**
-     * Returns a customizable raw client.
+     * Changes made to the returned client will affect all the subsequent requests.
      * <p>
-     * Note that the client is immutable, and changes made to the raw client returned by this method
-     * will not affect the current rest client.
-     * 
-     * @return A mutable raw client that can be used to perform customized requests.
+     * If you want to create a new client without affecting the existing one, use the
+     * {@link OkHttpClient#clone()} method on the returned client.
      */
     public OkHttpClient rawClient()
     {
-        return client.clone();
+        return client;
     }
 
     public <T extends SingleResourceTransportDto> T edit(final T dto)

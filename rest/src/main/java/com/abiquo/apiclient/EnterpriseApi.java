@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.enterprise;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.ApiPath.LOGIN_URL;
@@ -23,7 +23,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.List;
 
-import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.options.EnterpriseListOptions;
 import com.abiquo.apiclient.domain.options.UserListOptions;
 import com.abiquo.model.enumerator.AuthType;
@@ -40,7 +39,8 @@ public class EnterpriseApi
 {
     private final RestClient client;
 
-    public EnterpriseApi(final RestClient client)
+    // Package private constructor to be used only by the ApiClient
+    EnterpriseApi(final RestClient client)
     {
         this.client = checkNotNull(client, "client cannot be null");
     }

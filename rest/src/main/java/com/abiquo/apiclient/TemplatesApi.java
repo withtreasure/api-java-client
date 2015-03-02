@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.templates;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.ENTERPRISES_URL;
 import static com.abiquo.apiclient.domain.Links.create;
@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.MediaType;
 
-import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.Links;
 import com.abiquo.apiclient.domain.options.TemplateListOptions;
 import com.abiquo.model.transport.AcceptedRequestDto;
@@ -51,7 +50,8 @@ public class TemplatesApi
 {
     private final RestClient client;
 
-    public TemplatesApi(final RestClient client)
+    // Package private constructor to be used only by the ApiClient
+    TemplatesApi(final RestClient client)
     {
         this.client = checkNotNull(client, "client cannot be null");
     }

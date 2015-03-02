@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.infrastructure;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.DATACENTERS_URL;
 import static com.abiquo.apiclient.domain.ApiPath.HYPERVISORTYPES_URL;
@@ -22,7 +22,6 @@ import static org.testng.Assert.assertEquals;
 
 import org.testng.annotations.Test;
 
-import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.apiclient.domain.options.DatacenterListOptions;
 import com.abiquo.apiclient.domain.options.PublicCloudRegionListOptions;
 import com.abiquo.model.enumerator.NetworkType;

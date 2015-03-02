@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.infrastructure;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.DATACENTERS_URL;
 import static com.abiquo.apiclient.domain.ApiPath.HYPERVISORTYPES_URL;
@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.options.DatacenterListOptions;
 import com.abiquo.apiclient.domain.options.PublicCloudRegionListOptions;
 import com.abiquo.model.enumerator.NetworkType;
@@ -62,7 +61,8 @@ public class InfrastructureApi
 {
     private final RestClient client;
 
-    public InfrastructureApi(final RestClient client)
+    // Package private constructor to be used only by the ApiClient
+    InfrastructureApi(final RestClient client)
     {
         this.client = checkNotNull(client, "client cannot be null");
     }

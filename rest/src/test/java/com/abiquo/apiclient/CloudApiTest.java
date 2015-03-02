@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.cloud;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
 import static org.testng.Assert.assertEquals;
@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.testng.annotations.Test;
 
-import com.abiquo.apiclient.BaseMockTest;
 import com.abiquo.apiclient.domain.options.ExternalIpListOptions;
 import com.abiquo.apiclient.domain.options.VirtualApplianceListOptions;
 import com.abiquo.apiclient.domain.options.VirtualDatacenterListOptions;

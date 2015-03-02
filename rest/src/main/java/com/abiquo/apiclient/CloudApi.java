@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.abiquo.apiclient.cloud;
+package com.abiquo.apiclient;
 
 import static com.abiquo.apiclient.domain.ApiPath.VIRTUALDATACENTERS_URL;
 import static com.abiquo.apiclient.domain.Links.create;
@@ -22,7 +22,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.concurrent.TimeUnit;
 
-import com.abiquo.apiclient.RestClient;
 import com.abiquo.apiclient.domain.options.ExternalIpListOptions;
 import com.abiquo.apiclient.domain.options.VirtualApplianceListOptions;
 import com.abiquo.apiclient.domain.options.VirtualDatacenterListOptions;
@@ -59,7 +58,8 @@ public class CloudApi
 {
     private final RestClient client;
 
-    public CloudApi(final RestClient client)
+    // Package private constructor to be used only by the ApiClient
+    CloudApi(final RestClient client)
     {
         this.client = checkNotNull(client, "client cannot be null");
     }
