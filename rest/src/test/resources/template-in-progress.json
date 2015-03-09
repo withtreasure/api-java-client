@@ -1,0 +1,88 @@
+{
+    "chefEnabled": false, 
+    "cpuRequired": 1, 
+    "creationDate": "2014-12-03T11:25:26.000+0000", 
+    "creationUser": "1", 
+    "diskController": "lsilogic", 
+    "diskControllerType": "SCSI", 
+    "diskFileSize": 233111552, 
+    "diskFormatType": "QCOW2_SPARSE", 
+    "ethernetDriverType": "E1000", 
+    "hdRequired": 1073741824, 
+    "iconUrl": "http://rs.bcn.abiquo.com:9000/public/icons/grml.png", 
+    "id": 420, 
+    "links": [
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1", 
+            "rel": "enterprise", 
+            "title": "EnterpriseTest", 
+            "type": "application/vnd.abiquo.enterprise+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/config/categories/1", 
+            "rel": "category", 
+            "title": "Others", 
+            "type": "application/vnd.abiquo.category+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1", 
+            "rel": "edit", 
+            "title": "GRML-Small-Functional", 
+            "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/tasks", 
+            "rel": "tasks", 
+            "title": "tasks", 
+            "type": "application/vnd.abiquo.tasks+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1", 
+            "rel": "datacenterrepository", 
+            "title": "repository", 
+            "type": "application/vnd.abiquo.datacenterrepository+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/conversions", 
+            "rel": "conversions", 
+            "title": "conversions", 
+            "type": "application/vnd.abiquo.conversions+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/action/virtualmachines", 
+            "rel": "virtualmachines", 
+            "title": "virtual machines", 
+            "type": "application/vnd.abiquo.virtualmachines+json"
+        }, 
+        {
+            "href": "http://localhost:443/api/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1", 
+            "rel": "master", 
+            "title": "GRML-Small-Functional", 
+            "type": "application/vnd.abiquo.virtualmachinetemplate+json"
+        }, 
+        {
+            "href": "http://localhost:443/am/erepos/4/templates/1/db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional/2460016e-7b36-4739-9082-4eb53d6be53e-snapshot-db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional.qcow2", 
+            "rel": "template", 
+            "title": "template"
+        }, 
+        {
+            "href": "http://localhost:443/am/files/1/db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional/2460016e-7b36-4739-9082-4eb53d6be53e-snapshot-db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional.qcow2", 
+            "rel": "diskfile", 
+            "title": "diskfile"
+        }, 
+        {
+            "href": "1/db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional/2460016e-7b36-4739-9082-4eb53d6be53e-snapshot-db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional.qcow2", 
+            "rel": "templatedefinition", 
+            "title": "template definition"
+        }
+    ], 
+    "loginPassword": "temporal", 
+    "loginUser": "root", 
+    "name": "GRML-Small-Functional", 
+    "osType": "UNRECOGNIZED", 
+    "osVersion": "", 
+    "path": "1/db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional/2460016e-7b36-4739-9082-4eb53d6be53e-snapshot-db68972a-ee60-4da2-ba7d-366e5c487101-GRML-Small-Functional.qcow2", 
+    "ramRequired": 128, 
+    "shared": false, 
+    "state": "IN_PROGRESS"
+}

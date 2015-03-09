@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.abiquo.apiclient.domain.Links;
 import com.abiquo.apiclient.domain.options.TemplateListOptions;
+import com.abiquo.model.enumerator.VMTemplateState;
 import com.abiquo.model.transport.AcceptedRequestDto;
 import com.abiquo.server.core.appslibrary.ConversionDto;
 import com.abiquo.server.core.appslibrary.ConversionsDto;
@@ -44,7 +45,9 @@ import com.abiquo.server.core.infrastructure.DatacenterDto;
 import com.abiquo.server.core.infrastructure.storage.TierDto;
 import com.abiquo.server.core.task.TaskDto;
 import com.abiquo.server.core.task.TasksDto;
+import com.google.common.base.Stopwatch;
 import com.google.common.reflect.TypeToken;
+import com.google.common.util.concurrent.Uninterruptibles;
 
 public class TemplatesApi
 {
@@ -283,5 +286,23 @@ public class TemplatesApi
     {
         return client.list(vmt.searchLink("conversions").getHref(), ConversionsDto.MEDIA_TYPE,
             ConversionsDto.class);
+    }
+
+    public VirtualMachineTemplateDto waitWhileInProgress(final VirtualMachineTemplateDto vmt,
+        final int pollInterval, final int maxWait, final TimeUnit timeUnit)
+    {
+        Stopwatch watch = Stopwatch.createStarted();
+        while (watch.elapsed(timeUnit) < maxWait)
+        {
+            VirtualMachineTemplateDto refreshed = client.refresh(vmt);
+            if (!VMTemplateState.IN_PROGRESS.equals(refreshed.getState()))
+            {
+                return refreshed;
+            }
+
+            Uninterruptibles.sleepUninterruptibly(pollInterval, timeUnit);
+        }
+
+        throw new RuntimeException("Virtual machine template did not reach the desired state in the configured timeout");
     }
 }

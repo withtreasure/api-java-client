@@ -15,6 +15,7 @@
  */
 package com.abiquo.apiclient;
 
+import static com.abiquo.apiclient.domain.Links.create;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -835,6 +836,41 @@ public class TemplatesApiTest extends BaseMockTest
         assertRequest(request, "GET",
             "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1/conversions/VMDK_FLAT");
         assertAccept(request, ConversionDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+    }
+
+    public void testWaitWhileInProgress() throws Exception
+    {
+        MockResponse inProgress = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("template-in-progress.json"));
+        MockResponse done = new MockResponse() //
+            .setHeader("Content-Type", VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON)//
+            .setBody(payloadFromResource("template.json"));
+
+        server.enqueue(inProgress);
+        server.enqueue(done);
+        server.play();
+
+        VirtualMachineTemplateDto vmt = new VirtualMachineTemplateDto();
+        vmt.addLink(create("edit",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1",
+            VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON));
+
+        newApiClient().getTemplatesApi().waitWhileInProgress(vmt, 1, 5, TimeUnit.SECONDS);
+
+        assertEquals(server.getRequestCount(), 2);
+
+        RecordedRequest request = server.takeRequest();
+        assertRequest(request, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        assertAccept(request, VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON,
+            SingleResourceTransportDto.API_VERSION);
+
+        request = server.takeRequest();
+        assertRequest(request, "GET",
+            "/admin/enterprises/1/datacenterrepositories/1/virtualmachinetemplates/1");
+        assertAccept(request, VirtualMachineTemplateDto.SHORT_MEDIA_TYPE_JSON,
             SingleResourceTransportDto.API_VERSION);
     }
 
